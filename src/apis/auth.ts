@@ -22,32 +22,6 @@ export const auth = createApi({
       ) => response.status,
       providesTags: (result, error, id) => [{ type: 'Post', id }],
       // The 2nd parameter is the destructured `QueryLifecycleApi`
-      async onQueryStarted(
-        arg,
-        {
-          dispatch,
-          getState,
-          extra,
-          requestId,
-          queryFulfilled,
-          getCacheEntry,
-          updateCachedData,
-        }
-      ) {},
-      // The 2nd parameter is the destructured `QueryCacheLifecycleApi`
-      async onCacheEntryAdded(
-        arg,
-        {
-          dispatch,
-          getState,
-          extra,
-          requestId,
-          cacheEntryRemoved,
-          cacheDataLoaded,
-          getCacheEntry,
-          updateCachedData,
-        }
-      ) {},
-    }),
+     
   }),
 })
