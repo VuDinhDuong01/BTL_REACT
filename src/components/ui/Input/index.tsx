@@ -9,23 +9,20 @@ const Input = forwardRef<HTMLInputElement, ComponentPropsWithoutRef<'input'>>(
       setEye(!eye)
     }, [eye])
 
-    const classNameEye = 'w-5 h-5 absolute top-[25%] right-[-8px] cursor-pointer  translate-y-[-50%]'
+    const classNameEye = 'w-5 h-5 absolute top-[25%] right-[7px] cursor-pointer  translate-y-[-50%]'
     const checkEye = eye ? <EyeIcon className={classNameEye} onClick={handleChangeEye} /> : <EyeStash className={classNameEye} onClick={handleChangeEye} />
     return (
       <div className={className + " relative"}>
-
         <input
           type={eye ? 'text' : type}
           className={
-            "h-[35px] rounded-md pl-[10px] text-[15px] font-[500] border-[green] outline-none " +
+            "h-[35px]  rounded-md  px-[5px] !text-[15px] outline-none   " +
             className
-
           }
           placeholder={props.placeholder}
-          {...props}
-          ref={ref}
+           {...props}
+           ref={ref}
         />
-
         {type === "password" && checkEye}
       </div>
     )

@@ -13,17 +13,18 @@ interface ControlerInputProp<TFieldValues extends FieldValues = FieldValues> ext
     label?: string,
     placeholder?: string
     type?: string
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    classNameLabel?:string 
 }
 
-const ControllerInput = forwardRef<Ref<HTMLInputElement>, ControlerInputProp>(({ name, control, label, type, placeholder, required, onChange, className, ...props }, ref) => {
+const ControllerInput = forwardRef<Ref<HTMLInputElement>, ControlerInputProp>(({ name,classNameLabel, control, label, type, placeholder, required, onChange, className, ...props }, ref) => {
     const id = useId()
     return <Controller
         name={name}
         control={control}
         render={({ field }) => (
-            <div>
-                <Label className={className as string + " !text-[20px]"} htmlFor={id} >{label}{required && <span className='text-[red]'>*</span>}</Label>
+            <div className='flex flex-col'>
+                <Label className={classNameLabel as string + " !text-[17px] mb-[2px] font-fontFamily cursor-pointer"} htmlFor={id} >{label}{required && <span className='text-[red]'>*</span>}</Label>
                 <Input id={id} placeholder={placeholder}
                     {...field}
                     type={type}

@@ -1,9 +1,9 @@
 import { useRoutes } from "react-router-dom";
 
 import {Path} from '../contants/path'
-import { Register } from '../pages/Register/Register'
-import { Login } from '../pages/Login/Login'
-import { Home } from '../pages/Home/Home'
+import { Register } from '../pages/Register'
+import { Login } from '../pages/Login'
+import { Home } from '../pages/Home'
 import { MainLayout } from '../layouts/MainLayout'
 
 export const route=()=>{
