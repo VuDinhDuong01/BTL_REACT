@@ -1,0 +1,13 @@
+{
+    "login":{
+        "enterEmail":"Enter your email",
+        "enterPassword":"Enter password",
+        "password":"Password",
+        "support":"Support",
+        "resetPassword":"Forgot password",
+        "login":"login",
+        "fieldNotEmpty":"This field cannot be left blank",
+        "wrongFormat":"You entered the wrong format",
+        "maximumNumberCharaters":"The maximum number of characters allowed is 25 characters"
+    }
+}

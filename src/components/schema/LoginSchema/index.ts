@@ -1,8 +1,8 @@
 import zod from 'zod'
 
 const loginSchema = zod.object({
-    email: zod.string().min(1, "Trường này không được để trống").email("bạn nhập sai định dạng"),
-    password: zod.string().min(1, "Trường này không được để trống").max(25, "Số ký tự tối đa cho phép là 25 ký tự")
+    email: zod.string().min(1, "login.fieldNotEmpty").email("login.wrongFormat"),
+    password: zod.string().min(1, "login.fieldNotEmpty").max(25, "login.maximumNumberCharaters")
 }).strict()
 
 export default loginSchema

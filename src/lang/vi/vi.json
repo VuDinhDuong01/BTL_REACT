@@ -1,0 +1,13 @@
+{
+    "login":{
+        "enterEmail":"Nhập email của bạn",
+        "enterPassword":"Nhập mật khẩu",
+        "password":"Mật khẩu",
+        "support":"Hỗ trợ",
+        "resetPassword":"Quên mật khẩu",
+        "login":"đăng nhập",
+        "fieldNotEmpty":"Trường này không được để trống",
+        "wrongFormat":"bạn nhập sai định dạng",
+        "maximumNumberCharaters":"Số ký tự tối đa cho phép là 25 ký tự"
+    }
+}
