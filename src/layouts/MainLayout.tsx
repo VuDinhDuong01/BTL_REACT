@@ -9,10 +9,10 @@ export const MainLayout = ({title,childen}:{title:string, childen:ReactNode}) =>
     },[title])
 
   return (
-    <div>
+    <>
         <Header />
-        <div>{childen}</div>
+        {childen}
         <Footer />
-    </div>
+    </>
   )
 }

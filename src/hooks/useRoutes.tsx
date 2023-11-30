@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { useRoutes } from "react-router-dom";
 
 import {Path} from '../contants/path'
@@ -7,20 +8,19 @@ import { Home } from '../pages/Home'
 import { MainLayout } from '../layouts/MainLayout'
 
 export const route=()=>{
-    const element=useRoutes([
+    const  element=useRoutes([
         {
             path:Path.login,
-            element:<MainLayout title='ad'><Login /></MainLayout>
+            element:<Login />
         },
         {
             path:Path.register,
-            element:<MainLayout title=''><Register /></MainLayout>
+            element:<Register />
         },
         {
             path:Path.home,
-            element:<MainLayout title=''><Home /></MainLayout>
+            element:<MainLayout title='Trang chủ'><Home /></MainLayout>
         },
-
     ])
     return element
 }

@@ -9,5 +9,10 @@
         "fieldNotEmpty":"Trường này không được để trống",
         "wrongFormat":"bạn nhập sai định dạng",
         "maximumNumberCharaters":"Số ký tự tối đa cho phép là 25 ký tự"
+    },
+    "register":{
+        "username":"Họ tên",
+        "enterUsername":"Nhập họ tên",
+        "register":"Đăng ký"
     }
 }
