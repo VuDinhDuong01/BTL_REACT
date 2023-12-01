@@ -1,27 +1,27 @@
 
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'
+import { AuthRequest, LoginResponse } from '../Types/LoginType'
+import { URL_API } from '../contants/url-api'
+import { METHOD_API } from '../helps/methods-api'
+import { baseCreateApi } from './createApi'
 
+const authAPI = baseCreateApi.injectEndpoints({
+  endpoints: build => ({
+    login: build.mutation<LoginResponse, AuthRequest>({
+      query: (data) => ({
+        url: URL_API.REGISTER,
+        method: METHOD_API.POST,
+        data,
+      }),
+    }),
 
-export const auth = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/',
-  }),
-  tagTypes: ['Post'],
-  endpoints: (build) => ({
-    // The query accepts a number and returns a Post
-    getPost: build.query<Post, number>({
-     
-      query: (id) => ({ url: `post/${id}` }),
-     
-      transformResponse: (response: { data: Post }, meta, arg) => response.data,
-     
-      transformErrorResponse: (
-        response: { status: string | number },
-        meta,
-        arg
-      ) => response.status,
-      providesTags: (result, error, id) => [{ type: 'Post', id }],
-      // The 2nd parameter is the destructured `QueryLifecycleApi`
-     
-  }),
+    register: build.mutation<LoginResponse, AuthRequest>({
+      query: (data) => ({
+        url: URL_API.REGISTER,
+        method: METHOD_API.POST,
+        data,
+      }),
+    }),
+  })
 })
+
+export const {useLoginMutation, useRegisterMutation}= authAPI

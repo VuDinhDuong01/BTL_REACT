@@ -11,7 +11,7 @@ export const MainLayout = ({title,childen}:{title:string, childen:ReactNode}) =>
   return (
     <>
         <Header />
-        {childen}
+        <div>{childen}</div>
         <Footer />
     </>
   )

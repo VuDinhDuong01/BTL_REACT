@@ -31,13 +31,13 @@ export const Register = () => {
   }
 
   return (
-    <div className='flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat'
+    <div className='flex h-[100vh] w-[100%]  flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat'
       style={{
-        backgroundImage: `url(${Images.bg})`,
+        backgroundImage: `url(${Images.background})`,
       }}>
-      <div className=" absolute top-[20px] right-0">
+      <div className=" absolute top-[20px] right-[30px]">
         <Select onValueChange={handleChangleLanguage}>
-          <SelectTrigger className="w-[181px] cursor-pointer">
+          <SelectTrigger className="w-[180px] cursor-pointer">
             <SelectValue placeholder={localStorage.getItem("lng") === 'vi' ? 'Tiếng Việt' : 'English'}
             />
           </SelectTrigger>
@@ -46,7 +46,7 @@ export const Register = () => {
             <SelectItem value="en" className="hover:bg-green1 hover:text-white">English</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </div> 
       <div>
         <form className="px-[30px] z-[99999999] w-[350px] min-h-[650px] rounded-[20px] bg-white blur-[100px] flex flex-col justify-center "
           style={{ boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.15)' }}

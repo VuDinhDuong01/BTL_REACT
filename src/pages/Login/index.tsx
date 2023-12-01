@@ -30,10 +30,10 @@ export const Login = () => {
   return (
     <div className='flex h-screen w-screen flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat'
       style={{
-        backgroundImage: `url(${Images.bg})`,
+        backgroundImage: `url(${Images.background})`,
       }}>
       <div>
-        <form className="px-[30px] z-[99999999] w-[350px] min-h-[550px] rounded-[20px] bg-white blur-[100px] flex flex-col justify-center "
+        <form className="px-[30px] z-[99999999] w-[350px] min-h-[530px] rounded-[20px] bg-white blur-[100px] flex flex-col justify-center "
           style={{ boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.15)' }}
           onSubmit={onSubmit}
         >
