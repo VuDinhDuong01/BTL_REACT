@@ -3,7 +3,8 @@ import {useEffect, type ReactNode} from 'react'
 import { Header } from "../components/Header/Header"
 import { Footer } from "../components/Footer/Footer"
 
-export const MainLayout = ({title,childen}:{title:string, childen:ReactNode}) => {
+export const MainLayout = ({title,children}:{title:string, children:ReactNode}) => {
+
     useEffect(()=>{
         document.title=title
     },[title])
@@ -11,7 +12,7 @@ export const MainLayout = ({title,childen}:{title:string, childen:ReactNode}) =>
   return (
     <>
         <Header />
-        <div>{childen}</div>
+        <div>{children}</div>
         <Footer />
     </>
   )

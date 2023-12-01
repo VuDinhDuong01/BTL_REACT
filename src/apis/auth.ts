@@ -4,7 +4,7 @@ import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 
-const authAPI = baseCreateApi.injectEndpoints({
+export const authAPI = baseCreateApi.injectEndpoints({
   endpoints: build => ({
     login: build.mutation<LoginResponse, AuthRequest>({
       query: (data) => ({
