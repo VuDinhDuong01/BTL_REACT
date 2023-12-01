@@ -1,12 +1,12 @@
 
-import { AuthRequest, LoginResponse } from '../Types/LoginType'
+import { AuthRequestProp, AuthResponseType } from '../Types/LoginType'
 import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 
 export const authAPI = baseCreateApi.injectEndpoints({
   endpoints: build => ({
-    login: build.mutation<LoginResponse, AuthRequest>({
+    login: build.mutation<AuthResponseType, AuthRequestProp>({
       query: (data) => ({
         url: URL_API.REGISTER,
         method: METHOD_API.POST,
@@ -14,7 +14,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
     }),
 
-    register: build.mutation<LoginResponse, AuthRequest>({
+    register: build.mutation<AuthResponseType, AuthRequestProp>({
       query: (data) => ({
         url: URL_API.REGISTER,
         method: METHOD_API.POST,
@@ -24,4 +24,4 @@ export const authAPI = baseCreateApi.injectEndpoints({
   })
 })
 
-export const {useLoginMutation, useRegisterMutation}= authAPI
+export const { useLoginMutation, useRegisterMutation } = authAPI

@@ -1,12 +1,12 @@
-export interface LoginResponse{
-
+import {type GenerateType} from './Generate.d'
+interface AuthResponse{
+    _id?:string ,
+    access_token:string ,
+    refresh_token:string 
 }
-
-export interface AuthRequest{
+export type AuthResponseType=GenerateType<AuthResponse>
+export interface AuthRequestProp{
     password:string ,
     email:string ,
     username?:string 
-}
-export interface RegisterResponse{
-
 }
