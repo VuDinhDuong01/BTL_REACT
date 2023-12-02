@@ -1,6 +1,6 @@
 
-export const Path={
-    login:'/login',
-    register:'/register',
-    home:'/'
+export const PAGE={
+    LOGIN:'/login',
+    REGISTER:'/register',
+    HOME:'/'
 } as const 

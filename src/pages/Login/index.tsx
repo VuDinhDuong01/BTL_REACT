@@ -12,7 +12,7 @@ import ControllerInput from "../../components/controller-form/controller-input"
 export const Login = () => {
 
   const { t } = useTranslation();
-  const loginSchema=AuthSchema.omit({username:true})
+  const loginSchema=AuthSchema.omit({name:true})
 
   const { handleSubmit, formState: { errors }, control } = useForm<Omit<AuthSchemaType, 'username'>>({
     defaultValues: {
