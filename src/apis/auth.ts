@@ -8,7 +8,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
   endpoints: build => ({
     login: build.mutation<AuthResponseType, AuthRequestProp>({
       query: (data) => ({
-        url: URL_API.REGISTER,
+        url: URL_API.LOGIN,
         method: METHOD_API.POST,
         data,
       }),
@@ -21,7 +21,15 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data,
       }),
     }),
+    verifyEmail: build.mutation<{message:string }, {code:string }>({
+      query: (data) => ({
+        url: URL_API.VERIFY_EMAIL,
+        method: METHOD_API.POST,
+        data,
+        
+      }),
+    }),
   })
 })
 
-export const { useLoginMutation, useRegisterMutation } = authAPI
+export const { useLoginMutation, useRegisterMutation, useVerifyEmailMutation } = authAPI

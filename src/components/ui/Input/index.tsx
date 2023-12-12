@@ -16,12 +16,12 @@ const Input = forwardRef<HTMLInputElement, ComponentPropsWithoutRef<'input'>>(
         <input
           type={eye ? 'text' : type}
           className={
-            "h-[35px]  rounded-md  px-[5px] !text-[15px] outline-none   " +
+            "!h-[40px]  rounded-[6px] outline-none !border-b-2 !border-blue-500 indent-2 font-fontFamily text-[14px]   " +
             className
           }
           placeholder={props.placeholder}
-           {...props}
-           ref={ref}
+          {...props}
+          ref={ref}
         />
         {type === "password" && checkEye}
       </div>

@@ -13,6 +13,10 @@
     "register":{
         "username":"Username",
         "enterUsername":"Enter username",
-        "register":"Register"
+        "register":"Register",
+        "enterCode":"Enter the code",
+        "verifyCode1":"Verification code has been sent to your Email",
+        "verifyCode2":"Please enter the correct code in the box below",
+        "verify":"Verify"
     }
 }

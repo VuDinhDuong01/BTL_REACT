@@ -10,3 +10,7 @@ export interface AuthRequestProp{
     email:string ,
     username?:string 
 }
+export type HandleDiaLog = {
+    openDiaLog:()=>void,
+    closeDiaLog:()=>void;
+};

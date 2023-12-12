@@ -13,6 +13,10 @@
     "register":{
         "username":"Họ tên",
         "enterUsername":"Nhập họ tên",
-        "register":"Đăng ký"
+        "register":"Đăng ký",
+        "enterCode":"Nhập mã code",
+        "verifyCode1":"Mã xác thực đã giửi về Email của bạn",
+        "verifyCode2":"Vui lòng nhập chính xác mã vào ô bên dưới",
+        "verify":"Xác thực"
     }
 }
