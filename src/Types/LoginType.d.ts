@@ -3,6 +3,7 @@ interface AuthResponse{
     _id?:string ,
     access_token:string ,
     refresh_token:string 
+    role:string 
 }
 export type AuthResponseType=GenerateType<AuthResponse>
 export interface AuthRequestProp{
@@ -12,5 +13,16 @@ export interface AuthRequestProp{
 }
 export type HandleDiaLog = {
     openDiaLog:()=>void,
-    closeDiaLog:()=>void;
+    // closeDiaLog:()=>void;
 };
+
+
+export interface ErrorHanle {
+    status:number,
+    data:{
+      message: string,
+      error: {
+        [key: string]: string 
+      }
+    }
+  }

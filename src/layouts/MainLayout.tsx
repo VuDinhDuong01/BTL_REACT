@@ -1,19 +1,19 @@
-import {useEffect, type ReactNode} from 'react'
+
 
 import { Header } from "../components/Header/Header"
 import { Footer } from "../components/Footer/Footer"
 
-export const MainLayout = ({title,children}:{title:string, children:ReactNode}) => {
+import { Outlet } from 'react-router-dom'
+export const MainLayout = () => {
 
-    useEffect(()=>{
-        document.title=title
-    },[title])
 
   return (
     <>
-        <Header />
-        <div>{children}</div>
-        <Footer />
+      <Header />
+      <div>
+        <Outlet />
+      </div>
+      <Footer />
     </>
   )
 }

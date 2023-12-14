@@ -1,17 +1,23 @@
-import { createContext, useState, type ReactNode } from 'react'
+import { createContext, useState, type ReactNode, type SetStateAction } from 'react'
+import { getAccessTokenToLS } from '../helps'
 
 interface ContextProp {
-    auth: boolean,
-    setAuth: React.Dispatch<React.SetStateAction<boolean>>
+    auth: AuthType,
+    setAuth: React.Dispatch<SetStateAction<AuthType>>
+}
+
+interface AuthType {
+    role?: string,
+    auth: boolean
 }
 
 const init = {
-    auth: false,
+    auth: { role: '', auth: Boolean(getAccessTokenToLS()) },
     setAuth: () => null
 }
-const ContextAPI = createContext<ContextProp>(init)
+export const ContextAPI = createContext<ContextProp>(init)
 
 export const ProviderContext = ({ children }: { children: ReactNode }) => {
-    const [auth, setAuth] = useState<boolean>(false)
+    const [auth, setAuth] = useState<AuthType>(Object)
     return <ContextAPI.Provider value={{ auth, setAuth }}>{children}</ContextAPI.Provider>
 }

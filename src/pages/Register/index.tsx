@@ -2,8 +2,8 @@
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
-import { ChangeEvent, useState } from 'react';
-import {useRef} from 'react'
+import { type ChangeEvent, useState, useEffect, useRef } from 'react';
+
 
 import { Button } from "../../components/ui/Button"
 import AuthSchema, { type AuthSchemaType } from "../../components/schema/LoginSchema"
@@ -15,24 +15,28 @@ import ControllerInput from "../../components/controller-form/controller-input"
 import { LANGUAGE, OPTION_LANGUAGE, keyLocalStorage, setAccessTokenToLS, setLanguageToLS, setRefreshTokenToLS } from "../../helps";
 import { regex } from '../../helps/regex';
 
-
-
 import { useRegisterMutation } from '../../apis';
 import { Loading } from '../../assets/icons/eye';
 import { FormDiaLog } from '../../components/ui/FormDiaLog';
-import { HandleDiaLog } from '../../Types/LoginType';
+import { ErrorHanle, HandleDiaLog } from '../../Types/LoginType';
+
+
+
+
 export const Register = () => {
- const  handleDiaLogEl = useRef<HandleDiaLog>(null);
- 
+  const handleDiaLogEl = useRef<HandleDiaLog>(null);
 
   const { t } = useTranslation();
   const [register, { isLoading }] = useRegisterMutation()
-  const { handleSubmit, formState: { errors }, control } = useForm<AuthSchemaType>({
+  const [isDisabled, setIsDisabled] = useState<boolean>(false)
+  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<AuthSchemaType>({
     defaultValues: {
       email: '',
       password: '',
       name: ''
     },
+    mode: 'onSubmit',
+    reValidateMode: 'onSubmit',
     resolver: zodResolver(AuthSchema),
   })
 
@@ -41,10 +45,12 @@ export const Register = () => {
       const res = await register(data).unwrap()
       setAccessTokenToLS(res.data.access_token)
       setRefreshTokenToLS(res.data.refresh_token)
-    
       handleDiaLogEl.current?.openDiaLog()
     } catch (error) {
-      console.log(error)
+      const e = error as ErrorHanle
+       for( const  key  in e.data.error){
+        setError(key as 'email' | 'password' | 'name' ,{message:e.data.error[key]})
+       }
     }
   })
 
@@ -57,14 +63,24 @@ export const Register = () => {
     e.target.value = e.target.value.replace(regex.blockSpace, '')
   }
 
+  useEffect(() => {
+    watch((value) => {
+      value.email && value.email.length > 0
+        && value.name && value.name.length > 0 &&
+        value.password && value.password.length > 0 ?
+        setIsDisabled(true) : setIsDisabled(false)
+    })
+  }, [watch])
+
+
   return (
     <div className='flex h-[100vh] w-[100%]  flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat'
       style={{
         backgroundImage: `url(${Images.background})`,
       }}>
-      
-        <FormDiaLog ref={handleDiaLogEl} placeholder={t('register.enterCode')} titleButton={t("register.verify")} title1={t('register.verifyCode1')} title2={t('register.verifyCode2')} />
-      
+
+      <FormDiaLog ref={handleDiaLogEl} placeholder={t('register.enterCode')} titleButton={t("register.verify")} title1={t('register.verifyCode1')} title2={t('register.verifyCode2')} />
+
       <div className=" absolute top-[20px] right-[30px]">
         <Select onValueChange={handleChangleLanguage}>
           <SelectTrigger className="w-[180px] cursor-pointer">
@@ -122,8 +138,9 @@ export const Register = () => {
             />
             {errors.password?.message && <span className="text-error w-full  j font-fontFamily text-[14px] mt-[3px]">{t(errors.password.message)}</span>}
           </div>
-          <Button size='lg' className="text-[17.5px] font-[700] font-fontFamily cursor-pointer text-white  uppercase items-center justify-center bg-green1 rounded-[6px] min-w-[350px] border-none flex m-auto mt-[30px]">
-           
+          <Button size='lg' className={`text-[17.5px] font-[700] font-fontFamily  text-white  uppercase items-center justify-center  rounded-[6px] min-w-[350px] border-none flex m-auto mt-[30px]  
+          ${isDisabled ? 'bg-green1 cursor-pointer' : '!cursor-not-allowed bg-green1 opacity-[0.3]'}`}
+            disabled={!isDisabled} >
             {
               isLoading ? <Loading /> : t("register.register")
             }

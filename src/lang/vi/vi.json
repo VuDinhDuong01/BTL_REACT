@@ -8,7 +8,8 @@
         "login":"đăng nhập",
         "fieldNotEmpty":"Trường này không được để trống",
         "wrongFormat":"bạn nhập sai định dạng",
-        "maximumNumberCharaters":"Số ký tự tối đa cho phép là 25 ký tự"
+        "maximumNumberCharaters":"Số ký tự tối đa cho phép là 25 ký tự",
+        "minximumNumberCharaters":"Bạn phải nhập ít nhất 6 ký tự"
     },
     "register":{
         "username":"Họ tên",

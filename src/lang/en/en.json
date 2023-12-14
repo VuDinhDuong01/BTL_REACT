@@ -8,7 +8,8 @@
         "login":"login",
         "fieldNotEmpty":"This field cannot be left blank",
         "wrongFormat":"You entered the wrong format",
-        "maximumNumberCharaters":"The maximum number of characters allowed is 25 characters"
+        "maximumNumberCharaters":"The maximum number of characters allowed is 25 characters",
+        "minximumNumberCharaters":"The minximum number of characters allowed is 6 characters"
     },
     "register":{
         "username":"Username",

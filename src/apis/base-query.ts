@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
-import { getAccessTokenToLS, setAccessTokenToLS, setRefreshTokenToLS } from '../helps';
+import { getAccessTokenToLS, removeLS, setAccessTokenToLS, setRefreshTokenToLS } from '../helps';
 import { URL_API } from '../contants';
 
 let accessToken: string = ''
@@ -24,11 +24,15 @@ instance.interceptors.request.use(function (config) {
 });
 
 instance.interceptors.response.use(function (response) {
-    if (response.config.url === URL_API.LOGIN || response.config.url === URL_API.REGISTER) {
+    if (response.config.url === URL_API.LOGIN) {
         accessToken = response.data.data.access_token
         refreshToken = response.data.data.refresh_token
         setAccessTokenToLS(accessToken)
         setRefreshTokenToLS(refreshToken)
+    }else if(response.config.url=== URL_API.LOGOUT_OUT){
+        accessToken = ''
+        refreshToken = ''
+        removeLS()
     }
     return response;
 }, function (error) {

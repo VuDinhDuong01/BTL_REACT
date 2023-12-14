@@ -1,20 +1,27 @@
-
+import { useNavigate } from 'react-router-dom';
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
+import { useEffect, useState, useContext } from 'react';
 
 import { Button } from "../../components/ui/Button"
 import AuthSchema, { type AuthSchemaType } from "../../components/schema/LoginSchema"
 import { Images } from "../../assets/images"
 import ControllerInput from "../../components/controller-form/controller-input"
-
+import { useLoginMutation } from '../../apis';
+import { ContextAPI } from '../../hooks';
+import { ErrorHanle } from '../../Types/LoginType';
+import { Loading } from '../../assets/icons/eye';
+import { PAGE } from '../../contants';
 
 export const Login = () => {
-
+  const { setAuth } = useContext(ContextAPI)
   const { t } = useTranslation();
-  const loginSchema=AuthSchema.omit({name:true})
-
-  const { handleSubmit, formState: { errors }, control } = useForm<Omit<AuthSchemaType, 'username'>>({
+  const loginSchema = AuthSchema.omit({ name: true })
+  const [isDisable, setIsDisable] = useState<boolean>(false)
+  const navigate = useNavigate()
+  const [Login, { isLoading }] = useLoginMutation()
+  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'username'>>({
     defaultValues: {
       email: '',
       password: '',
@@ -22,9 +29,29 @@ export const Login = () => {
     resolver: zodResolver(loginSchema),
   })
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      console.log(data)
+      const res = await Login(data).unwrap()
+      setAuth({
+        role: res.data.role,
+        auth: true
+      })
+      navigate(PAGE.HOME)
+    } catch (error) {
+      const e = error as ErrorHanle
+      
+       for( const  key  in e.data.error){
+        setError(key as 'email' | 'password' ,{message:e.data.error[key]})
+       }
+    }
   })
+
+  useEffect(() => {
+    watch((value) => {
+      value.email && value.email.length > 0 && value.password && value.password.length ? setIsDisable(true) : setIsDisable(false)
+    })
+  }, [watch])
 
 
   return (
@@ -33,7 +60,7 @@ export const Login = () => {
         backgroundImage: `url(${Images.background})`,
       }}>
       <div>
-        <form className="px-[30px] z-[99999999] w-[350px] min-h-[530px] rounded-[20px] bg-white blur-[100px] flex flex-col justify-center "
+        <form className="px-[30px] z-[99999999] min-w-[350px] min-h-[530px] rounded-[20px] bg-white blur-[100px] flex flex-col justify-center "
           style={{ boxShadow: '0px 4px 20px 0px rgba(0, 0, 0, 0.15)' }}
           onSubmit={onSubmit}
         >
@@ -67,8 +94,9 @@ export const Login = () => {
             <button type="button" className="border-none bg-transparent text-[14px] font-[500] text-green1">{t("login.support")}</button>
             <button type="button" className="border-none cursor-pointer bg-transparent text-[14px] font-[500] text-green1">{t("login.resetPassword")}</button>
           </div>
-          <Button size='lg' className="text-[17.5px] font-fontFamily cursor-pointer text-white font-[500] uppercase items-center justify-center bg-green1 rounded-[6px] min-w-[350px] border-none flex m-auto mt-[30px]">
-            {t("login.login")}
+          <Button size='lg' className={`text-[17.5px] font-fontFamily cursor-pointer text-white font-[500] uppercase items-center justify-center bg-green1 rounded-[6px] min-w-[350px] border-none flex m-auto mt-[30px] ${isDisable ? ' cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`} disabled={!isDisable}>
+            {isLoading ? <Loading /> : t("login.login")}
+
           </Button>
         </form>
       </div>
