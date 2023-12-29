@@ -12,26 +12,25 @@ import { useVerifyEmailMutation } from '../../../apis'
 import { Loading } from '../../../assets/icons/eye'
 import { PAGE } from '../../../contants'
 import { Delete } from 'lucide-react'
-
 interface FormDiaLogProp {
     placeholder?: string,
     title1?: string,
     title2?: string
     titleButton?: string
+   
 }
 
 export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton }, ref) => {
     const [openDiaLog, setOpenDiaLog] = useState<boolean>(false)
     const [disableButton, setDisableButton] = useState<boolean>(false)
+    
     const navigate = useNavigate()
     const handleOpenDiaLog = () => {
         setOpenDiaLog(true)
     }
 
-
     useImperativeHandle(ref, () => ({
         openDiaLog: handleOpenDiaLog
-        
     }));
 
     const { register, handleSubmit, formState: { errors }, setError, watch } = useForm({
@@ -43,9 +42,8 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
     const [verifyEmail, { isLoading: loadingVerifyEmail }] = useVerifyEmailMutation()
     const handleSendCode = handleSubmit(async (data) => {
         try {
-            console.log(data)
             await verifyEmail(data).unwrap()
-              navigate(PAGE.LOGIN)
+            navigate(PAGE.LOGIN)
         } catch (error: any) {
             setError('code', { message: error.data.error.email_verify_token })
         }
@@ -56,7 +54,7 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
             e.preventDefault()
         }
     }
-    const handleDeleteDialog=()=>{
+    const handleDeleteDialog = () => {
         setOpenDiaLog(false)
     }
 
@@ -66,11 +64,10 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
         })
     }, [watch])
 
-    
+
     return openDiaLog && <Dialog open={openDiaLog}>
         <DialogOverlay />
         <div className='z-[999] w-full h-full flex fixed inset-0 items-center m-auto justify-center'>
-
             <form className='w-[390px] bg-white rounded-[6px] flex flex-col items-center justify-center h-[250px] relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={handleSendCode}>
                 <Delete className='cursor-pointer absolute top-[5px] right-[5px]' onClick={handleDeleteDialog} />
                 <DialogHeader className='w-full flex items-center justify-center mb-[20px]'>
@@ -85,16 +82,13 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
                         className=" w-[300px]"
                         {...register("code")}
                         onKeyPress={(e) => handleBlockSpace(e)}
-
                     />
                     {errors.code && <p className='text-error text-[14px] font-fontFamily mt-[5px]'>{errors.code.message}</p>}
                 </div>
-
                 <DialogFooter>
                     {
                         <Button className={`font-fontFamily text-[17px] uppercase  font-[700]  text-white w-[300px] h-[45px] bg-green1 ${disableButton ? 'cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`} disabled={!disableButton}>{loadingVerifyEmail ? <Loading /> : titleButton}</Button>
                     }
-
                 </DialogFooter>
             </form>
         </div>

@@ -2,12 +2,16 @@
 import { Routes, Route } from "react-router-dom";
 
 import { PAGE } from '../contants/path'
-import { Register } from '../pages/Register'
-import { Login } from '../pages/Login'
+import { Register } from '../pages/auth/register'
+
+import { Login } from '../pages/auth/login'
 import { Home } from '../pages/Home'
 import { MainLayout } from '../layouts/MainLayout'
 import { RequestRole } from "../helps/RequestRole";
 import { ROLE } from "../helps/roles";
+import { ConfirmPassword } from "../pages/auth/confirm-email";
+import { ConfirmCode } from "../pages/auth/confirm-code";
+import { ResetPassword } from "../pages/auth/reset-password";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
@@ -25,6 +29,9 @@ export const route = () => {
         <Routes>
             <Route path={PAGE.LOGIN} element={<Login />} />
             <Route path={PAGE.REGISTER} element={<Register />} />
+            <Route path={PAGE.CONFIRM_PASSWORD} element={<ConfirmPassword />} />
+            <Route path={PAGE.CONFIRM_CODE} element={<ConfirmCode />} />
+            <Route path={PAGE.RESET_PASSWORD} element={<ResetPassword />} />
             <Route path={PAGE.HOME} element={<MainLayout />}>
                 <Route element={<RequestRole allowRoles={[ROLE.USER]} />} >
                     <Route path={PAGE.HOME} element={<Home />} />

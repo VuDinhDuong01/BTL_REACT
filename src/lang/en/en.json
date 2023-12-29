@@ -9,7 +9,8 @@
         "fieldNotEmpty":"This field cannot be left blank",
         "wrongFormat":"You entered the wrong format",
         "maximumNumberCharaters":"The maximum number of characters allowed is 25 characters",
-        "minximumNumberCharaters":"The minximum number of characters allowed is 6 characters"
+        "minximumNumberCharaters":"The minximum number of characters allowed is 6 characters",
+        "continue":"Continue"
     },
     "register":{
         "username":"Username",

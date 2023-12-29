@@ -10,6 +10,7 @@ export interface AuthRequestProp{
     password:string ,
     email:string ,
     username?:string 
+    
 }
 export type HandleDiaLog = {
     openDiaLog:()=>void,
@@ -17,7 +18,7 @@ export type HandleDiaLog = {
 };
 
 
-export interface ErrorHanle {
+export interface ErrorHandle {
     status:number,
     data:{
       message: string,

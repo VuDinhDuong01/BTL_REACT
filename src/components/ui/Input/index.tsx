@@ -9,7 +9,7 @@ const Input = forwardRef<HTMLInputElement, ComponentPropsWithoutRef<'input'>>(
       setEye(!eye)
     }, [eye])
 
-    const classNameEye = 'w-5 h-5 absolute top-[25%] right-[7px] cursor-pointer  translate-y-[-50%]'
+    const classNameEye = 'w-5 h-5 absolute top-[25%] right-[15px] cursor-pointer  translate-y-[-50%]'
     const checkEye = eye ? <EyeIcon className={classNameEye} onClick={handleChangeEye} /> : <EyeStash className={classNameEye} onClick={handleChangeEye} />
     return (
       <div className={className + " relative"}>

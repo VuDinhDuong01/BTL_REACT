@@ -24,7 +24,7 @@ const ControllerInput = forwardRef<Ref<HTMLInputElement>, ControlerInputProp>(({
         control={control}
         render={({ field }) => (
             <div className='flex flex-col'>
-                <Label className={classNameLabel as string + " !text-[17px] mb-[2px] font-fontFamily cursor-pointer"} htmlFor={id} >{label}{required && <span className='text-[red]'>*</span>}</Label>
+                <Label className={classNameLabel as string + " !text-[15px] mb-[2px] font-fontFamily cursor-pointer"} htmlFor={id} >{label}{required && <span className='text-[red]'>*</span>}</Label>
                 <Input id={id} placeholder={placeholder}
                     {...field}
                     type={type}
