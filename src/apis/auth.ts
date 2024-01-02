@@ -4,6 +4,7 @@ import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 
+ const {REGISTER,LOGIN,VERIFY_EMAIL,CONFIRM_EMAIL,CONFIRM_CODE,RESET_PASSWORD,REFRESH_TOKEN} =  URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -19,7 +20,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
   endpoints: build => ({
     login: build.mutation<AuthResponseType, AuthRequestProp>({
       query: (data) => ({
-        url: URL_API.LOGIN,
+        url: LOGIN,
         method: METHOD_API.POST,
         data,
       }),
@@ -27,14 +28,14 @@ export const authAPI = baseCreateApi.injectEndpoints({
 
     register: build.mutation<AuthResponseType, AuthRequestProp>({
       query: (data) => ({
-        url: URL_API.REGISTER,
+        url: REGISTER,
         method: METHOD_API.POST,
         data,
       }),
     }),
     verifyEmail: build.mutation<{ message: string }, { code: string }>({
       query: (data) => ({
-        url: URL_API.VERIFY_EMAIL,
+        url: VERIFY_EMAIL,
         method: METHOD_API.POST,
         data,
 
@@ -42,27 +43,34 @@ export const authAPI = baseCreateApi.injectEndpoints({
     }),
     confirmEmail: build.mutation<{ message: string, data: { _id: string } }, { email: string }>({
       query: (data) => ({
-        url: URL_API.CONFIRM_EMAIL,
+        url: CONFIRM_EMAIL,
         method: METHOD_API.POST,
         data,
       }),
     }),
     confirmCode: build.mutation<{ message: string, data: { _id: string } }, ConfirmCodeMutation>({
       query: ({ user_id, forgot_password_token }) => ({
-        url: `${URL_API.CONFIRM_CODE}/${user_id}`,
+        url: `${CONFIRM_CODE}/${user_id}`,
         method: METHOD_API.POST,
         data: { forgot_password_token },
       }),
     }),
     resetPassword: build.mutation<{ message?: string, data?: { id: string } }, ResetPasswordMutation>({
       query: ({ user_id, password, confirm_password }) => ({
-        url: `${URL_API.RESET_PASSWORD}/${user_id}`,
+        url: `${RESET_PASSWORD}/${user_id}`,
         method: METHOD_API.POST,
         data: { password, confirm_password },
+      }),
+    }),
+    refreshToken: build.mutation<{ message?: string, data?: { refresh_token: string , access_token:string } }, {refresh_token:string }>({
+      query: (data) => ({
+        url:REFRESH_TOKEN ,
+        method: METHOD_API.POST,
+        data
       }),
     }),
 
   })
 })
 
-export const { useLoginMutation, useRegisterMutation, useVerifyEmailMutation, useConfirmEmailMutation, useConfirmCodeMutation, useResetPasswordMutation } = authAPI
+export const { useLoginMutation, useRegisterMutation, useVerifyEmailMutation, useConfirmEmailMutation, useConfirmCodeMutation, useResetPasswordMutation , useRefreshTokenMutation} = authAPI

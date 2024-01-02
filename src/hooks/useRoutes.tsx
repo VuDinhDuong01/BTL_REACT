@@ -27,8 +27,8 @@ export const route = () => {
 
     return (
         <Routes>
-            <Route path={PAGE.LOGIN} element={<Login />} />
             <Route path={PAGE.REGISTER} element={<Register />} />
+            <Route path={PAGE.LOGIN} element={<Login />} />
             <Route path={PAGE.CONFIRM_PASSWORD} element={<ConfirmPassword />} />
             <Route path={PAGE.CONFIRM_CODE} element={<ConfirmCode />} />
             <Route path={PAGE.RESET_PASSWORD} element={<ResetPassword />} />

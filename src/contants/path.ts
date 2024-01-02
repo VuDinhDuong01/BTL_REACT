@@ -5,5 +5,6 @@ export const PAGE={
     HOME:'/',
     CONFIRM_PASSWORD:'/confirm-password',
     CONFIRM_CODE:'/confirm-code/:user_id',
-    RESET_PASSWORD:'/reset-password/:user_id'
+    RESET_PASSWORD:'/reset-password/:user_id',
+    NOTIFICATIONS:'/notifications',
 } as const 

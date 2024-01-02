@@ -5,5 +5,6 @@ export const URL_API = {
     LOGOUT_OUT:'logout',
     CONFIRM_EMAIL:'forgot_password',
     CONFIRM_CODE:'forgot_password',
-    RESET_PASSWORD:'reset_password'
+    RESET_PASSWORD:'reset_password',
+    REFRESH_TOKEN:'refresh_token'
 } as const 
