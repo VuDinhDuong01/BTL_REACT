@@ -12,6 +12,7 @@ import { ROLE } from "../helps/roles";
 import { ConfirmPassword } from "../pages/auth/confirm-email";
 import { ConfirmCode } from "../pages/auth/confirm-code";
 import { ResetPassword } from "../pages/auth/reset-password";
+import { Personal } from "../pages/auth/personal";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
@@ -32,10 +33,13 @@ export const route = () => {
             <Route path={PAGE.CONFIRM_PASSWORD} element={<ConfirmPassword />} />
             <Route path={PAGE.CONFIRM_CODE} element={<ConfirmCode />} />
             <Route path={PAGE.RESET_PASSWORD} element={<ResetPassword />} />
+
             <Route path={PAGE.HOME} element={<MainLayout />}>
                 <Route element={<RequestRole allowRoles={[ROLE.USER]} />} >
                     <Route path={PAGE.HOME} element={<Home />} />
+                    <Route path={PAGE.PERSONAL} element={<Personal />} />
                 </Route>
+                
             </Route>
         </Routes>
     )

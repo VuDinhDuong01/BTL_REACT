@@ -8,7 +8,7 @@ export const MainLayout = () => {
       <div className="w-[250px] fixed  border-rose-600  border-r-4 ">
         <SidebarLeft />
       </div>
-      <div className="flex-1 bg-[red] ml-[250px]">
+      <div className="flex-1  ml-[250px]">
         <Outlet />
       </div>
       <div className="w-[370px] bg-[blue]">

@@ -50,10 +50,11 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
     })
 
     const handleBlockSpace = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === ' ' || !regex.checkNumber.test(e.key)) {
+        if (e.key === '' || !regex.checkNumber.test(e.key)) {
             e.preventDefault()
         }
     }
+
     const handleDeleteDialog = () => {
         setOpenDiaLog(false)
     }

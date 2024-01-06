@@ -11,3 +11,11 @@
     box-sizing:border-box; 
 }
 
+
+@layer components {
+  .borderTailwindcss {
+    @apply border-[5px] border-[red];
+  }
+  
+}
+

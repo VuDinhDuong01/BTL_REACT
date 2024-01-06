@@ -32,7 +32,7 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">Communities</p>
         </NavLink>
-        <NavLink to='/h' className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+        <NavLink to={PAGE.PERSONAL} className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">
             <UserIcon className="text-black" />
           </div>
@@ -44,7 +44,7 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Messages</p>
         </NavLink>
-        <Button className="bg-[#1B90DF]  w-full cursor-pointer text-white py-[15px] rounded-[50px] font-fontFamily font-[700] text-[21px] mt-[20px] ">Post</Button>
+        <Button className="bg-[#1B90DF]  w-full cursor-pointer text-white py-[15px] rounded-[50px] font-fontFamily font-[700] !text-[18px] mt-[20px] ">Post</Button>
       </div>
       <div className="flex items-center cursor-pointer fixed bottom-[10px]  w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" >
         <img src={Images.logo} alt="user" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
