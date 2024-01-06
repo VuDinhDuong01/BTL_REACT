@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 
 import { Button } from "../../../components/ui/Button"
-import AuthSchema, { type AuthSchemaType } from "../../../components/schema/LoginSchema"
+import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useConfirmEmailMutation } from '../../../apis';
@@ -16,11 +16,11 @@ import { PAGE } from '../../../contants';
 
 export const ConfirmPassword = () => {
     const { t } = useTranslation();
-    const loginSchema = AuthSchema.omit({ name: true, password: true ,forgot_password_token:true,confirm_password:true})
+    const loginSchema = AuthSchema.omit({ name: true, password: true, forgot_password_token: true, confirm_password: true })
     const [isDisable, setIsDisable] = useState<boolean>(false)
     const navigate = useNavigate()
     const [ConfirmPassword, { isLoading }] = useConfirmEmailMutation()
-    const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'name' | 'password' | 'forgot_password_token'|'confirm_password'>>({
+    const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'name' | 'password' | 'forgot_password_token' | 'confirm_password'>>({
         defaultValues: {
             email: ''
         },

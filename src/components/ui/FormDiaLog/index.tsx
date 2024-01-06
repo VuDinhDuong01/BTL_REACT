@@ -21,6 +21,7 @@ interface FormDiaLogProp {
 }
 
 export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton }, ref) => {
+    
     const [openDiaLog, setOpenDiaLog] = useState<boolean>(false)
     const [disableButton, setDisableButton] = useState<boolean>(false)
     

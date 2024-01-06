@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState, useContext } from 'react';
 
 import { Button } from "../../../components/ui/Button"
-import AuthSchema, { type AuthSchemaType } from "../../../components/schema/LoginSchema"
+import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useLoginMutation } from '../../../apis';
@@ -20,11 +20,11 @@ export const Login = () => {
 
   const { setAuth } = useContext(ContextAPI)
   const { t } = useTranslation();
-  const loginSchema = AuthSchema.omit({ name: true ,confirm_password:true, forgot_password_token: true})
+  const loginSchema = AuthSchema.omit({ name: true, confirm_password: true, forgot_password_token: true })
   const [isDisable, setIsDisable] = useState<boolean>(false)
   const navigate = useNavigate()
   const [Login, { isLoading }] = useLoginMutation()
-  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'username' | 'confirm_password'|'forgot_password_token'>>({
+  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'username' | 'confirm_password' | 'forgot_password_token'>>({
     defaultValues: {
       email: '',
       password: '',
@@ -36,7 +36,7 @@ export const Login = () => {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-   
+
       const res = await Login(data).unwrap()
       setAuth({
         role: res.data.role,
@@ -51,9 +51,9 @@ export const Login = () => {
       }
     }
   })
- const handleNavigateConfirmEmail=()=>{
-   navigate(PAGE.CONFIRM_PASSWORD)
- }
+  const handleNavigateConfirmEmail = () => {
+    navigate(PAGE.CONFIRM_PASSWORD)
+  }
 
   useEffect(() => {
     watch((value) => {
@@ -101,7 +101,7 @@ export const Login = () => {
             {errors.password?.message && <span className="text-error w-full  j font-fontFamily text-[14px] mt-[3px]">{t(errors.password.message)}</span>}
           </div>
           <div className='flex justify-between mt-[10px]'>
-            <button type="button"  className="border-none bg-transparent text-[14px] font-[500] text-green1">{t("login.support")}</button>
+            <button type="button" className="border-none bg-transparent text-[14px] font-[500] text-green1">{t("login.support")}</button>
             <button type="button" onClick={handleNavigateConfirmEmail} className="border-none cursor-pointer bg-transparent text-[14px] font-[500] text-green1">{t("login.resetPassword")}</button>
           </div>
           <Button size='lg' className={`text-[17.5px] font-fontFamily cursor-pointer text-white font-[500] uppercase items-center justify-center bg-green1 rounded-[6px] min-w-[350px] border-none flex m-auto mt-[30px] ${isDisable ? ' cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`} disabled={!isDisable}>

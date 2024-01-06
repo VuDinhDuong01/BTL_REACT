@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 
 import { Button } from "../../../components/ui/Button"
-import AuthSchema, { type AuthSchemaType } from "../../../components/schema/LoginSchema"
+import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useResetPasswordMutation } from '../../../apis';

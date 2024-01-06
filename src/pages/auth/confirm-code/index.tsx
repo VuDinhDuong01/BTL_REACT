@@ -1,11 +1,11 @@
-import { useNavigate, generatePath, useParams,Link } from 'react-router-dom';
+import { useNavigate, generatePath, useParams, Link } from 'react-router-dom';
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 
 import { Button } from "../../../components/ui/Button"
-import AuthSchema, { type AuthSchemaType } from "../../../components/schema/LoginSchema"
+import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useConfirmCodeMutation } from '../../../apis';
@@ -18,12 +18,12 @@ export const ConfirmCode = () => {
     const { user_id } = params
     console.log(user_id)
     const { t } = useTranslation();
-    const loginSchema = AuthSchema.omit({ name: true, password: true, email: true ,confirm_password: true})
+    const loginSchema = AuthSchema.omit({ name: true, password: true, email: true, confirm_password: true })
     const [isDisable, setIsDisable] = useState<boolean>(false)
     const navigate = useNavigate()
     const [ConfirmCode, { isLoading }] = useConfirmCodeMutation()
 
-    const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'name' | 'email' | 'password'|'confirm_password'>>({
+    const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'name' | 'email' | 'password' | 'confirm_password'>>({
         defaultValues: {
             forgot_password_token: ''
         },
@@ -78,7 +78,7 @@ export const ConfirmCode = () => {
                         {isLoading ? <Loading /> : t("register.verify")}
                     </Button>
                     <div className='flex justify-between mt-[10px]'>
-                        <Link to={PAGE.LOGIN}  className=" w-full flex items-center justify-center mb-[30px] border-none uppercase bg-transparent text-[15px]  text-green1 font-[700] cursor-pointer font-fontFamily mt-[20px]" onClick={() => navigate(PAGE.LOGIN)}>Quay lại đăng nhập</Link>
+                        <Link to={PAGE.LOGIN} className=" w-full flex items-center justify-center mb-[30px] border-none uppercase bg-transparent text-[15px]  text-green1 font-[700] cursor-pointer font-fontFamily mt-[20px]" onClick={() => navigate(PAGE.LOGIN)}>Quay lại đăng nhập</Link>
                     </div>
                 </form>
             </div>
