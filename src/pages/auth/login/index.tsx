@@ -10,7 +10,7 @@ import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useLoginMutation } from '../../../apis';
 import { ContextAPI } from '../../../hooks';
-import { ErrorHandle } from '../../../Types/LoginType';
+import { ErrorHandle } from '../../../Types/login';
 import { Loading } from '../../../assets/icons/eye';
 import { PAGE } from '../../../contants';
 

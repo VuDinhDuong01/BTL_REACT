@@ -4,10 +4,12 @@ import { CiCalendarDate } from "react-icons/ci"
 import { IoHomeOutline } from "react-icons/io5";
 import { IoMdClose } from "react-icons/io";
 import { IoMdCamera } from "react-icons/io";
+import { CgWebsite } from "react-icons/cg";
 export const  Icons={
     FaArrowLeftLong,
     FiMapPin,
     CiCalendarDate,
     IoHomeOutline,
-    IoMdClose,IoMdCamera
+    IoMdClose,IoMdCamera,
+    CgWebsite
 }

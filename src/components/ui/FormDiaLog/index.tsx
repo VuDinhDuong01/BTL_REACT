@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import { Dialog, DialogOverlay, DialogHeader, DialogFooter } from '../Dialog/index'
 import { Button } from '../Button'
 import { Input } from '../Input'
-import { HandleDiaLog } from '../../../Types/LoginType'
+import { HandleDiaLog } from '../../../Types/login'
 import { regex } from '../../../helps'
 import { useVerifyEmailMutation } from '../../../apis'
 import { Loading } from '../../../assets/icons/eye'
@@ -17,14 +17,14 @@ interface FormDiaLogProp {
     title1?: string,
     title2?: string
     titleButton?: string
-   
+
 }
 
 export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton }, ref) => {
-    
+
     const [openDiaLog, setOpenDiaLog] = useState<boolean>(false)
     const [disableButton, setDisableButton] = useState<boolean>(false)
-    
+
     const navigate = useNavigate()
     const handleOpenDiaLog = () => {
         setOpenDiaLog(true)

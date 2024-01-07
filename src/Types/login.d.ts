@@ -1,4 +1,4 @@
-import {type GenerateType} from './Generate.d'
+import {type GenerateType} from './generate'
 interface AuthResponse{
     _id?:string ,
     access_token:string ,
@@ -14,7 +14,6 @@ export interface AuthRequestProp{
 }
 export type HandleDiaLog = {
     openDiaLog:()=>void,
-    // closeDiaLog:()=>void;
 };
 
 

@@ -18,7 +18,7 @@ import { regex } from '../../../helps/regex';
 import { useRegisterMutation } from '../../../apis';
 import { Loading } from '../../../assets/icons/eye';
 import { FormDiaLog } from '../../../components/ui/FormDiaLog';
-import { ErrorHandle, HandleDiaLog } from '../../../Types/LoginType';
+import { ErrorHandle, HandleDiaLog } from '../../../Types/login';
 import { Link } from 'react-router-dom';
 import { PAGE } from '../../../contants';
 

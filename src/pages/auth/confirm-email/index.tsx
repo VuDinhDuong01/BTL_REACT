@@ -9,7 +9,7 @@ import AuthSchema, { type AuthSchemaType } from "../../../components/schema/logi
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useConfirmEmailMutation } from '../../../apis';
-import { ErrorHandle } from '../../../Types/LoginType';
+import { ErrorHandle } from '../../../Types/login';
 import { Loading } from '../../../assets/icons/eye';
 import { PAGE } from '../../../contants';
 

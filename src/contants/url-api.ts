@@ -6,5 +6,9 @@ export const URL_API = {
     CONFIRM_EMAIL:'forgot_password',
     CONFIRM_CODE:'forgot_password',
     RESET_PASSWORD:'reset_password',
-    REFRESH_TOKEN:'refresh_token'
+    REFRESH_TOKEN:'refresh_token',
+    LOGOUT:'logout',
+    GET_ME:'me',
+    UPDATE_ME:'update_me',
+    UPLOAD_IMAGE:'upload_image'
 } as const 

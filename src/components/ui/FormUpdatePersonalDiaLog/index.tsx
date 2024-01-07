@@ -13,25 +13,28 @@ import { CountChar } from '../../../helps/counterChar';
 import UpdateMeSchema, { UpdateMeSchemaType } from '../../schema/updateMe';
 import { Label } from '@radix-ui/react-label';
 import { ToastMessage } from '../../../helps/toastMessage';
+import { DEFAULT_IMAGE_AVATAR, DEFAULT_IMAGE_COVER_PHOTO } from '../../../helps/image-user-default';
+import { GetUserResponse } from '../../../Types/user';
+
 
 const MAX_CHAR = 255
 const MAX_SIZE_FILE = 300 * 1024
 const TYPE_FILE = ['image/png', 'image/jpg', 'image/svg']
-const DEFAULT_IMAGE_AVATAR = 'https://tse3.mm.bing.net/th?id=OIP.vCNr3UL_DV6WByU6q5bS9AHaHa&pid=Api&P=0&h=180'
+
 
 export type ShowPopupHandle = {
     showPopup: () => void;
 };
 
 interface PopupUpdateMeProps {
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    dataMe: GetUserResponse
 }
 
-export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>((prop, ref) => {
+export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ dataMe }, ref) => {
     const { t } = useTranslation()
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
     const inputRefAvatar = useRef<HTMLInputElement>(null)
-
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const [countCharName, setCountCharName] = useState<number>(0)
     const [countCharLocation, setCountCharLocation] = useState<number>(0)
@@ -41,14 +44,13 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>((pr
         cover_photo: '',
         avatar: ''
     })
-    console.log(fileImage)
-
     const { register, handleSubmit, control, formState: { errors } } = useForm<UpdateMeSchemaType>({
         defaultValues: {
-            username: '',
-            website: '',
-            bio: '',
-            location: ''
+            username: dataMe?.data.username ?? '',
+            website: dataMe?.data.website ?? '',
+            bio: dataMe?.data.bio ?? '',
+            location: dataMe?.data.location ?? '',
+            name: dataMe?.data.name ?? ''
         },
         resolver: zodResolver(UpdateMeSchema),
     })
@@ -71,7 +73,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>((pr
             inputRefCoverPhoto.current.click();
         }
     }
-    const handleShowFolderImageAvatar=()=>{
+    const handleShowFolderImageAvatar = () => {
         if (inputRefAvatar.current) {
             inputRefAvatar.current.click();
         }
@@ -101,23 +103,16 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>((pr
         return (
             <>
                 {
-                    Boolean(fileImage.cover_photo as string) ?
-                        <div className='w-[600px] relative '>
-                            <img className='w-full h-[190px]' src={fileImage.cover_photo} />
-                            <div className='w-full  items-center flex justify-center absolute inset-0 '>
-                                <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto}>
-                                    <input type='file' style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
-                                    <Icons.IoMdCamera size={20} />
-                                </div>
-                                <div>{Boolean(fileImage.cover_photo as string) && <div onClick={() => setFileImage(prev => ({ ...prev, cover_photo: '' }))} className='w-[50px] h-[50px] text-white rounded-[50%]  bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]'><Icons.IoMdClose size={20} /></div>}</div>
-                            </div>
-                        </div> :
-                        <div className='h-[190px] bg-[#B2B2B2]  z-10 flex items-center justify-center w-[100%]'>
-                            <div className='w-[70px] h-[70px] text-white rounded-[50%]  bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto}>
+                    <div className='w-[600px] relative '>
+                        <img className='w-full h-[190px]' src={Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : Boolean(fileImage.cover_photo as string) ? fileImage.cover_photo : DEFAULT_IMAGE_COVER_PHOTO} />
+                        <div className='w-full  items-center flex justify-center absolute inset-0'>
+                            <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto}>
                                 <input type='file' style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
-                                <Icons.IoMdCamera size={25} />
+                                <Icons.IoMdCamera size={20} />
                             </div>
+                            <div>{Boolean(fileImage.cover_photo as string) && <div onClick={() => setFileImage(prev => ({ ...prev, cover_photo: '' }))} className='w-[50px] h-[50px] text-white rounded-[50%]  bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]'><Icons.IoMdClose size={20} /></div>}</div>
                         </div>
+                    </div>
                 }
             </>
         )
@@ -144,7 +139,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>((pr
                                     }
                                     <div className='w-[100px] h-[100px] relative'>
                                         <img
-                                            src={Boolean(fileImage.avatar) ? fileImage.avatar : DEFAULT_IMAGE_AVATAR}
+                                            src={Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : Boolean(fileImage.avatar) ? fileImage.avatar : DEFAULT_IMAGE_AVATAR}
                                             className='w-full h-full mt-[-50px] ml-[20px] rounded-[50%] border-solid border-[2px] border-white'
                                         />
                                         <div className='absolute top-1/2 left-1/2' style={{ margin: '-67px 10px 0 0px' }} >
@@ -215,6 +210,18 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>((pr
                                         maxLength={255}
                                     />
                                     <CountChar error={t(errors?.website?.message as string)} maxChar={MAX_CHAR} countChar={countCharWebsite} />
+                                </div>
+                                <div className="mb-[20px]  w-[90%]  flex-col  flex  justify-center  m-auto  ">
+                                    <ControllerInput
+                                        {...register('name', { onChange: (e) => setCountCharWebsite(e.target.value.length) })}
+                                        name="name"
+                                        label='Tên gọi khác'
+                                        control={control as unknown as Control<FieldValues>}
+                                        className=" flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
+                                        placeholder='name'
+                                        maxLength={255}
+                                    />
+
                                 </div>
                             </div>
                         </Scrollbars>
