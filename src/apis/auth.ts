@@ -71,9 +71,10 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
     }),
     logout: build.mutation<GetLogoutResponse, { refresh_token: string }>({
-      query: () => ({
+      query: (data) => ({
         url: LOGOUT_OUT,
         method: METHOD_API.POST,
+        data
       }),
     }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

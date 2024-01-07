@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom"
+import { NavLink , useNavigate} from "react-router-dom"
 import { useState } from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
@@ -8,10 +8,25 @@ import { BellIcon, UserIcon } from "lucide-react"
 import { Images } from "../../assets/images"
 import { Button } from "../ui/Button"
 import { PAGE } from "../../contants"
+import { useLogoutMutation } from "../../apis";
+import { getRefreshTokenToLS } from "../../helps";
 
 export const SidebarLeft = () => {
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
-
+  const navigate= useNavigate()
+  const refresh_token = getRefreshTokenToLS() as string
+  const [logout] = useLogoutMutation()
+  
+  const handleLogout = async () => {
+    try {
+      await logout({ refresh_token }).unwrap()
+      navigate(PAGE.LOGIN)
+      setToggleLogout(!toggleLogout)
+      
+    } catch (error: unknown) {
+      console.log(error)
+    }
+  }
   return (
     <div className="w-full" >
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center">
@@ -57,7 +72,7 @@ export const SidebarLeft = () => {
         render={attrs => (
           <div>
             {
-              toggleLogout && <div onClick={() => setToggleLogout(!toggleLogout)} className="bg-white !cursor-pointer p-[20px]  rounded-[50px] text-black font-fontFamily text-[15px] font-[700] border-[2px] border-solid border-black3 shadow-sm"  {...attrs}>
+              toggleLogout && <div onClick={handleLogout} className="bg-white !cursor-pointer p-[20px]  rounded-[50px] text-black font-fontFamily text-[15px] font-[700] border-[2px] border-solid border-black3 shadow-sm"  {...attrs}>
                 Log out @Ngocduong00
               </div>
             }
