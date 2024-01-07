@@ -21,5 +21,10 @@
         "verifyCode1":"Mã xác thực đã giửi về Email của bạn",
         "verifyCode2":"Vui lòng nhập chính xác mã vào ô bên dưới",
         "verify":"Xác thực"
+    },
+    "updateMe":{
+        "worngFormatFile":"Tải File sai định dạng",
+        "wrongMaxSizeFile":"Tải File quá lớn",
+        "errorUploadFile":"Tải File bị lỗi"
     }
 }

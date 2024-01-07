@@ -9,16 +9,20 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { ProviderContext } from './hooks/useContext.tsx'
 import i18n from './i18n'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <I18nextProvider i18n={i18n}>
-    <ProviderContext>
-      <BrowserRouter>
-        <Provider store={store}>
+      <ToastContainer />
+      <ProviderContext>
+        <BrowserRouter>
+          <Provider store={store}>
+
             <App />
-        </Provider>
-      </BrowserRouter>
+          </Provider>
+        </BrowserRouter>
       </ProviderContext>
     </I18nextProvider>
   </React.StrictMode>,
