@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AuthRequestProp, AuthResponseType } from '../Types/login'
 import { GetLogoutResponse, GetUserResponse, UpdateMe } from '../Types/user'
@@ -9,6 +10,11 @@ const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL, CONFIRM_CODE, RESET_PASSWO
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
+}
+
+interface UploadImageResponse {
+  image: string,
+  type: number
 }
 
 interface ResetPasswordMutation {
@@ -77,12 +83,13 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data
       }),
     }),
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     getMe: build.query<GetUserResponse, any>({
       query: () => ({
         url: GET_ME,
         method: METHOD_API.GET,
       }),
+      providesTags: ['getMe']
     }),
     updateMe: build.mutation<GetUserResponse, UpdateMe>({
       query: (data) => ({
@@ -90,14 +97,15 @@ export const authAPI = baseCreateApi.injectEndpoints({
         method: METHOD_API.PATCH,
         data
       }),
+      invalidatesTags: ['getMe']
     }),
-    // uploadImage: build.mutation<>({
-    //   query: (data) => ({
-    //     url: UPLOAD_IMAGE,
-    //     method: METHOD_API.POST,
-    //     data
-    //   }),
-    // }),
+    uploadImage: build.mutation<UploadImageResponse[], FormData>({
+      query: (data) => ({
+        url: UPLOAD_IMAGE,
+        method: METHOD_API.POST,
+        data
+      }),
+    }),
   })
 })
 
@@ -108,9 +116,9 @@ export const { useLoginMutation,
   useConfirmCodeMutation,
   useResetPasswordMutation,
   useRefreshTokenMutation,
-  useGetMeQuery, 
+  useGetMeQuery,
   useLogoutMutation,
   useUpdateMeMutation,
-  // useUploadImageMutation 
+  useUploadImageMutation
 }
   = authAPI

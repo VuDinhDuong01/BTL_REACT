@@ -26,5 +26,8 @@
         "worngFormatFile":"Tải File sai định dạng",
         "wrongMaxSizeFile":"Tải File quá lớn",
         "errorUploadFile":"Tải File bị lỗi"
+    },
+    "logout":{
+        "logoutSuccess":"Bạn đã đăng xuất thành công"
     }
 }

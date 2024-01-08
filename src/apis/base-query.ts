@@ -3,16 +3,22 @@ import axios, { AxiosError } from 'axios';
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setRefreshTokenToLS } from '../helps';
 import { URL_API } from '../contants';
+import { ToastMessage } from '../helps/toastMessage';
 
 let accessToken: string = ''
 let refreshToken: string = ''
+let getToken: Promise<{ access_token: string, refresh_token: string }> | null = null
 const getRefreshToken = getRefreshTokenToLS()
-const handleRefreshToken = async (refresh_token: string) => {
+const handleRefreshToken = async () => {
     try {
         const res = await axios.post('http://localhost:3000/api/v1/refresh_token', {
-            refresh_token
+            refresh_token: getRefreshToken
         })
-        console.log(res)
+
+        const { access_token, refresh_token } = res.data.data
+        return {
+            access_token, refresh_token
+        }
     } catch (error) {
         console.log(error)
     }
@@ -46,9 +52,29 @@ instance.interceptors.response.use(function (response) {
     }
     return response;
 }, async function (error) {
-    console.log(error)
-    const res = await handleRefreshToken(getRefreshToken as string)
-    console.log(res)
+    const originalRequest = error.config;
+    if (error.response.status === 401 && error.response.data.message === "Tokens expire" && !originalRequest._retry) {
+        console.log(error)
+        originalRequest._retry = true;
+        return getToken !== null ? getToken : await handleRefreshToken().finally(() => {
+            setTimeout(()=>{
+                getToken = null
+            },1000)      
+        })
+            .then(res => {
+                accessToken = res?.access_token
+                refreshToken = res?.refresh_token
+                setAccessTokenToLS(res?.access_token)
+                setRefreshTokenToLS(res?.refresh_token)
+                instance.defaults.headers.common[
+                    "Authorization"
+                  ] = `Bearer ${res?.access_token}`;
+                  return instance(originalRequest)
+            })
+    } else {
+        ToastMessage({ message: "Lỗi", status: 'error' })
+    }
+
     return Promise.reject(error);
 });
 const axiosBaseQuery: BaseQueryFn = async ({ url, method, data, params, headers }) => {

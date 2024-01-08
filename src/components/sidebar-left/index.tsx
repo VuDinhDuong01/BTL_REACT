@@ -2,6 +2,7 @@ import { NavLink , useNavigate} from "react-router-dom"
 import { useState } from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
+import { useTranslation } from "react-i18next";
 
 import { CommunicationIcon, HomeIcon, Logo, MessageIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
@@ -10,17 +11,19 @@ import { Button } from "../ui/Button"
 import { PAGE } from "../../contants"
 import { useLogoutMutation } from "../../apis";
 import { getRefreshTokenToLS } from "../../helps";
+import { ToastMessage } from "../../helps/toastMessage";
 
 export const SidebarLeft = () => {
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
   const navigate= useNavigate()
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
-  
+  const {t} = useTranslation()
   const handleLogout = async () => {
     try {
       await logout({ refresh_token }).unwrap()
       navigate(PAGE.LOGIN)
+      ToastMessage({status:'success', message:t('logout.logoutSuccess')})
       setToggleLogout(!toggleLogout)
       
     } catch (error: unknown) {

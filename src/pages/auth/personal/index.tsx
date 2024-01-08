@@ -12,7 +12,7 @@ import { GetUserResponse } from "../../../Types/user"
 
 export const Personal = () => {
 
-    const { data: getMe } = useGetMeQuery(null)
+    const { data: getMe, isLoading } = useGetMeQuery(null)
     const showPopupUpdateMe = useRef<ShowPopupHandle>(null)
 
     const handleShowPopup = () => {
@@ -41,7 +41,10 @@ export const Personal = () => {
 
 
         <div className=" flex justify-end ">
-            <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
+            {
+                !isLoading && <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
+            }
+
             <Button className="!text-[16px] mr-[10px] !text-black2 !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid 
              !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] hover:bg-[#F7F9F9]" onClick={handleShowPopup}>Edit profile</Button>
         </div>
