@@ -29,5 +29,15 @@
     },
     "logout":{
         "logoutSuccess":"Bạn đã đăng xuất thành công"
+    },
+    "changePassword":{
+        "oldPassword":"Mật khẩu cũ",
+        "password":"Mật khẩu",
+        "newPassword":"Mật khẩu mới",
+        "confirm":"Xác nhận",
+        "notEmpty":"Không được bỏ trống",
+        "newPasswordNotCorrect":"Mật khẩu nhập lại không đúng",
+        "change_password":"Thay đổi mật khẩu",
+        "confirmPassword":"Xác nhận lại mật khẩu"
     }
 }

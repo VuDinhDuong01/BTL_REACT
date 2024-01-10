@@ -7,7 +7,7 @@ import { Register } from '../pages/auth/register'
 import { Login } from '../pages/auth/login'
 import { Home } from '../pages/Home'
 import { MainLayout } from '../layouts/MainLayout'
-import { RequestRole } from "../helps/RequestRole";
+import { RequestRole } from "../helps/request-role";
 import { ROLE } from "../helps/roles";
 import { ConfirmPassword } from "../pages/auth/confirm-email";
 import { ConfirmCode } from "../pages/auth/confirm-code";

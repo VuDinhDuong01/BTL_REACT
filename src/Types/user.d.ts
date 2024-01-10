@@ -21,6 +21,11 @@ export interface UpdateMe{
     website?:string 
     location?:string 
 }
+
+export interface changePasswordProps {
+    new_password:string ,
+    password:string 
+}
 export type  GetUserResponse= GenerateType<User>
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type GetLogoutResponse= GenerateType<{}>

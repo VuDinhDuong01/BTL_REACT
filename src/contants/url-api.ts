@@ -10,5 +10,6 @@ export const URL_API = {
     LOGOUT:'logout',
     GET_ME:'me',
     UPDATE_ME:'update_me',
-    UPLOAD_IMAGE:'upload_image'
+    UPLOAD_IMAGE:'upload_image',
+    CHANGE_PASSWORD:'change_password'
 } as const 

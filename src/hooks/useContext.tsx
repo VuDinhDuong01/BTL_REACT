@@ -2,8 +2,9 @@ import { createContext, useState, type ReactNode, type SetStateAction } from 're
 import { getAccessTokenToLS } from '../helps'
 
 interface ContextProp {
-    auth: AuthType,
-    setAuth: React.Dispatch<SetStateAction<AuthType>>
+    auth: AuthType | null,
+    setAuth: React.Dispatch<SetStateAction<AuthType | null>>
+    reset:() => void
 }
 
 interface AuthType {
@@ -13,11 +14,17 @@ interface AuthType {
 
 const init = {
     auth: { role: '', auth: Boolean(getAccessTokenToLS()) },
-    setAuth: () => null
+    setAuth: () => null,
+    reset:()=>null
 }
 export const ContextAPI = createContext<ContextProp>(init)
 
 export const ProviderContext = ({ children }: { children: ReactNode }) => {
-    const [auth, setAuth] = useState<AuthType>(Object)
-    return <ContextAPI.Provider value={{ auth, setAuth }}>{children}</ContextAPI.Provider>
+    const [auth, setAuth] = useState<AuthType | null>(Object)
+    
+    const reset = () => {
+        setAuth(null)
+    }
+    return <ContextAPI.Provider value={{ auth, setAuth , reset}}>{children}</ContextAPI.Provider>
 }
+

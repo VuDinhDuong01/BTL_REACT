@@ -28,5 +28,16 @@
     },
     "logout":{
         "logoutSuccess":"You have successfully logged out"
+    },
+    "changePassword":{
+        "oldPassword":"Old password",
+        "password":"Password",
+        "newPassword":"New password",
+        "confirm":"Confirm",
+        "notEmpty":"Not be empty",
+        "newPasswordNotCorrect":"Re-entered password is incorrect",
+        "change_password":"Change the password",
+        "confirmPassword":"Confirm password"
     }
+
 }

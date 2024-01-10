@@ -1,37 +1,46 @@
-import { NavLink , useNavigate} from "react-router-dom"
-import { useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom"
+import { useState , useRef} from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
 
-import { CommunicationIcon, HomeIcon, Logo, MessageIcon } from "../../assets/icons/eye"
+import { CommunicationIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
 import { Images } from "../../assets/images"
 import { Button } from "../ui/Button"
 import { PAGE } from "../../contants"
 import { useLogoutMutation } from "../../apis";
 import { getRefreshTokenToLS } from "../../helps";
-import { ToastMessage } from "../../helps/toastMessage";
+import { ToastMessage } from "../../helps/toast-message";
+import { ChangePassowrd, ChangePasswordResponse } from "../ui/dialog-change-password";
 
 export const SidebarLeft = () => {
+  const showChangePasswordRef=useRef<ChangePasswordResponse>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
-  const navigate= useNavigate()
+  const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
+  const navigate = useNavigate()
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
-  const {t} = useTranslation()
+  const { t } = useTranslation()
   const handleLogout = async () => {
     try {
       await logout({ refresh_token }).unwrap()
       navigate(PAGE.LOGIN)
-      ToastMessage({status:'success', message:t('logout.logoutSuccess')})
+      ToastMessage({ status: 'success', message: t('logout.logoutSuccess') })
       setToggleLogout(!toggleLogout)
-      
+
     } catch (error: unknown) {
       console.log(error)
     }
   }
+  const handleClickShowPopupChangePassword=()=>{
+    if(showChangePasswordRef.current){
+       showChangePasswordRef.current.showPopupChangePassword()
+    }
+  }
   return (
     <div className="w-full" >
+      <ChangePassowrd  ref={showChangePasswordRef} />
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center">
         <Logo />
       </div>
@@ -66,7 +75,34 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Messages</p>
         </NavLink>
-        <Button className="bg-[#1B90DF]  w-[80%] cursor-pointer text-white py-[15px] rounded-[100px] font-fontFamily font-[700] !text-[18px] mt-[20px] hover:opacity-[80%]">Post</Button>
+        <Tippy
+          hideOnClick={isShowTippy}
+          trigger='click'
+          interactive
+          render={attrs => (
+            <div>
+              {
+                isShowTippy && <div onClick={() => setIsShowTippy(!isShowTippy)} style={{ boxShadow: '0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)' }} className="bg-white ml-[10px] !cursor-pointer min-w-[250px]   rounded-[10px]  text-black font-fontFamily text-[15px] font-[700]   shadow-md"  {...attrs}>
+                  <div onClick={handleClickShowPopupChangePassword} className="py-[15px]   w-full hover:bg-black3 hover:rounded-t-[10px] hover:text-white">
+                    <p className="ml-[10px]">Change password</p>
+                  </div>
+                  <div className="py-[15px]   w-full hover:bg-black3 hover:rounded-b-[10px] hover:text-white">
+                    <p className="ml-[10px]">Professional Tools</p>
+                  </div>
+
+                </div>
+              }
+            </div>
+          )}
+        >
+          <div className='flex items-center cursor-pointer  hover:w-[80%] py-[10px] hover:bg-white1 hover:rounded-[50px] mt-[15px]' onClick={() => setIsShowTippy(true)}>
+            <div className="ml-[10px]">
+              <MoreIcon />
+            </div>
+            <p className="text-[20px] font-fontFamily ml-[30px] !text-black">More</p>
+          </div>
+        </Tippy>
+        <Button className="bg-[#1B90DF]  w-[80%] cursor-pointer text-white py-[20px] rounded-[100px] font-fontFamily font-[700] !text-[18px] mt-[20px] hover:opacity-[80%]">Post</Button>
       </div>
       <Tippy
         hideOnClick={toggleLogout}

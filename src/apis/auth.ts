@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { AuthRequestProp, AuthResponseType } from '../Types/login'
-import { GetLogoutResponse, GetUserResponse, UpdateMe } from '../Types/user'
+import { GetLogoutResponse, GetUserResponse, UpdateMe, changePasswordProps } from '../Types/user'
 import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 
-const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL, CONFIRM_CODE, RESET_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL, CONFIRM_CODE, RESET_PASSWORD,CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -106,6 +106,13 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data
       }),
     }),
+    changePassword: build.mutation<GetUserResponse, changePasswordProps>({
+      query: (data) => ({
+        url: CHANGE_PASSWORD,
+        method: METHOD_API.PATCH,
+        data
+      }),
+    }),
   })
 })
 
@@ -119,6 +126,7 @@ export const { useLoginMutation,
   useGetMeQuery,
   useLogoutMutation,
   useUpdateMeMutation,
-  useUploadImageMutation
+  useUploadImageMutation,
+  useChangePasswordMutation
 }
   = authAPI

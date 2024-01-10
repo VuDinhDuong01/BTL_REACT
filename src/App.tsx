@@ -1,15 +1,21 @@
 
 import './App.css'
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
 import { route } from './hooks/useRoutes'
-import { LANGUAGE, keyLocalStorage } from './helps'
+import { LANGUAGE, LocalStorageEventTarget, keyLocalStorage } from './helps'
+import { ContextAPI } from './hooks'
 
 
 function App() {
-  
-  useEffect(()=>{
-    localStorage.getItem(keyLocalStorage.lng)=== null && localStorage.setItem(keyLocalStorage.lng,LANGUAGE.VI)
-  },[])
+  const { reset } = useContext(ContextAPI)
+  useEffect(() => {
+    localStorage.getItem(keyLocalStorage.lng) === null && localStorage.setItem(keyLocalStorage.lng, LANGUAGE.VI)
+  }, [])
+
+  useEffect(() => {
+    LocalStorageEventTarget.addEventListener('clearLS', reset)
+    return () => LocalStorageEventTarget.removeEventListener('clearLS', reset)
+  }, [reset])
 
   return (
     <div>

@@ -9,19 +9,17 @@ import { Button } from "../Button";
 import { Dialog, DialogOverlay } from "../Dialog";
 import { Icons } from '../../../helps/icons';
 import ControllerInput from '../../controller-form/controller-input';
-import { CountChar } from '../../../helps/counterChar';
+import { CountChar } from '../../../helps/counter-char';
 import UpdateMeSchema, { UpdateMeSchemaType } from '../../schema/updateMe';
 import { Label } from '@radix-ui/react-label';
-import { ToastMessage } from '../../../helps/toastMessage';
+import { ToastMessage } from '../../../helps/toast-message';
 import { DEFAULT_IMAGE_AVATAR, DEFAULT_IMAGE_COVER_PHOTO } from '../../../helps/image-user-default';
 import { GetUserResponse } from '../../../Types/user';
 import { useUpdateMeMutation, useUploadImageMutation } from '../../../apis';
 
-
 const MAX_CHAR = 255
 const MAX_SIZE_FILE = 300 * 1024
 const TYPE_FILE = ['image/png', 'image/jpg', 'image/svg']
-
 
 export type ShowPopupHandle = {
     showPopup: () => void;
@@ -36,8 +34,10 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     const { t } = useTranslation()
     const [updateMe] = useUpdateMeMutation()
     const [uploadImage] = useUploadImageMutation()
+
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
     const inputRefAvatar = useRef<HTMLInputElement>(null)
+
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const [countCharName, setCountCharName] = useState<number>(0)
     const [countCharLocation, setCountCharLocation] = useState<number>(0)
@@ -95,16 +95,22 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             console.log(error)
         }
     }))
-    const handleShowFolderImageCoverPhoto = () => {
-        if (inputRefCoverPhoto.current) {
-            inputRefCoverPhoto.current.click();
+    const handleShowFolderImageCoverPhoto = (type: 'cover_photo' | 'avatar') => () => {
+        if (type === 'cover_photo') {
+            if (inputRefCoverPhoto.current) {
+                inputRefCoverPhoto.current.click();
+            }
+        } else {
+            if (inputRefAvatar.current) {
+                inputRefAvatar.current.click();
+            }
         }
     }
-    const handleShowFolderImageAvatar = () => {
-        if (inputRefAvatar.current) {
-            inputRefAvatar.current.click();
-        }
-    }
+    // const handleShowFolderImageAvatar = () => {
+    //     if (inputRefAvatar.current) {
+    //         inputRefAvatar.current.click();
+    //     }
+    // }
     const handleImage = (type: 'avatar' | 'cover_photo') => (e: ChangeEvent<HTMLInputElement>) => {
         const nameFile = e.target.files?.[0]
         if (nameFile) {
@@ -132,7 +138,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                     <div className='w-[600px] relative '>
                         <img className='w-full h-[190px]' src={Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : Boolean(fileImage.cover_photo) ? URL.createObjectURL(fileImage.cover_photo as File) : DEFAULT_IMAGE_COVER_PHOTO} />
                         <div className='w-full  items-center flex justify-center absolute inset-0'>
-                            <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto}>
+                            <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto('cover_photo')}>
                                 <input type='file' style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
                                 <Icons.IoMdCamera size={20} />
                             </div>
@@ -169,7 +175,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                             className='w-full h-full mt-[-50px] ml-[20px] rounded-[50%] border-solid border-[2px] border-white'
                                         />
                                         <div className='absolute top-1/2 left-1/2' style={{ margin: '-67px 10px 0 0px' }} >
-                                            <div className='w-[40px] h-[40px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageAvatar}>
+                                            <div className='w-[40px] h-[40px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto}>
                                                 <input type='file' style={{ display: 'none' }} ref={inputRefAvatar} onChange={handleImage('avatar')} />
                                                 <Icons.IoMdCamera size={15} />
                                             </div>
