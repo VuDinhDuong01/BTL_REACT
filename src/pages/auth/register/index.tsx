@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import { type ChangeEvent, useState, useEffect, useRef } from 'react';
 
 
-import { Button } from "../../../components/ui/Button"
+import { Button } from "../../../components/ui/button"
 import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
-import { Select, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/Select"
-import { SelectContent } from "../../../components/ui/Select"
+import { Select, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
+import { SelectContent } from "../../../components/ui/select"
 import i18n from '../../../i18n'
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"

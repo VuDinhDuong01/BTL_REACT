@@ -1,5 +1,6 @@
+/* eslint-disable no-extra-boolean-cast */
 import { NavLink, useNavigate } from "react-router-dom"
-import { useState , useRef} from "react";
+import { useState, useRef } from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
@@ -7,22 +8,21 @@ import { useTranslation } from "react-i18next";
 import { CommunicationIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
 import { Images } from "../../assets/images"
-import { Button } from "../ui/Button"
+import { Button } from "../ui/button"
 import { PAGE } from "../../contants"
-import { useLogoutMutation } from "../../apis";
-import { getProfileToLS, getRefreshTokenToLS } from "../../helps";
+import { useGetMeQuery, useLogoutMutation } from "../../apis";
+import { getRefreshTokenToLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
-import { User } from "../../Types/user";
 
 export const SidebarLeft = () => {
-  const profile = getProfileToLS() as User
-  const showChangePasswordRef=useRef<ChangePasswordResponse>(null)
+  const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
   const navigate = useNavigate()
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
+  const { data: getMe } = useGetMeQuery(null)
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -35,15 +35,15 @@ export const SidebarLeft = () => {
       console.log(error)
     }
   }
-  const handleClickShowPopupChangePassword=()=>{
-    if(showChangePasswordRef.current){
-       showChangePasswordRef.current.showPopupChangePassword()
+  const handleClickShowPopupChangePassword = () => {
+    if (showChangePasswordRef.current) {
+      showChangePasswordRef.current.showPopupChangePassword()
     }
   }
   return (
     <div className="w-full  min-h-[100vh]" >
-      <ChangePassword  ref={showChangePasswordRef} />
-      <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={()=>navigate(PAGE.HOME)}>
+      <ChangePassword ref={showChangePasswordRef} />
+      <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>
         <Logo />
       </div>
       <div>
@@ -86,10 +86,10 @@ export const SidebarLeft = () => {
               {
                 isShowTippy && <div onClick={() => setIsShowTippy(!isShowTippy)} style={{ boxShadow: '0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)' }} className="bg-white ml-[10px] !cursor-pointer min-w-[250px]   rounded-[10px]  text-black font-fontFamily text-[15px] font-[700]   shadow-md"  {...attrs}>
                   <div onClick={handleClickShowPopupChangePassword} className="py-[15px]   w-full hover:bg-black3 hover:rounded-t-[10px] hover:text-white">
-                    <p className="ml-[10px]">Change password</p>
+                    <p className="ml-[10px]">{t('changePassword.change_password')}</p>
                   </div>
                   <div className="py-[15px]   w-full hover:bg-black3 hover:rounded-b-[10px] hover:text-white">
-                    <p className="ml-[10px]">Professional Tools</p>
+                    <p className="ml-[10px]">{t('changePassword.professionalTools')}</p>
                   </div>
 
                 </div>
@@ -114,17 +114,17 @@ export const SidebarLeft = () => {
           <div>
             {
               toggleLogout && <div onClick={handleLogout} className="bg-white !cursor-pointer p-[20px]  rounded-[50px] text-black font-fontFamily text-[15px] font-[700] border-[2px] border-solid border-black3 shadow-sm"  {...attrs}>
-                Log out {profile?.name}
+                Log out {getMe?.data?.name}
               </div>
             }
           </div>
         )}
       >
         <div className="flex items-center cursor-pointer fixed bottom-[10px]  w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
-          <img src={Images.logo} alt="user" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
+          <img src={Boolean(getMe?.data?.avatar) ? getMe?.data.avatar : Images.logo} alt="user" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
           <div className="ml-[10px] ">
-            <h3 className="text-[14px] font-fontFamily">{profile?.name}</h3>
-            <p className="font-fontFamily text-[12px] mt-[5px]">{profile?.username}</p>
+            <h3 className="text-[14px] font-fontFamily">{getMe?.data.name}</h3>
+            <p className="font-fontFamily text-[12px] mt-[5px]">{getMe?.data?.username}</p>
           </div>
         </div>
       </Tippy>

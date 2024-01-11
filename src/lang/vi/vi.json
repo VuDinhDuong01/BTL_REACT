@@ -28,7 +28,8 @@
         "wrongMaxSizeFile":"Tải File quá lớn",
         "errorUploadFile":"Tải File bị lỗi",
         "name":"Tên gọi khác",
-        "username":"Họ và tên"
+        "username":"Họ và tên",
+        "updateMeSuccess":"Cập nhật thông tin thành công"
     },
     "logout":{
         "logoutSuccess":"Bạn đã đăng xuất thành công"
@@ -42,7 +43,9 @@
         "newPasswordNotCorrect":"Mật khẩu nhập lại không đúng",
         "change_password":"Thay đổi mật khẩu",
         "confirmPassword":"Xác nhận lại mật khẩu",
-        "changePasswordSuccess":"Thay đổi mật khẩu thành công"
+        "changePasswordSuccess":"Thay đổi mật khẩu thành công",
+        "professionalTools":"Công cụ chuyên nghiệp"
+        
     }
    
 }

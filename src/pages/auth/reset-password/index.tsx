@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 
-import { Button } from "../../../components/ui/Button"
+import { Button } from "../../../components/ui/button"
 import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
@@ -12,7 +12,7 @@ import { useResetPasswordMutation } from '../../../apis';
 import { ErrorHandle } from '../../../Types/login';
 import { Loading } from '../../../assets/icons/eye';
 import { PAGE } from '../../../contants';
-import { Label } from '../../../components/ui/Lable';
+import { Label } from '../../../components/ui/lable';
 
 
 type ErrorKey = 'password' | 'confirm_password'

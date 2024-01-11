@@ -12,7 +12,7 @@ interface ConfirmCodeMutation {
   user_id: string
 }
 
-interface UploadImageResponse {
+ export interface UploadImageResponse {
   image: string,
   type: number
 }

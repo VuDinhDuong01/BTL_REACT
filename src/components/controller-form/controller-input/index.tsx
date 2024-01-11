@@ -1,6 +1,6 @@
 import { forwardRef, type Ref, type ComponentPropsWithRef, useId } from 'react'
 import { Controller, type FieldValues, type Path, Control } from 'react-hook-form'
-import { Label } from '../../ui/Lable'
+import { Label } from '../../ui/lable'
 import { Input } from '../../ui/Input'
 
 
@@ -14,10 +14,10 @@ interface ControlerInputProp<TFieldValues extends FieldValues = FieldValues> ext
     placeholder?: string
     type?: string
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void,
-    classNameLabel?:string 
+    classNameLabel?: string
 }
 
-const ControllerInput = forwardRef<Ref<HTMLInputElement>, ControlerInputProp>(({ name,classNameLabel, control, label, type, placeholder, required, onChange, className, ...props }, ref) => {
+const ControllerInput = forwardRef<Ref<HTMLInputElement>, ControlerInputProp>(({ name, classNameLabel, control, label, type, placeholder, required, onChange, className, ...props }, ref) => {
     const id = useId()
     return <Controller
         name={name}

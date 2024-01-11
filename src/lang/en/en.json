@@ -27,7 +27,8 @@
         "wrongMaxSizeFile":"File download is too large",
         "errorUploadFile":"File download error",
         "name":"name",
-        "username":"username"
+        "username":"username",
+        "updateMeSuccess":"Successfully updated"
     },
     "logout":{
         "logoutSuccess":"You have successfully logged out"
@@ -41,7 +42,9 @@
         "newPasswordNotCorrect":"Re-entered password is incorrect",
         "change_password":"Change the password",
         "confirmPassword":"Confirm password",
-        "changePasswordSuccess":"Password changed successfully"
+        "changePasswordSuccess":"Password changed successfully",
+        "professionalTools":"Professional Tools"
+
     }
 
 }

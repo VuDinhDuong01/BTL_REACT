@@ -3,8 +3,8 @@ import { useState, useImperativeHandle, forwardRef, type KeyboardEvent, useEffec
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
-import { Dialog, DialogOverlay, DialogHeader, DialogFooter } from '../Dialog/index'
-import { Button } from '../Button'
+import { Dialog, DialogOverlay, DialogHeader, DialogFooter } from '../dialog/index'
+import { Button } from '../button'
 import { Input } from '../Input'
 import { HandleDiaLog } from '../../../Types/login'
 import { regex } from '../../../helps'

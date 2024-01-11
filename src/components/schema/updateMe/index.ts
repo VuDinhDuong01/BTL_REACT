@@ -6,6 +6,8 @@ const UpdateMeSchema = zod.object({
     location: zod.string().min(1, "login.fieldNotEmpty"),
     website: zod.string().min(1, "login.fieldNotEmpty").max(25, "login.maximumNumberCharaters"),
     bio: zod.string().min(1, "login.fieldNotEmpty").max(25, "login.maximumNumberCharaters"),
+    avatar:zod.string(),
+    cover_photo:zod.string()
 })
 
 

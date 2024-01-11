@@ -6,11 +6,11 @@ import { useNavigate } from 'react-router-dom'
 import { yupResolver } from "@hookform/resolvers/yup"
 import omit from 'lodash/omit'
 
-import { Dialog, DialogOverlay } from "../Dialog"
+import { Dialog, DialogOverlay } from "../dialog"
 import ControllerInput from "../../controller-form/controller-input"
 import { CountChar } from "../../../helps/counter-char"
 import { Icons } from "../../../helps/icons";
-import { Button } from "../Button";
+import { Button } from "../button";
 import changePasswordSchema, { ChangePasswordSchemaType } from "../../schema/change-password";
 import { Loading } from "../../../assets/icons/eye";
 import { useChangePasswordMutation } from "../../../apis";
@@ -18,13 +18,12 @@ import { ErrorHandle } from "../../../Types/login";
 import { PAGE } from "../../../contants";
 import { removeLS } from "../../../helps";
 import { ToastMessage } from "../../../helps/toast-message";
-
-
 export interface ChangePasswordResponse {
     showPopupChangePassword: () => void
 }
 
 const MAX_CHAR = 25
+
 export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, ref) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -39,7 +38,7 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
         defaultValues: changePasswordSchema.getDefault(),
         resolver: yupResolver(changePasswordSchema),
     })
-    
+
     const handleShowPopupChangePassword = () => {
         setIsShowPopupChangePassword(true)
     }
@@ -59,7 +58,7 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
             console.log(e)
             for (const key in e.data.error) {
                 setError(key as 'password', { message: e.data.error[key] })
-              }
+            }
         }
     }))
 
@@ -74,7 +73,7 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
                 && value.password && value.password.length > 0 ? setDisableButton(true) : setDisableButton(false)
         })
     }, [watch])
- 
+
     return (<div>
         {
             isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword}>

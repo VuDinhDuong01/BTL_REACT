@@ -1,12 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
 import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent } from 'react'
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
 
-
-import { Button } from "../Button";
-import { Dialog, DialogOverlay } from "../Dialog";
+import { Button } from "../button";
+import { Dialog, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
 import ControllerInput from '../../controller-form/controller-input';
 import { CountChar } from '../../../helps/counter-char';
@@ -15,7 +15,8 @@ import { Label } from '@radix-ui/react-label';
 import { ToastMessage } from '../../../helps/toast-message';
 import { DEFAULT_IMAGE_AVATAR, DEFAULT_IMAGE_COVER_PHOTO } from '../../../helps/image-user-default';
 import { GetUserResponse } from '../../../Types/user';
-import { useUpdateMeMutation, useUploadImageMutation } from '../../../apis';
+import { UploadImageResponse, useUpdateMeMutation, useUploadImageMutation } from '../../../apis';
+import { Loading } from '../../../assets/icons/eye';
 
 const MAX_CHAR = 255
 const MAX_SIZE_FILE = 300 * 1024
@@ -29,10 +30,13 @@ interface PopupUpdateMeProps {
     children?: React.ReactNode,
     dataMe: GetUserResponse
 }
+interface FileImageProps {
+    [key: string]: File | null
+}
 
 export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ dataMe }, ref) => {
     const { t } = useTranslation()
-    const [updateMe] = useUpdateMeMutation()
+    const [updateMe, { isLoading }] = useUpdateMeMutation()
     const [uploadImage] = useUploadImageMutation()
 
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
@@ -43,7 +47,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     const [countCharLocation, setCountCharLocation] = useState<number>(0)
     const [countCharWebsite, setCountCharWebsite] = useState<number>(0)
     const [countCharBio, setCountCharBio] = useState<number>(0)
-    const [fileImage, setFileImage] = useState<{ avatar: File | null, cover_photo: File | null }>({
+    const [fileImage, setFileImage] = useState<FileImageProps>({
         cover_photo: null,
         avatar: null
     })
@@ -54,7 +58,9 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             website: dataMe && dataMe?.data.website,
             bio: dataMe && dataMe?.data.bio,
             location: dataMe && dataMe?.data.location,
-            name: dataMe && dataMe?.data.name
+            name: dataMe && dataMe?.data.name,
+            cover_photo: dataMe && dataMe.data.cover_photo,
+            avatar: dataMe && dataMe.data.avatar
         },
         resolver: zodResolver(UpdateMeSchema),
     })
@@ -71,26 +77,40 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
 
     const onSubmit = (handleSubmit(async () => {
         try {
-            const currentValues = getValues();
-            const bodyRequest = {
-                ...(currentValues.username !== dataMe?.data.username && { username: currentValues.username }),
-                ...(currentValues.name !== dataMe?.data.name && { name: currentValues.name }),
-                ...(currentValues.bio !== dataMe?.data.bio && { bio: currentValues.bio }),
-                ...(currentValues.website !== dataMe?.data.website && { website: currentValues.website }),
-                ...(currentValues.location !== dataMe?.data.location && { location: currentValues.location }),
-            }
+            const { username, name, bio, website, location } = getValues();
+            let typeCheckImage: string = ''
             const formData = new FormData();
             if (fileImage.avatar) {
                 formData.append('image', fileImage.avatar)
+                typeCheckImage = 'avatar'
             }
             if (fileImage.cover_photo) {
                 formData.append('image', fileImage.cover_photo)
+                typeCheckImage = 'cover_photo'
             }
+            let res:UploadImageResponse[] = [];
+            if(fileImage.avatar !== null || fileImage.cover_photo !== null){
+                 res = await uploadImage(formData).unwrap()
+            }
+            
+            const bodyRequest = {
+                ...(username !== dataMe?.data.username && { username: username }),
+                ...(name !== dataMe?.data.name && { name: name }),
+                ...(bio !== dataMe?.data.bio && { bio: bio }),
+                ...(website !== dataMe?.data.website && { website: website }),
+                ...(location !== dataMe?.data.location && { location: location }),
+                ...(fileImage.cover_photo !== null && res.length ===2 && { cover_photo: res?.[1].image }),
+                ...(fileImage.cover_photo !== null && res.length === 1 && { cover_photo: res?.[0].image }),
+                ...(fileImage.avatar !== null && { avatar: res?.[0].image })
+            }
+
             await updateMe(bodyRequest).unwrap();
-            // const res = await uploadImage(formData).unwrap()
-            // console.log(res)
-            // ToastMessage({ status: 'success', message: 'Cập nhật thông tin thành công' })
-            // setIsShowPopup(false)
+            ToastMessage({ status: 'success', message: t('updateMe.updateMeSuccess')})
+            setIsShowPopup(false)
+            setFileImage({
+                cover_photo: null,
+                avatar: null
+            })
         } catch (error: unknown) {
             console.log(error)
         }
@@ -125,13 +145,12 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             ToastMessage({ message: t("updateMe.errorUploadFile"), status: 'error' })
         }
     }
-
     const renderUiImage = () => {
         return (
             <>
                 {
                     <div className='w-[600px] relative '>
-                        <img className='w-full h-[190px]' src={Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : Boolean(fileImage.cover_photo) ? URL.createObjectURL(fileImage.cover_photo as File) : DEFAULT_IMAGE_COVER_PHOTO} />
+                        <img className='w-full h-[190px]' src={Boolean(fileImage.cover_photo) ? URL.createObjectURL(fileImage.cover_photo as File) : Boolean(dataMe?.data.cover_photo) ? dataMe?.data.cover_photo : DEFAULT_IMAGE_COVER_PHOTO} />
                         <div className='w-full  items-center flex justify-center absolute inset-0'>
                             <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto('cover_photo')}>
                                 <input type='file' style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
@@ -156,9 +175,8 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                 <div className='mr-[15px] w-[30px] h-[30px] rounded-[50%] bg-black3 flex items-center justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div>
                                 <h2 className='text-[20px] font-fontFamily'>Edit Profile</h2>
                             </div>
-                            <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>Save</Button>
+                            <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{isLoading ? <Loading /> : 'Save'}</Button>
                         </div>
-                        {/* <Scrollbars className='w-full flex-1 ' > */}
                         <div className='w-full   flex-1 max-h-[650px] overflow-scroll '>
                             <div className='w-full  '>
                                 <div className='w-[99%] relative m-auto '>
@@ -167,7 +185,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                     }
                                     <div className='w-[100px] h-[100px] relative'>
                                         <img
-                                            src={Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : Boolean(fileImage.avatar) ? URL.createObjectURL(fileImage.avatar as File) : DEFAULT_IMAGE_AVATAR}
+                                            src={Boolean(fileImage.avatar) ? URL.createObjectURL(fileImage.avatar as File) : Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : DEFAULT_IMAGE_AVATAR}
                                             className='w-full h-full mt-[-50px] ml-[20px] rounded-[50%] border-solid border-[2px] border-white'
                                         />
                                         <div className='absolute top-1/2 left-1/2' style={{ margin: '-67px 10px 0 0px' }} >
@@ -249,7 +267,6 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                 </div>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </Dialog>

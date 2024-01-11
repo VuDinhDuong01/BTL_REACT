@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from 'react';
 
-import { Button } from "../../../components/ui/Button"
+import { Button } from "../../../components/ui/button"
 import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
 import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
