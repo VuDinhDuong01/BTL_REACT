@@ -3,7 +3,7 @@ import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent } from '
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
-import { Scrollbars } from 'react-custom-scrollbars-2';
+
 
 import { Button } from "../Button";
 import { Dialog, DialogOverlay } from "../Dialog";
@@ -106,11 +106,6 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             }
         }
     }
-    // const handleShowFolderImageAvatar = () => {
-    //     if (inputRefAvatar.current) {
-    //         inputRefAvatar.current.click();
-    //     }
-    // }
     const handleImage = (type: 'avatar' | 'cover_photo') => (e: ChangeEvent<HTMLInputElement>) => {
         const nameFile = e.target.files?.[0]
         if (nameFile) {
@@ -154,7 +149,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         {
             isShowPopup && <Dialog open={isShowPopup}>
                 <DialogOverlay />
-                <div className=' w-full h-full z-[999]   flex fixed inset-0 items-center justify-center'>
+                <div className=' w-full h-full flex fixed inset-0 items-center justify-center'>
                     <form className='h-[650px] w-[600px] bg-white rounded-[20px] flex flex-col items-center relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
                         <div className='w-full px-[10px] flex  rounded-t-[20px] items-center cursor-pointer justify-between !h-[50px] '>
                             <div className='flex items-center'>
@@ -163,8 +158,9 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                             </div>
                             <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>Save</Button>
                         </div>
-                        <Scrollbars className='w-full flex-1 ' >
-                            <div className='w-full flex-1 '>
+                        {/* <Scrollbars className='w-full flex-1 ' > */}
+                        <div className='w-full   flex-1 max-h-[650px] overflow-scroll '>
+                            <div className='w-full  '>
                                 <div className='w-[99%] relative m-auto '>
                                     {
                                         renderUiImage()
@@ -175,7 +171,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                             className='w-full h-full mt-[-50px] ml-[20px] rounded-[50%] border-solid border-[2px] border-white'
                                         />
                                         <div className='absolute top-1/2 left-1/2' style={{ margin: '-67px 10px 0 0px' }} >
-                                            <div className='w-[40px] h-[40px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto}>
+                                            <div className='w-[40px] h-[40px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto('avatar')}>
                                                 <input type='file' style={{ display: 'none' }} ref={inputRefAvatar} onChange={handleImage('avatar')} />
                                                 <Icons.IoMdCamera size={15} />
                                             </div>
@@ -184,19 +180,19 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                 </div>
                                 <div className="mb-[20px] mt-[-40px]  w-[90%] h-[100px]  flex-col  flex  justify-center  m-auto  ">
                                     <ControllerInput
-                                        {...register('username', {
+                                        {...register('name', {
                                             onChange: (e) => setCountCharName(e.target.value.length)
                                         })
                                         }
-                                        name="username"
-                                        label='Họ và tên'
+                                        name="name"
+                                        label={t('updateMe.name')}
                                         required
                                         control={control as unknown as Control<FieldValues>}
-                                        className=" flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
-                                        placeholder='Họ và tên'
+                                        className=" flex flex-col justify-center !h-[50px]"
+                                        placeholder={t('updateMe.name')}
                                         maxLength={255}
                                     />
-                                    <CountChar error={t(errors?.username?.message as string)} maxChar={MAX_CHAR} countChar={countCharName} />
+                                    <CountChar error={t(errors?.name?.message as string)} maxChar={MAX_CHAR} countChar={countCharName} />
                                 </div>
                                 <div className="mb-[20px]   w-[90%]  flex-col  flex  justify-center  m-auto  ">
                                     <Label className='text-[15px] font-fontFamily'>Bio</Label>
@@ -206,8 +202,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         })
                                         }
                                         name="bio"
-
-                                        className=" flex flex-col rounded-[10px] justify-center px-[10px] py-[10px] !border-green1 !h-[100px] !border-[2px] resize-none"
+                                        className=" flex flex-col rounded-[10px] justify-center px-[10px] py-[10px] !h-[100px]  resize-none"
                                         placeholder='Bio'
                                         maxLength={255}
                                     />
@@ -223,7 +218,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         required
                                         label='Location'
                                         control={control as unknown as Control<FieldValues>}
-                                        className="flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
+                                        className="flex flex-col justify-center  !h-[50px]"
                                         placeholder='location'
                                         maxLength={255}
                                     />
@@ -236,7 +231,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         required
                                         label='website'
                                         control={control as unknown as Control<FieldValues>}
-                                        className=" flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
+                                        className=" flex flex-col justify-center  !h-[50px]"
                                         placeholder='website'
                                         maxLength={255}
                                     />
@@ -244,17 +239,17 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                 </div>
                                 <div className="mb-[20px]  w-[90%]  flex-col  flex  justify-center  m-auto  ">
                                     <ControllerInput
-                                        {...register('name', { onChange: (e) => setCountCharWebsite(e.target.value.length) })}
-                                        name="name"
-                                        label='Tên gọi khác'
+                                        {...register('username', { onChange: (e) => setCountCharWebsite(e.target.value.length) })}
+                                        name="username"
                                         control={control as unknown as Control<FieldValues>}
-                                        className=" flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
-                                        placeholder='name'
+                                        className=" flex flex-col justify-center  !h-[50px]"
+                                        label={t('updateMe.username')}
                                         maxLength={255}
                                     />
                                 </div>
                             </div>
-                        </Scrollbars>
+                        </div>
+
                     </form>
                 </div>
             </Dialog>

@@ -5,7 +5,7 @@
         "password":"Password",
         "support":"Support",
         "resetPassword":"Forgot password",
-        "login":"login",
+        "login":"Login",
         "fieldNotEmpty":"This field cannot be left blank",
         "wrongFormat":"You entered the wrong format",
         "maximumNumberCharaters":"The maximum number of characters allowed is 25 characters",
@@ -19,12 +19,15 @@
         "enterCode":"Enter the code",
         "verifyCode1":"Verification code has been sent to your Email",
         "verifyCode2":"Please enter the correct code in the box below",
-        "verify":"Verify"
+        "verify":"Verify",
+        "returnPage":"Return to page"
     },
     "updateMe":{
         "worngFormatFile":"Download file in wrong format",
         "wrongMaxSizeFile":"File download is too large",
-        "errorUploadFile":"File download error"
+        "errorUploadFile":"File download error",
+        "name":"name",
+        "username":"username"
     },
     "logout":{
         "logoutSuccess":"You have successfully logged out"
@@ -37,7 +40,8 @@
         "notEmpty":"Not be empty",
         "newPasswordNotCorrect":"Re-entered password is incorrect",
         "change_password":"Change the password",
-        "confirmPassword":"Confirm password"
+        "confirmPassword":"Confirm password",
+        "changePasswordSuccess":"Password changed successfully"
     }
 
 }

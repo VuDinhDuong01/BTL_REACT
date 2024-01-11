@@ -1,3 +1,5 @@
+import { User } from "../Types/user"
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const LocalStorageEventTarget = new EventTarget()
 
@@ -27,12 +29,12 @@ export const getRefreshTokenToLS = () => {
     return localStorage.getItem(keyLocalStorage.refresh_token)
 }
 
-export const setProfileToLS = (profile: any) => {
+export const setProfileToLS = (profile: User) => {
     return profile && localStorage.setItem(keyLocalStorage.profile, JSON.stringify(profile))
 }
 
 export const getProfileToLS = () => {
-    return localStorage.getItem(keyLocalStorage.profile)
+    return JSON.parse(localStorage.getItem(keyLocalStorage.profile) as string)
 }
 
 export const removeLS = () => {
@@ -40,7 +42,7 @@ export const removeLS = () => {
     localStorage.removeItem(keyLocalStorage.access_token)
     localStorage.removeItem(keyLocalStorage.refresh_token)
 
-    const clearLSEvent= new Event('clearLS')
+    const clearLSEvent = new Event('clearLS')
     LocalStorageEventTarget.dispatchEvent(clearLSEvent)
 
 }

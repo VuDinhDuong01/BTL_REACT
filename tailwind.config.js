@@ -21,7 +21,10 @@ export default {
       },
       backgroundImage:{
         'background-image':"url('./src/assets/images/bg.jpg')"
-      }
+      },
+      ringWidth: ['focus-visible'],
+      ringColor: ['focus-visible'],
+      borderColor: ['focus-visible'],
     },
   },
   plugins: []

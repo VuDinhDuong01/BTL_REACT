@@ -118,7 +118,7 @@ export const Register = () => {
               control={control as unknown as Control<FieldValues>}
               label="Email"
               required
-              className=" flex flex-col justify-center !border-green1 !border-[2px]"
+              className=" flex flex-col justify-center "
               placeholder={t("login.enterEmail")}
               onInput={handleBlockSpace}
             />
@@ -144,7 +144,10 @@ export const Register = () => {
               isLoading ? <Loading /> : t("register.register")
             }
           </Button>
-          <Link to={PAGE.LOGIN} className='w-full flex no-underline items-center justify-center text-green1 font-[700] text-[17.5px] font-fontFamily mb-[30px] '>Đăng nhâp</Link>
+          <div className='w-full flex items-center justify-center mb-[10px]'>
+            <div className='text-[16px] font-fontFamily text-black mr-[5px]'>{t("register.returnPage")}</div>
+            <Link to={PAGE.LOGIN} className='text-[18px] font-fontFamily no-underline  text-[red]'>{t('login.login')}</Link>
+          </div>
         </form>
       </div>
     </div>

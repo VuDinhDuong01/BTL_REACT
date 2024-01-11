@@ -22,21 +22,20 @@ export const Personal = () => {
     }
     return <div className="w-full">
 
-        <div className="w-full flex items-center">
-            <Link to={PAGE.HOME} className="!text-black cursor-pointer">
+        <div className=" w-[611px] z-[9999] flex items-center h-[60px] fixed top-0 bg-white">
+            <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
                 <Icons.FaArrowLeftLong />
             </Link>
-            <div className="ml-[20px] mt-[10px]">
-                <h2 className="text-[20px] font-fontFamily ">{getMe?.data.username}</h2>
+            <div className="ml-[20px] mt-[10px] ">
+                <h2 className="text-[20px] font-fontFamily ">{getMe?.data.name}</h2>
                 <p className="text-[15px] font-fontFamily text-black2">4 posts</p>
             </div>
-
         </div>
-        <div className="w-full relative ">
+        <div className="w-full relative z-[0] mt-[55px]">
             {
-                Boolean(getMe?.data.cover_photo as string) ? <img src={getMe?.data.cover_photo} alt="cover_photo" className="w-full h-[200px] mt-[20px] object-cover" /> : <div className="w-full h-[200px] mt-[20px] bg-[#CFD9DE]" />
+                Boolean(getMe?.data.cover_photo as string) ? <img src={getMe?.data.cover_photo} alt="cover_photo" className="w-full h-[200px] mt-[20px] object-cover" /> : <div className="w-full h-[200px] mt-[20px] bg-[#CFD9DE] z-0 " />
             }
-            <img src={Boolean(getMe?.data.avatar as string) ? getMe?.data.avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] left-0 bottom-[-50px] ml-[20px]" />
+            <img src={Boolean(getMe?.data.avatar as string) ? getMe?.data.avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] border-[1px] border-solid border-white left-0 bottom-[-50px] ml-[20px] " />
         </div>
 
 

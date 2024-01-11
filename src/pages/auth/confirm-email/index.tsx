@@ -63,7 +63,7 @@ export const ConfirmPassword = () => {
                         <ControllerInput
                             name="email"
                             control={control as unknown as Control<FieldValues>}
-                            className=" flex flex-col justify-center !border-green1 !border-[2px]"
+                            className=" flex flex-col justify-center"
                             placeholder={t("login.enterEmail")}
                         />
                         {errors.email?.message && <span className="text-error font-fontFamily text-[14px] mt-[3px]">{t(errors.email.message)}</span>}

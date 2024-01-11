@@ -2,6 +2,6 @@
 
 export const SidebarRight = () => {
   return (
-    <div>Footer</div>
+    <div className="w-full min-h-[100vh]">Footer</div>
   )
 }

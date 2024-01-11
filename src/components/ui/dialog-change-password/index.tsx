@@ -25,7 +25,7 @@ export interface ChangePasswordResponse {
 }
 
 const MAX_CHAR = 25
-export const ChangePassowrd = forwardRef<ChangePasswordResponse, any>((props, ref) => {
+export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, ref) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const [isShowPopupChangePassword, setIsShowPopupChangePassword] = useState<boolean>(false)
@@ -34,6 +34,7 @@ export const ChangePassowrd = forwardRef<ChangePasswordResponse, any>((props, re
     const [countConfirmPassword, setCountConfirmPassword] = useState(0)
     const [disableButton, setDisableButton] = useState(false)
     const [changePassword, { isLoading }] = useChangePasswordMutation()
+
     const { register, handleSubmit, control, formState: { errors }, watch, setError } = useForm<ChangePasswordSchemaType>({
         defaultValues: changePasswordSchema.getDefault(),
         resolver: yupResolver(changePasswordSchema),
@@ -51,7 +52,7 @@ export const ChangePassowrd = forwardRef<ChangePasswordResponse, any>((props, re
             const bodyRequest = omit(data, ['confirm_password']);
             await changePassword(bodyRequest).unwrap();
             navigate(PAGE.LOGIN)
-            ToastMessage({ status: 'success', message: 'Thay đổi mật khẩu thành công' })
+            ToastMessage({ status: 'success', message: t('changePassword.changePasswordSuccess') })
             removeLS()
         } catch (error: unknown) {
             const e = error as ErrorHandle
@@ -78,8 +79,8 @@ export const ChangePassowrd = forwardRef<ChangePasswordResponse, any>((props, re
         {
             isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword}>
                 <DialogOverlay />
-                <div className='  w-full di h-full z-[9999999999] flex fixed inset-0 items-center justify-center'>
-                    <form className='min-h-[480px] min-w-[450px] bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
+                <div className='w-full h-full !z-[99] flex fixed inset-0 items-center justify-center'>
+                    <form className='min-h-[480px] min-w-[450px] !z-[9] bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
                         <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
                         <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>
                         <div className='w-full'>
@@ -90,10 +91,11 @@ export const ChangePassowrd = forwardRef<ChangePasswordResponse, any>((props, re
                                     })
                                     }
                                     name="password"
+                                    type="password"
                                     label={t('changePassword.oldPassword')}
                                     required
                                     control={control as unknown as Control<FieldValues>}
-                                    className=" flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
+                                    className=" flex flex-col justify-center  !h-[45px]"
                                     placeholder={t('changePassword.password')}
                                     maxLength={MAX_CHAR}
                                 />
@@ -105,27 +107,29 @@ export const ChangePassowrd = forwardRef<ChangePasswordResponse, any>((props, re
                                         onChange: (e) => setCountNewPassword(e.target.value.length)
                                     })
                                     }
+                                    type="password"
                                     name="new_password"
                                     required
                                     label={t('changePassword.newPassword')}
                                     control={control as unknown as Control<FieldValues>}
-                                    className=" flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
+                                    className=" flex flex-col justify-center  !h-[45px]"
                                     placeholder={t('changePassword.newPassword')}
                                     maxLength={MAX_CHAR}
                                 />
                                 <CountChar error={t(errors?.new_password?.message as string)} maxChar={MAX_CHAR} countChar={countNewPassword} />
                             </div>
-                            <div className="h-[100px] w-[90%]  flex-col  flex  justify-center m-auto  ">
+                            <div className="h-[100px] w-[90%]  flex-col  flex  justify-center m-auto">
                                 <ControllerInput
                                     {...register('confirm_password', {
                                         onChange: (e) => setCountConfirmPassword(e.target.value.length)
                                     })
                                     }
+                                    type="password"
                                     name="confirm_password"
                                     required
                                     label={t('changePassword.confirmPassword')}
                                     control={control as unknown as Control<FieldValues>}
-                                    className="flex flex-col justify-center !border-green1 !border-[2px] !h-[50px]"
+                                    className="flex flex-col justify-center  !h-[45px]"
                                     placeholder={t('changePassword.password')}
                                     maxLength={MAX_CHAR}
                                 />

@@ -5,7 +5,7 @@
         "password":"Mật khẩu",
         "support":"Hỗ trợ",
         "resetPassword":"Quên mật khẩu",
-        "login":"đăng nhập",
+        "login":"Đăng nhập",
         "fieldNotEmpty":"Trường này không được để trống",
         "wrongFormat":"bạn nhập sai định dạng",
         "maximumNumberCharaters":"Số ký tự tối đa cho phép là 25 ký tự",
@@ -20,12 +20,15 @@
         "enterCode":"Nhập mã code",
         "verifyCode1":"Mã xác thực đã giửi về Email của bạn",
         "verifyCode2":"Vui lòng nhập chính xác mã vào ô bên dưới",
-        "verify":"Xác thực"
+        "verify":"Xác thực",
+        "returnPage":"Quay về trang"
     },
     "updateMe":{
         "worngFormatFile":"Tải File sai định dạng",
         "wrongMaxSizeFile":"Tải File quá lớn",
-        "errorUploadFile":"Tải File bị lỗi"
+        "errorUploadFile":"Tải File bị lỗi",
+        "name":"Tên gọi khác",
+        "username":"Họ và tên"
     },
     "logout":{
         "logoutSuccess":"Bạn đã đăng xuất thành công"
@@ -38,6 +41,8 @@
         "notEmpty":"Không được bỏ trống",
         "newPasswordNotCorrect":"Mật khẩu nhập lại không đúng",
         "change_password":"Thay đổi mật khẩu",
-        "confirmPassword":"Xác nhận lại mật khẩu"
+        "confirmPassword":"Xác nhận lại mật khẩu",
+        "changePasswordSuccess":"Thay đổi mật khẩu thành công"
     }
+   
 }

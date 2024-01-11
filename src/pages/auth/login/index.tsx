@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
@@ -83,7 +83,7 @@ export const Login = () => {
               control={control as unknown as Control<FieldValues>}
               label="Email"
               required
-              className=" flex flex-col justify-center !border-green1 !border-[2px]"
+              className=" flex flex-col justify-center"
               placeholder={t("login.enterEmail")}
             />
             {errors.email?.message && <span className="text-error font-fontFamily text-[14px] mt-[3px]">{t(errors.email.message)}</span>}
@@ -107,8 +107,12 @@ export const Login = () => {
           <Button size='lg' className={`text-[17.5px] font-fontFamily cursor-pointer text-white font-[500] uppercase items-center justify-center bg-green1 rounded-[6px] min-w-[350px] border-none flex m-auto mt-[30px] ${isDisable ? ' cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`} disabled={!isDisable}>
             {isLoading ? <Loading /> : t("login.login")}
           </Button>
-
+          <div className='w-full flex items-center justify-center mb-[10px]'>
+            <div className='text-[16px] font-fontFamily text-black mr-[5px]'>{t("register.returnPage")}</div>
+            <Link to={PAGE.REGISTER} className='text-[18px] font-fontFamily no-underline  text-[red]'> {t('register.register')}</Link>
+          </div>
         </form>
+
       </div>
     </div>
   )

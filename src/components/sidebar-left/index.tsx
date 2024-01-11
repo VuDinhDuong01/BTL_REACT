@@ -10,11 +10,13 @@ import { Images } from "../../assets/images"
 import { Button } from "../ui/Button"
 import { PAGE } from "../../contants"
 import { useLogoutMutation } from "../../apis";
-import { getRefreshTokenToLS } from "../../helps";
+import { getProfileToLS, getRefreshTokenToLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
-import { ChangePassowrd, ChangePasswordResponse } from "../ui/dialog-change-password";
+import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
+import { User } from "../../Types/user";
 
 export const SidebarLeft = () => {
+  const profile = getProfileToLS() as User
   const showChangePasswordRef=useRef<ChangePasswordResponse>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
@@ -39,9 +41,9 @@ export const SidebarLeft = () => {
     }
   }
   return (
-    <div className="w-full" >
-      <ChangePassowrd  ref={showChangePasswordRef} />
-      <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center">
+    <div className="w-full  min-h-[100vh]" >
+      <ChangePassword  ref={showChangePasswordRef} />
+      <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={()=>navigate(PAGE.HOME)}>
         <Logo />
       </div>
       <div>
@@ -112,7 +114,7 @@ export const SidebarLeft = () => {
           <div>
             {
               toggleLogout && <div onClick={handleLogout} className="bg-white !cursor-pointer p-[20px]  rounded-[50px] text-black font-fontFamily text-[15px] font-[700] border-[2px] border-solid border-black3 shadow-sm"  {...attrs}>
-                Log out @Ngocduong00
+                Log out {profile?.name}
               </div>
             }
           </div>
@@ -121,8 +123,8 @@ export const SidebarLeft = () => {
         <div className="flex items-center cursor-pointer fixed bottom-[10px]  w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
           <img src={Images.logo} alt="user" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
           <div className="ml-[10px] ">
-            <h3 className="text-[14px] font-fontFamily">NGỌC DƯƠNG</h3>
-            <p className="font-fontFamily text-[12px] mt-[5px]">duong09</p>
+            <h3 className="text-[14px] font-fontFamily">{profile?.name}</h3>
+            <p className="font-fontFamily text-[12px] mt-[5px]">{profile?.username}</p>
           </div>
         </div>
       </Tippy>

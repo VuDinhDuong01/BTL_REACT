@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
-import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setRefreshTokenToLS } from '../helps';
+import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../helps';
 import { URL_API } from '../contants';
 import { ToastMessage } from '../helps/toast-message';
 import { checkToken } from '../helps/check-token';
@@ -20,7 +20,7 @@ const handleRefreshToken = async () => {
 
         const { access_token, refresh_token } = res.data.data
         return {
-            access_token, 
+            access_token,
             refresh_token
         }
     } catch (error) {
@@ -49,6 +49,7 @@ instance.interceptors.response.use(function (response) {
         refreshToken = response.data.data.refresh_token
         setAccessTokenToLS(accessToken)
         setRefreshTokenToLS(refreshToken)
+        setProfileToLS(response.data.data.user)
     } else if (response.config.url === URL_API.LOGOUT_OUT) {
         accessToken = ''
         refreshToken = ''

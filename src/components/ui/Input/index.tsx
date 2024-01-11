@@ -16,7 +16,7 @@ const Input = forwardRef<HTMLInputElement, ComponentPropsWithoutRef<'input'>>(
         <input
           type={eye ? 'text' : type}
           className={
-            "!h-[40px]  rounded-[6px] outline-none !border-b-2 !border-blue-500 indent-2 font-fontFamily text-[14px]   " +
+            "!h-[45px] focus-visible:!border-[red]  rounded-[6px] !border-[#C1C1C1] !border-[1px]  border-solid indent-2 font-fontFamily text-[14px]   " +
             className
           }
           placeholder={props.placeholder}

@@ -12,7 +12,7 @@ import { ROLE } from "../helps/roles";
 import { ConfirmPassword } from "../pages/auth/confirm-email";
 import { ConfirmCode } from "../pages/auth/confirm-code";
 import { ResetPassword } from "../pages/auth/reset-password";
-import { Personal } from "../pages/auth/personal";
+import { Personal } from "../pages/auth/me";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
