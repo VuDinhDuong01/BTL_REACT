@@ -14,7 +14,9 @@ export default {
         'white': '#fff',
         'white1':'#EFF3F4',
         'green1':'#186E25',
+        'green2':'#1d9bf0',
         'error':'#F00000'
+        
       },
       fontFamily: {
         fontFamily: ['Roboto', 'sans-serif']
