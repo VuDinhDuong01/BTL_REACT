@@ -4,7 +4,7 @@ import { SidebarRight } from "../components/sidebar-right"
 import { Outlet } from 'react-router-dom'
 export const MainLayout = () => {
   return (
-    <div className="max-w-[1230px] m-auto flex mt-[5px]">
+    <div className="max-w-[1230px] m-auto flex ">
       <div className="w-[250px] fixed  border-r-[#EFF3F4] border-solid border-t-transparent  border-l-transparent  border-b-transparent border-r-[1px]   ">
         <SidebarLeft />
       </div>

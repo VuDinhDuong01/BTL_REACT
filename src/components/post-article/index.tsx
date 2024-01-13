@@ -53,39 +53,39 @@ export const PostArticle = () => {
                                 <p className="ml-[3px] text-[14px] font-fontFamily font-[700] text-green2 ">Everyone can reply</p>
                             </div>
                         </PopoverTrigger>
-                        <PopoverContent className=" !z-[9999] flex items-center justify-center ml-[-330px]">
+                        <PopoverContent className=" flex items-center justify-center ml-[-330px] bg-white !px-0" style={{boxShadow:"0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)"}}>
                             <div className="">
-                                <div>
-                                    <h3 className="text-[17px] font-fontFamily">Who can reply?</h3>
+                                <div className="mb-[20px] mt-[10px] px-[10px]">
+                                    <h3 className="text-[17px] mb-[10px] font-fontFamily">Who can reply?</h3>
                                     <p className="text-[14px] font-fontFamily">Choose who can reply to this post. Anyone mentioned can always reply</p>
                                 </div>
                                 <div className="w-full ">
-                                    <div className="w-full flex items-center  py-[6px] cursor-pointer hover:bg-[red]">
+                                    <div className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-[#EFF3F4]">
                                         <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
-                                        <Icons.AiOutlineGlobal />
+                                            <Icons.AiOutlineGlobal />
                                         </div>
                                         <h3 className="text-[17px] font-fontFamily ">Everyone</h3>
                                     </div>
-                                    <div className="w-full flex items-center  py-[6px] cursor-pointer hover:bg-[red]">
+                                    <div className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-[#EFF3F4]">
                                         <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
-                                        <Icons.MdManageAccounts />
+                                            <Icons.MdManageAccounts />
                                         </div>
                                         <h3 className="text-[17px] font-fontFamily ">Accounts you follow</h3>
                                     </div>
-                                    <div className="w-full flex items-center  py-[6px] cursor-pointer hover:bg-[red]">
+                                    <div className="w-full flex items-center  py-[8px] px-[10px]  cursor-pointer  hover:bg-[#EFF3F4]">
                                         <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
-                                        <Icons.IoSettingsOutline />
+                                            <Icons.IoSettingsOutline />
                                         </div>
                                         <h3 className="text-[17px] font-fontFamily ">Verified accounts</h3>
                                     </div>
-                                    <div className="w-full flex items-center  py-[6px] cursor-pointer hover:bg-[red]">
+                                    <div className="w-full flex items-center  py-[8px]  px-[10px] cursor-pointer hover:bg-[#EFF3F4]">
                                         <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
-                                        <Icons.SiOnlyoffice />
+                                            <Icons.SiOnlyoffice />
                                         </div>
                                         <h3 className="text-[17px] font-fontFamily ">Only accounts you mention</h3>
                                     </div>
-                               
-                                   
+
+
                                 </div>
                             </div>
                         </PopoverContent>
