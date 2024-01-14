@@ -1,11 +1,9 @@
+import { cn } from "./cn"
 /**
- * Create mulit signature wallet function
+
  * @param arrayImage  array image
  * @returns { JSX.Element } Return total number
  */
-
-import { cn } from "./cn"
-
 export interface ArrayImageType {
     image: string,
     type: string

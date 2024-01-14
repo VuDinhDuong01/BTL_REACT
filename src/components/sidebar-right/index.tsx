@@ -1,11 +1,10 @@
 import { Search } from "../search"
 
-
 export const SidebarRight = () => {
   return (
     <div className="w-full min-h-[100vh]  ml-[15px]">
       <Search />
-      <div className="w-full rounded-[16px] bg-[#f7f9f9] mt-[50px] ">
+      <div className="w-full rounded-[16px] bg-[#f7f9f9] mt-[70px] ">
         <h2 className="text-[#0f1419] font-[800] font-fontFamily mb-[20px] pt-[20px] px-[10px]">Trends for you</h2>
         <div className="py-[10px]  px-[10px] hover:bg-[#c3d8e8] cursor-pointer ">
           <p className="text-[13px] text-[#536471] font-fontFamily">Trending in Vietnam</p>

@@ -1,23 +1,43 @@
-
+import { useForm } from 'react-hook-form'
+import { useState } from 'react'
 
 import { Images } from "../../assets/images"
 import { Icons } from "../../helps/icons"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popver"
 
+
 export const Search = () => {
+    const [countCharSearch, setCountCharSearch] = useState<number>(0)
+    const { register, handleSubmit, reset } = useForm({
+        defaultValues: {
+            search: ''
+        }
+    })
+    const onSubmit = (handleSubmit(data => {
+        console.log(data)
+    }))
     return (
         <div>
             <Popover>
                 <PopoverTrigger asChild className="">
-                    <div className="w-full fixed top-[6px] bg-[red] py-[5px] ">
-                        <input className="w-[370px] focus:outline-none relative   focus:border-[1px] focus:border-solid focus:border-green2  !rounded-[50px] pl-[40px] font-fontFamily !pr-[45px] text-[16px] h-[45px] bg-[#EFF3F4] outline-none border-none" placeholder="Search" />
+                    <form className="w-full fixed top-[6px]  py-[5px]" onSubmit={onSubmit}>
+                        <input
+                            className="w-[370px] focus:outline-none relative   focus:border-[1px] focus:border-solid focus:border-green2  !rounded-[50px] pl-[40px] font-fontFamily !pr-[45px] text-[16px] h-[45px] bg-[#EFF3F4] outline-none border-none"
+                            placeholder="Search"
+                            {...register('search', {
+                                onChange: (e) => setCountCharSearch(e.target.value.length)
+                            })}
+                        />
                         <div className=" absolute top-[15px] left-[10px] text-[#EFF3F4]">
                             <Icons.IoIosSearch size={25} />
                         </div>
-                        <div className="w-[20px] h-[20px] bg-green2 rounded-[50%] text-white flex items-center justify-center cursor-pointer absolute top-[17px] left-[340px]">
-                            <Icons.IoMdClose />
-                        </div>
-                    </div>
+                        {
+                            countCharSearch > 0 && <div className="w-[20px] h-[20px] bg-green2 rounded-[50%] text-white flex items-center justify-center cursor-pointer absolute top-[17px] left-[340px]" onClick={() => reset('')}>
+                                <Icons.IoMdClose />
+                            </div>
+                        }
+
+                    </form>
                 </PopoverTrigger>
                 <PopoverContent className="!px-0  flex mr-[320px] max-h-[800px] overflow-y-scroll items-center justify-center  min-h-[300px]  w-[370px] bg-white" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
                     <div className="w-full ">

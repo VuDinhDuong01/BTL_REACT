@@ -9,10 +9,10 @@ export const Home = () => {
         <h2 className="text-[18px] cursor-pointer font-[700] font-fontFamily">Following</h2>
       </div>
       <div className="mt-[55px]">
-      <PostArticle />
+        <PostArticle />
       </div>
-     <Post />
-     <Post />
+      <Post />
+      <Post />
     </div>
   )
 }

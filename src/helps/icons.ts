@@ -21,6 +21,7 @@ import { MdManageAccounts } from "react-icons/md";
 import { IoSettingsOutline } from "react-icons/io5";
 import { SiOnlyoffice } from "react-icons/si";
 import { IoIosSearch } from "react-icons/io";
+import { LuUserCheck } from "react-icons/lu";
 export const  Icons={
     FaArrowLeftLong,
     FiMapPin,
@@ -44,4 +45,5 @@ export const  Icons={
     IoSettingsOutline,
     SiOnlyoffice,
     IoIosSearch ,
+    LuUserCheck
 }
