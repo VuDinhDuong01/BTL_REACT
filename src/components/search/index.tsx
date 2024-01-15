@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popver"
 
 export const Search = () => {
     const [countCharSearch, setCountCharSearch] = useState<number>(0)
+  
     const { register, handleSubmit, reset } = useForm({
         defaultValues: {
             search: ''
@@ -16,6 +17,10 @@ export const Search = () => {
     const onSubmit = (handleSubmit(data => {
         console.log(data)
     }))
+    const handleResetTextSearch=()=>{
+        reset({search:''})
+        setCountCharSearch(0)
+    }
     return (
         <div>
             <Popover>
@@ -32,7 +37,7 @@ export const Search = () => {
                             <Icons.IoIosSearch size={25} />
                         </div>
                         {
-                            countCharSearch > 0 && <div className="w-[20px] h-[20px] bg-green2 rounded-[50%] text-white flex items-center justify-center cursor-pointer absolute top-[17px] left-[340px]" onClick={() => reset('')}>
+                            countCharSearch > 0 && <div className="w-[20px] h-[20px] bg-green2 rounded-[50%] text-white flex items-center justify-center cursor-pointer absolute top-[17px] left-[340px]" onClick={handleResetTextSearch}>
                                 <Icons.IoMdClose />
                             </div>
                         }

@@ -36,10 +36,10 @@ export const Post = () => {
         },
 
     ]
-    const fakeArrayImage=[{type:'image',image:Images.background},{type:'image',image:Images.background},{type:'image',image:Images.background},{type:'image',image:Images.background},]
+    const fakeArrayImage=[Images.background,Images.background,Images.background,Images.background]
     
     return (
-        <div className="px-[10px] w-full flex  pt-[15px] hover:bg-[#EFF1F1] cursor-pointer border-solid border-b-[1px] border-b-[#EFF1F1] bg-transparent border-t-transparent border-r-transparent border-l-transparent">
+        <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <div className="w-[80px] h-full flex items-center ">
                 <img src={Images.logo} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
