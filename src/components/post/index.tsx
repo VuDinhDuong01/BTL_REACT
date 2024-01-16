@@ -55,7 +55,7 @@ export const Post = () => {
                 <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes game lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes games like Worms with League of Legends!</div>
                 <div className="w-full mt-[20px] cursor-pointer">
                     {
-                        DivideImageSize(fakeArrayImage)
+                        DivideImageSize({arrayImage:fakeArrayImage})
                     }
                 </div>
                 <div className="w-full py-[10px]  flex justify-between items-center">

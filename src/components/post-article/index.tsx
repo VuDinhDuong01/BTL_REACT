@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ChangeEvent, useRef, useState } from 'react'
-import EmojiPicker from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
 
@@ -10,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popver"
 import { ShowGIF, handleShowPopup } from '../show-gif';
 import { cn } from '../../helps/cn';
 import { DivideImageSize } from '../../helps/divide-size-image';
+import { useClickOutSide } from '../../hooks/useClickOutSide';
 
 const listIcons = [
     {
@@ -63,6 +65,7 @@ export const PostArticle = () => {
 
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
+    const emojiRef = useRef<any>(null)
     const { register, handleSubmit } = useForm({
         defaultValues: {
             textPost: ''
@@ -74,9 +77,10 @@ export const PostArticle = () => {
         title: 'Everyone can reply',
         icon: <Icons.AiOutlineGlobal />
     })
-
     const [countCharPost, setCountCharPost] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
+    const [gif, setGif] = useState<string>('')
+    const [textPost, setTextPost] = useState<string>('')
     const [files, setFiles] = useState<File[] | null>(null)
 
     const handleIcon = (title: string) => () => {
@@ -96,7 +100,7 @@ export const PostArticle = () => {
                 break;
         }
     }
-
+    useClickOutSide({ onClickOutSide: () => setIsShowEmoji(false), ref: emojiRef })
     const handleShowPermissionView = (id: number) => () => {
         setPopupPermission(false)
         for (const element of permissionViews) {
@@ -106,8 +110,12 @@ export const PostArticle = () => {
         }
     }
 
-    const onSubmit = (handleSubmit(data => {
-        console.log(data)
+    const onSubmit = (handleSubmit(async () => {
+        try {
+            console.log(textPost)
+        } catch (error: unknown) {
+            console.log(error)
+        }
     }))
 
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
@@ -116,23 +124,41 @@ export const PostArticle = () => {
             setFiles(arrayFile)
         }
     }
+    const handleCloseGif = () => {
+        setGif('')
+    }
+
+    const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
+        setTextPost(prev => (prev + emojiData.emoji))
+    }
 
     return (
-        <div className="w-[611px] min-h-[155px]">
-            <ShowGIF ref={gifRef} limit={50} />
+        <form className="w-[611px] min-h-[155px]" onSubmit={onSubmit}>
+            <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full min-h-[100px] flex border-b-[1px] border-solid border-white1 4 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
                     <img src={Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
-                <form className="flex-1 " onSubmit={onSubmit}>
+                <div className="flex-1 " >
                     <textarea {...register('textPost', {
                         onChange: (e) => {
                             setCountCharPost(e.target.value.length)
+                            setTextPost(e.target.value)
                         }
-                    })} placeholder="What is happening?" className="text-[15px] !text-black pt-[5px] pl-[10px]  bg-transparent font-fontFamily  w-full l-[5px] !focus:border-none border-none " />
+
+                    })} placeholder="What is happening?"
+                        className="text-[15px] !text-black pt-[5px] pl-[10px]  bg-transparent font-fontFamily  w-full l-[5px] !focus:border-none border-none "
+                        value={textPost}
+                    />
                     <div className='pr-[10px] mb-[10px]'>
                         {
-                            files !== null && files.length > 0 && DivideImageSize(files.map(file => URL.createObjectURL(file)),'post')
+                            files !== null && files.length > 0 && DivideImageSize({arrayImage:files.map(file => URL.createObjectURL(file)), type:'post',setFiles})
+                        }
+                        {
+                            Boolean(gif) && <div className='w-full relative'>
+                                <img src={gif} alt='gif' className='w-full object-cover rounded-lg h-[200px]' />
+                                <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={handleCloseGif}><Icons.IoMdClose /></div>
+                            </div>
                         }
                     </div>
                     <Popover>
@@ -167,7 +193,7 @@ export const PostArticle = () => {
                             </PopoverContent>
                         }
                     </Popover>
-                </form>
+                </div>
             </div>
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] "></div>
@@ -178,6 +204,8 @@ export const PostArticle = () => {
                                 return <div key={item.id} title={item.title} className={cn("w-[35px]   h-[35px] hover:bg-[#b9daef] text-green2 flex items-center justify-center rounded-[50%] cursor-pointer", {
                                     "hover:bg-transparent  text-[#afd2e8] cursor-not-allowed": files && files?.length > 0 && item.title === 'Gif',
                                     "hover:bg-transparent  text-[#afd2e8]  cursor-not-allowed": files && files?.length >= 4 && item.title === 'Media',
+                                    'hover:bg-transparent text-[#afd2e8] cursor-not-allowed': Boolean(gif) && item.title === 'Media',
+                                    'hover:bg-transparent text-[#afd2e8]  cursor-not-allowed': Boolean(gif) && item.title === 'Gif'
 
                                 })} onClick={handleIcon(item.title)}>
                                     {item.icons}
@@ -185,7 +213,7 @@ export const PostArticle = () => {
                             })
                         }
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
-                        {isShowEmoji && <div className='w-full absolute top-[44px] right-[50px]'><EmojiPicker onEmojiClick={() => { }} autoFocusSearch /></div>}
+                        {isShowEmoji && <div className='w-full absolute top-[44px] right-[50px] z-[9]' ref={emojiRef}><EmojiPicker onEmojiClick={handleShowEmojiPicker} autoFocusSearch /></div>}
                     </div>
                     <div className='flex items-center'>
                         {
@@ -194,14 +222,12 @@ export const PostArticle = () => {
                                 <div className='absolute top-0 left-0 right-0 bottom-0 border-[red] border-solid border-[2px] rounded-[50%]'></div>
                             </div>
                         }
-
                         <Button className="!text-[15px] 
                     !font-[700] text-white font-fontFamily mr-[15px] bg-green2  px-[15px] cursor-pointer !rounded-[50px] flex items-center justify-center">Post</Button>
-
                     </div>
                 </div>
             </div>
 
-        </div>
+        </form>
     )
 }
