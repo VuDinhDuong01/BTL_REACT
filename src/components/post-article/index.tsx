@@ -84,22 +84,21 @@ export const PostArticle = () => {
     const [files, setFiles] = useState<File[] | null>(null)
 
     const handleIcon = (title: string) => () => {
-        switch (title) {
-            case 'Media':
-                mediaRef.current && mediaRef.current.click()
-                break;
-            case 'Emoji':
-                setIsShowEmoji(!isShowEmoji)
-                break;
-            case 'Location':
-                break;
-            case 'Gif':
-                gifRef.current && gifRef.current.handleShowPopup()
-                break;
-            default:
-                break;
+        const actionMap = new Map([
+            ['Media', () => mediaRef.current && mediaRef.current.click()],
+            ['Emoji', () => setIsShowEmoji(!isShowEmoji)],
+            ['Location', () => { }],
+            ['Gif', () => gifRef.current && gifRef.current.handleShowPopup()],
+        ]);
+
+        const action = actionMap.get(title);
+        if (action) {
+            action();
+        } else {
+            // Xử lý trường hợp mặc định
         }
-    }
+    };
+
     useClickOutSide({ onClickOutSide: () => setIsShowEmoji(false), ref: emojiRef })
     const handleShowPermissionView = (id: number) => () => {
         setPopupPermission(false)
@@ -145,14 +144,13 @@ export const PostArticle = () => {
                             setCountCharPost(e.target.value.length)
                             setTextPost(e.target.value)
                         }
-
                     })} placeholder="What is happening?"
                         className="text-[15px] !text-black pt-[5px] pl-[10px]  bg-transparent font-fontFamily  w-full l-[5px] !focus:border-none border-none "
                         value={textPost}
                     />
                     <div className='pr-[10px] mb-[10px]'>
                         {
-                            files !== null && files.length > 0 && DivideImageSize({arrayImage:files.map(file => URL.createObjectURL(file)), type:'post',setFiles})
+                            files !== null && files.length > 0 && DivideImageSize({ arrayImage: files.map(file => URL.createObjectURL(file)), type: 'post', setFiles })
                         }
                         {
                             Boolean(gif) && <div className='w-full relative'>
