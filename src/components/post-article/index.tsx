@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ChangeEvent, useRef, useState } from 'react'
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
@@ -10,8 +11,8 @@ import { Images } from "../../assets/images"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popver"
 import { ShowGIF, handleShowPopup } from '../show-gif';
 import { cn } from '../../helps/cn';
-import { DivideImageSize } from '../../helps/divide-size-image';
 import { useClickOutSide } from '../../hooks/useClickOutSide';
+import { ConvertSizeImagesPost } from '../../helps/convert-size-image-post';
 
 const listIcons = [
     {
@@ -81,7 +82,7 @@ export const PostArticle = () => {
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     const [gif, setGif] = useState<string>('')
     const [textPost, setTextPost] = useState<string>('')
-    const [files, setFiles] = useState<File[] | null>(null)
+    const [files, setFiles] = useState<string[]>([])
 
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
@@ -120,7 +121,7 @@ export const PostArticle = () => {
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const arrayFile = Array.from(e.target.files);
-            setFiles(arrayFile)
+            setFiles(arrayFile.map(file => URL.createObjectURL(file)))
         }
     }
     const handleCloseGif = () => {
@@ -150,7 +151,7 @@ export const PostArticle = () => {
                     />
                     <div className='pr-[10px] mb-[10px]'>
                         {
-                            files !== null && files.length > 0 && DivideImageSize({ arrayImage: files.map(file => URL.createObjectURL(file)), type: 'post', setFiles })
+                            files !== null && files.length > 0 && ConvertSizeImagesPost({ arrayImage: files,  setFiles })
                         }
                         {
                             Boolean(gif) && <div className='w-full relative'>

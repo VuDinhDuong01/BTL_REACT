@@ -41,6 +41,7 @@ export const SidebarRight = () => {
           <h3 className="text-[15px] font-fontFamily font-[700] text-[#0f1419] my-[3px]">South Korea</h3>
           <p className="text-[13px] text-[#536471] font-fontFamily">27.9K posts</p>
         </div>
+      
       </div>
     </div>
   )

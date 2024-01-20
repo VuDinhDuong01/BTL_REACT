@@ -128,7 +128,6 @@ export const SidebarLeft = () => {
           </div>
         </div>
       </Tippy>
-
     </div>
   )
 }
