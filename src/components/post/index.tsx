@@ -4,6 +4,7 @@ import { TotalNumber } from "../../helps/sum-total-number"
 import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
 import { VideoPlayer } from "../video"
+
 export const Post = () => {
     const listIcons = [
         {
@@ -37,7 +38,7 @@ export const Post = () => {
         },
 
     ]
-    const fakeArrayImage = [Images.background]
+    const fakeArrayImage = [Images.background,Images.background,Images.background,Images.background,]
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
@@ -56,7 +57,7 @@ export const Post = () => {
                 <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes game lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes games like Worms with League of Legends!</div>
                 <div className="w-full mt-[20px] cursor-pointer">
                     {
-                        fakeArrayImage.length > 0 &&DivideImageSize({ arrayImage: fakeArrayImage }) 
+                        fakeArrayImage.length > 0 && DivideImageSize({ arrayImage: fakeArrayImage }) 
                         // : <VideoPlayer url='https://youtu.be/Vt4kAu-ziRY?si=R5w38MhUA4bV_HvM'  /> 
                     }
                 </div>

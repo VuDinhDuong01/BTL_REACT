@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ChangeEvent, useRef, useState } from 'react'
@@ -96,7 +97,7 @@ export const PostArticle = () => {
         if (action) {
             action();
         } else {
-            // Xử lý trường hợp mặc định
+            //
         }
     };
 
@@ -131,27 +132,33 @@ export const PostArticle = () => {
     const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
         setTextPost(prev => (prev + emojiData.emoji))
     }
+    const handleTextareaChange = (e: any) => {
+        setCountCharPost(e.target.value.length)
+        setTextPost(e.target.value)
+        e.target.style.height = `${e.target.scrollHeight}px`
+    }
 
     return (
-        <form className="w-[611px] min-h-[155px]" onSubmit={onSubmit}>
+        <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
-            <div className="w-full min-h-[100px] flex border-b-[1px] border-solid border-white1 4 border-r-transparent border-l-transparent border-t-transparent">
+            <div className="w-full min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
                     <img src={Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
                 <div className="flex-1 " >
                     <textarea {...register('textPost', {
-                        onChange: (e) => {
-                            setCountCharPost(e.target.value.length)
-                            setTextPost(e.target.value)
-                        }
+                        onChange: (e) => handleTextareaChange(e)
+
                     })} placeholder="What is happening?"
-                        className="text-[15px] !text-black pt-[5px] pl-[10px]  bg-transparent font-fontFamily  w-full l-[5px] !focus:border-none border-none "
+                        className="text-[18px] placeholder-textarea !text-black whitespace-pre-wrap focus:border-none outline-none break-words resize-none  pt-[5px] pl-[10px] bg-transparent font-fontFamily  w-full l-[5px] !focus:border-none !border-none overflow-hidden"
                         value={textPost}
+
                     />
-                    <div className='pr-[10px] mb-[10px]'>
+                    <div className={cn('pr-[10px] ', {
+                        'mb-[10px] mt-[10px]': files.length > 0
+                    })}>
                         {
-                            files !== null && files.length > 0 && ConvertSizeImagesPost({ arrayImage: files,  setFiles })
+                            files !== null && files.length > 0 && ConvertSizeImagesPost({ arrayImage: files, setFiles })
                         }
                         {
                             Boolean(gif) && <div className='w-full relative'>
@@ -162,7 +169,7 @@ export const PostArticle = () => {
                     </div>
                     <Popover>
                         <PopoverTrigger asChild className="">
-                            <div className=" inline-block  px-[10px] py-[4px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
+                            <div className=" inline-block  px-[10px]  cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
                                 <div className='flex items-center'>
                                     {showPermissionView.icon}
                                     <p className="ml-[5px] text-[14px] font-fontFamily font-[700] text-green2 ">{showPermissionView.title}</p>
@@ -170,7 +177,7 @@ export const PostArticle = () => {
                             </div>
                         </PopoverTrigger>
                         {
-                            showPopupPermission && <PopoverContent className=" flex items-center justify-center bg-white !px-0" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
+                            <PopoverContent className=" flex items-center justify-center bg-white !px-0" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
                                 <div>
                                     <div className="mb-[20px] mt-[10px] px-[10px]">
                                         <h3 className="text-[17px] mb-[10px] font-fontFamily">Who can reply?</h3>
@@ -217,7 +224,7 @@ export const PostArticle = () => {
                     <div className='flex items-center'>
                         {
                             countCharPost > 0 && <div className='w-[30px] h-[30px] relative mr-[20px]'>
-                                <div className='w-full h-full rounded-[50%] border-solid border-[2px] border-white1'></div>
+
                                 <div className='absolute top-0 left-0 right-0 bottom-0 border-[red] border-solid border-[2px] rounded-[50%]'></div>
                             </div>
                         }

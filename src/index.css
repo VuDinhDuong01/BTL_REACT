@@ -39,3 +39,6 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+.placeholder-textarea::placeholder {
+  font-size: 25px;
+}
