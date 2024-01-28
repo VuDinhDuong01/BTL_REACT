@@ -1,11 +1,17 @@
+import { useState } from "react"
+
 import { Images } from "../../assets/images"
 import { Icons } from "../../helps/icons"
 import { TotalNumber } from "../../helps/sum-total-number"
 import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
-import { VideoPlayer } from "../video"
+
+
 
 export const Post = () => {
+    const [like, setLike] = useState<boolean>(false)
+    const [bookmark, setBookMark] = useState<boolean>(false)
+
     const listIcons = [
         {
             id: 1,
@@ -22,7 +28,7 @@ export const Post = () => {
         {
             id: 3,
             title: 'Like',
-            icon: <Icons.IoIosHeartEmpty size={21} />,
+            icon: like ? <Icons.FaHeart size={21} /> : <Icons.IoIosHeartEmpty size={21} />,
             numberOfTurns: 12
         },
         {
@@ -34,11 +40,27 @@ export const Post = () => {
         {
             id: 5,
             title: 'Bookmark',
-            icon: <Icons.FaRegBookmark size={21} />,
+            icon: bookmark ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
         },
 
     ]
-    const fakeArrayImage = [Images.background,Images.background,Images.background,Images.background,]
+    console.log(like)
+
+    const fakeArrayImage = [Images.background, Images.background, Images.background, Images.background,]
+    const handleIcons = (title: string) => {
+        const map = new Map([
+            ['Like', () => {
+                setLike(!like)
+            }],
+            ['Bookmark', () => {
+                setBookMark(!bookmark)
+            }]
+        ])
+        const action = map.get(title)
+        if (action) {
+            action()
+        }
+    }
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
@@ -57,18 +79,20 @@ export const Post = () => {
                 <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes game lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes games like Worms with League of Legends!</div>
                 <div className="w-full mt-[20px] cursor-pointer">
                     {
-                        fakeArrayImage.length > 0 && DivideImageSize({ arrayImage: fakeArrayImage }) 
+                        fakeArrayImage.length > 0 && DivideImageSize({ arrayImage: fakeArrayImage })
                         // : <VideoPlayer url='https://youtu.be/Vt4kAu-ziRY?si=R5w38MhUA4bV_HvM'  /> 
                     }
                 </div>
                 <div className="w-full py-[10px]  flex justify-between items-center">
                     {
                         listIcons.map(item => {
-                            return <div key={item.id} className={cn("flex items-center", {
+                            return <div key={item.id} onClick={() => handleIcons(item.title)} className={cn("flex items-center", {
                                 "hover:text-green2 ": item.title === 'Bookmark',
+                                "text-green2 ": bookmark ===true && item.title=== 'Bookmark',
                                 "hover:text-[#1D9BF0] ": item.title === 'Reply',
                                 "hover:text-[#47CDA0] ": item.title === 'Repost',
                                 "hover:text-[#F91880] ": item.title === 'Like',
+                                "text-[#F91880] ": like === true && item.title === 'Like',
                                 "hover:text-[rgb(29,155,240)] ": item.title === 'View',
                             })}>
                                 <div key={item.id} title={item.title} className={cn("w-[35px]  h-[35px]   flex items-center justify-center rounded-[50%] cursor-pointer", {
@@ -76,7 +100,9 @@ export const Post = () => {
                                     "hover:text-[#1D9BF0] hover:bg-[#98c8e7]": item.title === 'Reply',
                                     "hover:text-[#47CDA0] hover:bg-[#b1e5d4]": item.title === 'Repost',
                                     "hover:text-[#F91880] hover:bg-[#e4a2c1]": item.title === 'Like',
+                                    " text-[#F91880]": like === true && item.title === 'Like',
                                     "hover:text-[#4FA3DD] hover:bg-[#a8d0ee]": item.title === 'View',
+
                                 })}>
                                     {item.icon}
                                 </div>

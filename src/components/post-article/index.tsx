@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type ChangeEvent, useRef, useState } from 'react'
+import { type ChangeEvent, useRef, useState, useEffect } from 'react'
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
@@ -9,11 +10,12 @@ import { useForm } from 'react-hook-form'
 import { Icons } from "../../helps/icons"
 import { Button } from "../ui/button"
 import { Images } from "../../assets/images"
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/Popver"
 import { ShowGIF, handleShowPopup } from '../show-gif';
 import { cn } from '../../helps/cn';
 import { useClickOutSide } from '../../hooks/useClickOutSide';
 import { ConvertSizeImagesPost } from '../../helps/convert-size-image-post';
+import { checkHashTagsOrMentions } from '../../helps/check-metions-or-hastags';
+import { regex } from '../../helps';
 
 const listIcons = [
     {
@@ -67,7 +69,8 @@ export const PostArticle = () => {
 
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
-    const emojiRef = useRef<any>(null)
+    const permissionRef = useRef<HTMLDivElement>(null)
+    const emojiRef = useRef<HTMLDivElement>(null)
     const { register, handleSubmit } = useForm({
         defaultValues: {
             textPost: ''
@@ -79,10 +82,18 @@ export const PostArticle = () => {
         title: 'Everyone can reply',
         icon: <Icons.AiOutlineGlobal />
     })
+
     const [countCharPost, setCountCharPost] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
+    useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
     const [gif, setGif] = useState<string>('')
-    const [textPost, setTextPost] = useState<string>('')
+
+    const [text, setText] = useState('');
+    const contentEditableRef = useRef<any>(null);
+    const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
+    const hashTags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
+    console.log(mentions, hashTags)
+
     const [files, setFiles] = useState<string[]>([])
 
     const handleIcon = (title: string) => () => {
@@ -111,9 +122,9 @@ export const PostArticle = () => {
         }
     }
 
-    const onSubmit = (handleSubmit(async () => {
+    const onSubmit = (handleSubmit(async (data) => {
         try {
-            console.log(textPost)
+            console.log(data)
         } catch (error: unknown) {
             console.log(error)
         }
@@ -125,36 +136,84 @@ export const PostArticle = () => {
             setFiles(arrayFile.map(file => URL.createObjectURL(file)))
         }
     }
+
     const handleCloseGif = () => {
         setGif('')
     }
 
     const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
-        setTextPost(prev => (prev + emojiData.emoji))
+        setText(prev => (prev + emojiData.emoji))
     }
-    const handleTextareaChange = (e: any) => {
-        setCountCharPost(e.target.value.length)
-        setTextPost(e.target.value)
-        e.target.style.height = `${e.target.scrollHeight}px`
-    }
+
+
+    const handleTextChange = () => {
+        const newText = contentEditableRef.current.innerText;
+        setText(newText);
+    };
+
+    useEffect(() => {
+        highlightHashtags();
+    }, [text]);
+    const moveCaretToEnd = () => {
+        const range = document.createRange();
+        const selection = window.getSelection();
+
+        range.selectNodeContents(contentEditableRef.current);
+        range.collapse(false);
+
+        selection?.removeAllRanges();
+        selection?.addRange(range);
+    };
+
+    useEffect(() => {
+        highlightHashtags();
+        moveCaretToEnd();
+    }, [text]);
+
+    const highlightHashtags = () => {
+        const highlightedText = text?.replace(regex.checkHashtagOrMention, (match) => `<span style="color: #6ABDF5;">${match}</span>`);
+        if (contentEditableRef?.current) {
+            contentEditableRef.current.innerHTML = highlightedText
+        }
+    };
+
+    const handlePlaceholderClick = () => {
+        contentEditableRef.current.focus();
+    };
 
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
+
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
                     <img src={Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
-                <div className="flex-1 " >
-                    <textarea {...register('textPost', {
-                        onChange: (e) => handleTextareaChange(e)
-
-                    })} placeholder="What is happening?"
-                        className="text-[18px] placeholder-textarea !text-black whitespace-pre-wrap focus:border-none outline-none break-words resize-none  pt-[5px] pl-[10px] bg-transparent font-fontFamily  w-full l-[5px] !focus:border-none !border-none overflow-hidden"
-                        value={textPost}
-
-                    />
-                    <div className={cn('pr-[10px] ', {
+                <div className="flex-1">
+                    <div className='w-full relative'>
+                        <div
+                            ref={contentEditableRef}
+                            contentEditable="true"
+                            onInput={handleTextChange}
+                            className='border-none outline-none font-fontFamily text-[20px] text-[#667581] w-full overflow-hidden whitespace-normal'
+                            style={{
+                                padding: '5px',
+                                minHeight: '50px',
+                                maxWidth:'530px',
+                                whiteSpace: 'pre-wrap',
+                                wordWrap: 'break-word',
+                            }}
+                        />
+                        {!text && (
+                            <div
+                                className="w-full absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[25px]"
+                                onClick={handlePlaceholderClick}
+                            >
+                                What is happening?
+                            </div>
+                        )}
+                    </div>
+                    <div className={cn('pr-[10px]', {
                         'mb-[10px] mt-[10px]': files.length > 0
                     })}>
                         {
@@ -167,17 +226,17 @@ export const PostArticle = () => {
                             </div>
                         }
                     </div>
-                    <Popover>
-                        <PopoverTrigger asChild className="">
-                            <div className=" inline-block  px-[10px]  cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
+                    <div className='w-full relative'>
+                        <div>
+                            <div className=" inline-block  px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
                                 <div className='flex items-center'>
                                     {showPermissionView.icon}
                                     <p className="ml-[5px] text-[14px] font-fontFamily font-[700] text-green2 ">{showPermissionView.title}</p>
                                 </div>
                             </div>
-                        </PopoverTrigger>
+                        </div>
                         {
-                            <PopoverContent className=" flex items-center justify-center bg-white !px-0" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
+                            showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 absolute left-[-11%] z-[99] max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
                                 <div>
                                     <div className="mb-[20px] mt-[10px] px-[10px]">
                                         <h3 className="text-[17px] mb-[10px] font-fontFamily">Who can reply?</h3>
@@ -196,9 +255,9 @@ export const PostArticle = () => {
                                         }
                                     </div>
                                 </div>
-                            </PopoverContent>
+                            </div>
                         }
-                    </Popover>
+                    </div>
                 </div>
             </div>
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
@@ -212,7 +271,6 @@ export const PostArticle = () => {
                                     "hover:bg-transparent  text-[#afd2e8]  cursor-not-allowed": files && files?.length >= 4 && item.title === 'Media',
                                     'hover:bg-transparent text-[#afd2e8] cursor-not-allowed': Boolean(gif) && item.title === 'Media',
                                     'hover:bg-transparent text-[#afd2e8]  cursor-not-allowed': Boolean(gif) && item.title === 'Gif'
-
                                 })} onClick={handleIcon(item.title)}>
                                     {item.icons}
                                 </div>
@@ -224,7 +282,6 @@ export const PostArticle = () => {
                     <div className='flex items-center'>
                         {
                             countCharPost > 0 && <div className='w-[30px] h-[30px] relative mr-[20px]'>
-
                                 <div className='absolute top-0 left-0 right-0 bottom-0 border-[red] border-solid border-[2px] rounded-[50%]'></div>
                             </div>
                         }

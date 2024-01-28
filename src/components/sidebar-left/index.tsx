@@ -5,7 +5,7 @@ import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
 
-import { CommunicationIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
+import { BookMarkIcon, CommunicationIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
 import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
@@ -76,6 +76,12 @@ export const SidebarLeft = () => {
             <MessageIcon />
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Messages</p>
+        </NavLink>
+        <NavLink to='/h' className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:w-[80%] hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center hover:w-[80%] no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+          <div className="ml-[10px]">
+            <BookMarkIcon />
+          </div>
+          <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Bookmark</p>
         </NavLink>
         <Tippy
           hideOnClick={isShowTippy}

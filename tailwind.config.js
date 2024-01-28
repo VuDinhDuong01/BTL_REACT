@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -29,6 +30,8 @@ export default {
       borderColor: ['focus-visible'],
     },
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/line-clamp'),
+  ]
 }
 

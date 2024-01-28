@@ -22,6 +22,8 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { SiOnlyoffice } from "react-icons/si";
 import { IoIosSearch } from "react-icons/io";
 import { LuUserCheck } from "react-icons/lu";
+import { FaHeart } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
 export const  Icons={
     FaArrowLeftLong,
     FiMapPin,
@@ -45,5 +47,7 @@ export const  Icons={
     IoSettingsOutline,
     SiOnlyoffice,
     IoIosSearch ,
-    LuUserCheck
+    LuUserCheck,
+    FaHeart,
+    FaBookmark
 }
