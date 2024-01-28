@@ -22,7 +22,8 @@ export const Personal = () => {
         }
     }
     return <div className="w-full">
-        <div className="w-full ">
+         <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
+        <div className="w-full">
             {
                 isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
                     <div className=" w-[611px] z-[9999] flex items-center h-[60px] fixed top-0 bg-white">
@@ -34,14 +35,14 @@ export const Personal = () => {
                             <p className="text-[15px] font-fontFamily text-black2">4 posts</p>
                         </div>
                     </div>
-                    <div className="w-full relative z-[0] mt-[55px]">
+                    <div className="w-full relative !z-[-999] mt-[55px]">
                         {
                             Boolean(getMe?.data.cover_photo as string) ? <img src={getMe?.data.cover_photo} alt="cover_photo" className="w-full h-[200px] mt-[20px] object-cover" /> : <div className="w-full h-[200px] mt-[20px] bg-[#CFD9DE] z-0 " />
                         }
                         <img src={Boolean(getMe?.data.avatar as string) ? getMe?.data.avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] border-[1px] border-solid border-white left-0 bottom-[-50px] ml-[20px] " />
                     </div>
                     <div className=" flex justify-end ">
-                        <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
+                       
                         <Button className="!text-[16px] mr-[10px] !text-black2 !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid 
              !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] hover:bg-[#F7F9F9]" onClick={handleShowPopup}>Edit profile</Button>
                     </div>

@@ -168,7 +168,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         {
             isShowPopup && <Dialog open={isShowPopup}>
                 <DialogOverlay />
-                <div className=' w-full h-full flex fixed inset-0 items-center justify-center'>
+                <div className=' w-full h-full flex fixed inset-0 items-center justify-center z-[999999]'>
                     <form className='h-[650px] w-[600px] bg-white rounded-[20px] flex flex-col items-center relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
                         <div className='w-full px-[10px] flex  rounded-t-[20px] items-center cursor-pointer justify-between !h-[50px] '>
                             <div className='flex items-center'>

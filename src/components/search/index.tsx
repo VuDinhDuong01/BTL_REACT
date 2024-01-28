@@ -74,10 +74,10 @@ export const Search = () => {
     const { textSearch } = useSearch({ value: text, delay: 1000 })
 
     return (
-        <div>
-            <div className='w-full relative'>
+        <div className=''>
+            <div className='w-full relative '>
                 <div>
-                    <form className="w-full fixed top-[6px]  py-[5px]" onSubmit={onSubmit}>
+                    <form className="w-full fixed top-[6px] py-[5px]" onSubmit={onSubmit}>
                         <input
                             className="w-[370px] focus:outline-none relative  focus:border-[1px] focus:border-solid focus:border-green2 !rounded-[50px] pl-[40px] font-fontFamily !pr-[45px] text-[16px] h-[45px] bg-[#EFF3F4] outline-none border-none"
                             placeholder="Search"
@@ -95,10 +95,10 @@ export const Search = () => {
                         }
                     </form>
                 </div>
-                <div className=" top-[56px] fixed   mr-[320px] items-center justify-center w-[370px] bg-white" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}> 
+                <div className=" top-[56px] fixed  z-[0]  mr-[320px] items-center justify-center w-[370px] bg-white" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}> 
                     <div className="text-[15px] font-fontFamily overflow-hidden whitespace-nowrap line-clamp-1 w-[350px] flex border-solid border-[1px]  border-b-[#EFF3F4] border-l-transparent border-r-transparent border-t-transparent h-[45px] items-center pl-[10px]">Search for {text}</div>
                     {
-                        listSearch.length > 0 && <div className='w-full max-h-[400px] overflow-y-scroll'>
+                        listSearch.length > 0 && <div className='w-full max-h-[400px] overflow-y-scroll '>
                             {
                                 listSearch?.map((item, index) => {
                                     return <div key={index} className="w-full flex items-center px-[10px]  py-[10px] cursor-pointer hover:bg-[#EFF3F4]">

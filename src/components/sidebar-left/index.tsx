@@ -41,8 +41,9 @@ export const SidebarLeft = () => {
     }
   }
   return (
-    <div className="w-full  min-h-[100vh]" >
-      <ChangePassword ref={showChangePasswordRef} />
+    <div className="w-full  min-h-[100vh] z-[9990" >
+        <ChangePassword ref={showChangePasswordRef} />
+      
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>
         <Logo />
       </div>
@@ -126,7 +127,7 @@ export const SidebarLeft = () => {
           </div>
         )}
       >
-        <div className="flex items-center cursor-pointer fixed bottom-[10px]  w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
+        <div className="flex items-center cursor-pointer fixed bottom-[10px] z-[0]  w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
           <img src={Boolean(getMe?.data?.avatar) ? getMe?.data.avatar : Images.logo} alt="user" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
           <div className="ml-[10px] ">
             <h3 className="text-[14px] font-fontFamily">{getMe?.data.name}</h3>

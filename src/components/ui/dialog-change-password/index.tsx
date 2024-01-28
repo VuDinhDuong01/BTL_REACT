@@ -74,12 +74,12 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
         })
     }, [watch])
 
-    return (<div>
+    return (<div className="w-full relative">
         {
             isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword}>
-                <DialogOverlay />
-                <div className='w-full h-full !z-[99] flex fixed inset-0 items-center justify-center'>
-                    <form className='min-h-[480px] min-w-[450px] !z-[9] bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
+              <div className="w-full  "> <DialogOverlay /></div>
+                <div className='w-full h-full  flex fixed inset-0 items-center justify-center z-[9999999]'>
+                    <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
                         <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
                         <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>
                         <div className='w-full'>

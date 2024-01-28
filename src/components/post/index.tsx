@@ -6,8 +6,6 @@ import { TotalNumber } from "../../helps/sum-total-number"
 import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
 
-
-
 export const Post = () => {
     const [like, setLike] = useState<boolean>(false)
     const [bookmark, setBookMark] = useState<boolean>(false)
@@ -44,9 +42,8 @@ export const Post = () => {
         },
 
     ]
-    console.log(like)
 
-    const fakeArrayImage = [Images.background, Images.background, Images.background, Images.background,]
+    const fakeArrayImage = [Images.background, Images.background, Images.background,Images.background,]
     const handleIcons = (title: string) => {
         const map = new Map([
             ['Like', () => {

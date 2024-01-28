@@ -199,7 +199,7 @@ export const PostArticle = () => {
                             style={{
                                 padding: '5px',
                                 minHeight: '50px',
-                                maxWidth:'530px',
+                                maxWidth: '530px',
                                 whiteSpace: 'pre-wrap',
                                 wordWrap: 'break-word',
                             }}
@@ -226,9 +226,9 @@ export const PostArticle = () => {
                             </div>
                         }
                     </div>
-                    <div className='w-full relative'>
-                        <div>
-                            <div className=" inline-block  px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
+                    <div className='w-full relative cursor-pointer'>
+                        <div className=''>
+                            <div className=" inline-block px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
                                 <div className='flex items-center'>
                                     {showPermissionView.icon}
                                     <p className="ml-[5px] text-[14px] font-fontFamily font-[700] text-green2 ">{showPermissionView.title}</p>
@@ -236,7 +236,7 @@ export const PostArticle = () => {
                             </div>
                         </div>
                         {
-                            showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 absolute left-[-11%] z-[99] max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
+                            showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 absolute left-[-11%] max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
                                 <div>
                                     <div className="mb-[20px] mt-[10px] px-[10px]">
                                         <h3 className="text-[17px] mb-[10px] font-fontFamily">Who can reply?</h3>
@@ -263,7 +263,7 @@ export const PostArticle = () => {
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] "></div>
                 <div className="flex-1 flex items-center justify-between h-full ">
-                    <div className="w-full flex items-center relative">
+                    <div className="w-full flex items-center relative z-[-1]">
                         {
                             listIcons.map(item => {
                                 return <div key={item.id} title={item.title} className={cn("w-[35px]   h-[35px] hover:bg-[#b9daef] text-green2 flex items-center justify-center rounded-[50%] cursor-pointer", {
