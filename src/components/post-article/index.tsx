@@ -15,7 +15,9 @@ import { cn } from '../../helps/cn';
 import { useClickOutSide } from '../../hooks/useClickOutSide';
 import { ConvertSizeImagesPost } from '../../helps/convert-size-image-post';
 import { checkHashTagsOrMentions } from '../../helps/check-metions-or-hastags';
-import { regex } from '../../helps';
+import { getProfileToLS, regex } from '../../helps';
+import { useUploadImageMutation } from '../../apis';
+import { useCreateTweetMutation } from '../../apis/tweet';
 
 const listIcons = [
     {
@@ -40,33 +42,45 @@ const listIcons = [
     },
 ]
 
-const permissionViews = [
+interface permissionViews {
+    id: number,
+    title: string,
+    icon: JSX.Element,
+    audience: number
+}
+
+const permissionViews: permissionViews[] = [
     {
         id: 1,
         title: 'Everyone can reply',
-        icon: <Icons.AiOutlineGlobal />
+        icon: <Icons.AiOutlineGlobal />,
+        audience: 0,
     },
     {
         id: 2,
         title: 'Accounts you follow',
-        icon: <Icons.LuUserCheck />
+        icon: <Icons.LuUserCheck />,
+        audience: 1,
     },
     {
         id: 3,
         title: 'Verified accounts',
-        icon: <Icons.IoSettingsOutline />
+        icon: <Icons.IoSettingsOutline />,
+        audience: 2,
     },
     {
         id: 4,
         title: 'Only accounts you mention',
-        icon: <Icons.SiOnlyoffice />
+        icon: <Icons.SiOnlyoffice />,
+        audience: 3
     },
 ]
 
 // const MAX_CHAR = 500
 
 export const PostArticle = () => {
-
+    const [uploadImages] = useUploadImageMutation()
+    const [createTweet] = useCreateTweetMutation()
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -84,6 +98,7 @@ export const PostArticle = () => {
     })
 
     const [countCharPost, setCountCharPost] = useState<number>(0)
+    const [audience, setAudience] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
     const [gif, setGif] = useState<string>('')
@@ -91,10 +106,9 @@ export const PostArticle = () => {
     const [text, setText] = useState('');
     const contentEditableRef = useRef<any>(null);
     const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
-    const hashTags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
-    console.log(mentions, hashTags)
+    const hashtags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
 
-    const [files, setFiles] = useState<string[]>([])
+    const [files, setFiles] = useState<File[]>([])
 
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
@@ -113,27 +127,21 @@ export const PostArticle = () => {
     };
 
     useClickOutSide({ onClickOutSide: () => setIsShowEmoji(false), ref: emojiRef })
-    const handleShowPermissionView = (id: number) => () => {
+    const handleShowPermissionView = (item: permissionViews) => () => {
         setPopupPermission(false)
+        setAudience(item.audience)
         for (const element of permissionViews) {
-            if (element.id === id) {
+            if (element.id === item.id) {
                 setShowPermissionView(omit(element, ['id']))
             }
         }
     }
 
-    const onSubmit = (handleSubmit(async (data) => {
-        try {
-            console.log(data)
-        } catch (error: unknown) {
-            console.log(error)
-        }
-    }))
-
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const arrayFile = Array.from(e.target.files);
-            setFiles(arrayFile.map(file => URL.createObjectURL(file)))
+
+            setFiles(arrayFile)
         }
     }
 
@@ -144,7 +152,6 @@ export const PostArticle = () => {
     const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
         setText(prev => (prev + emojiData.emoji))
     }
-
 
     const handleTextChange = () => {
         const newText = contentEditableRef.current.innerText;
@@ -181,11 +188,38 @@ export const PostArticle = () => {
         contentEditableRef.current.focus();
     };
 
+
+    const user_id = getProfileToLS()
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append('image', files[i])
+    }
+    const onSubmit = (handleSubmit(async () => {
+        try {
+            const uploadImage = await uploadImages(formData).unwrap()
+            const medias = uploadImage.map(item => item.image)
+            const bodyRequest = {
+                content: text,
+                medias,
+                user_id,
+                audience,
+                hashtags,
+                mentions
+            }
+            const tweet = await createTweet(bodyRequest).unwrap();
+            console.log(tweet)
+        } catch (error: unknown) {
+            console.log(error)
+        }
+    }))
+
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
 
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
-            <div className="w-full min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
+            <div className="w-full  min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
                     <img src={Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
@@ -217,7 +251,7 @@ export const PostArticle = () => {
                         'mb-[10px] mt-[10px]': files.length > 0
                     })}>
                         {
-                            files !== null && files.length > 0 && ConvertSizeImagesPost({ arrayImage: files, setFiles })
+                            files !== null && files.length > 0 && ConvertSizeImagesPost({ arrayImage: files.map(file => URL.createObjectURL(file)), setFiles })
                         }
                         {
                             Boolean(gif) && <div className='w-full relative'>
@@ -245,7 +279,7 @@ export const PostArticle = () => {
                                     <div className="w-full">
                                         {
                                             permissionViews.map((item) => {
-                                                return <div key={item.id} className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-white1" onClick={handleShowPermissionView(item.id)}>
+                                                return <div key={item.id} className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-white1" onClick={handleShowPermissionView(item)}>
                                                     <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
                                                         {item.icon}
                                                     </div>
@@ -263,7 +297,7 @@ export const PostArticle = () => {
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] "></div>
                 <div className="flex-1 flex items-center justify-between h-full ">
-                    <div className="w-full flex items-center relative z-[-1]">
+                    <div className="w-full flex items-center relative">
                         {
                             listIcons.map(item => {
                                 return <div key={item.id} title={item.title} className={cn("w-[35px]   h-[35px] hover:bg-[#b9daef] text-green2 flex items-center justify-center rounded-[50%] cursor-pointer", {

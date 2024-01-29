@@ -88,24 +88,24 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                 formData.append('image', fileImage.cover_photo)
                 typeCheckImage = 'cover_photo'
             }
-            let res:UploadImageResponse[] = [];
-            if(fileImage.avatar !== null || fileImage.cover_photo !== null){
-                 res = await uploadImage(formData).unwrap()
+            let res: UploadImageResponse[] = [];
+            if (fileImage.avatar !== null || fileImage.cover_photo !== null) {
+                res = await uploadImage(formData).unwrap()
             }
-            
+
             const bodyRequest = {
                 ...(username !== dataMe?.data.username && { username: username }),
                 ...(name !== dataMe?.data.name && { name: name }),
                 ...(bio !== dataMe?.data.bio && { bio: bio }),
                 ...(website !== dataMe?.data.website && { website: website }),
                 ...(location !== dataMe?.data.location && { location: location }),
-                ...(fileImage.cover_photo !== null && res.length ===2 && { cover_photo: res?.[1].image }),
+                ...(fileImage.cover_photo !== null && res.length === 2 && { cover_photo: res?.[1].image }),
                 ...(fileImage.cover_photo !== null && res.length === 1 && { cover_photo: res?.[0].image }),
                 ...(fileImage.avatar !== null && { avatar: res?.[0].image })
             }
 
             await updateMe(bodyRequest).unwrap();
-            ToastMessage({ status: 'success', message: t('updateMe.updateMeSuccess')})
+            ToastMessage({ status: 'success', message: t('updateMe.updateMeSuccess') })
             setIsShowPopup(false)
             setFileImage({
                 cover_photo: null,

@@ -1,12 +1,16 @@
 import { useState } from "react"
 
-import { Images } from "../../assets/images"
 import { Icons } from "../../helps/icons"
 import { TotalNumber } from "../../helps/sum-total-number"
 import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
+import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 
-export const Post = () => {
+
+interface Props {
+    tweet: Tweet
+}
+export const Post = ({ tweet }: Props) => {
     const [like, setLike] = useState<boolean>(false)
     const [bookmark, setBookMark] = useState<boolean>(false)
 
@@ -15,7 +19,7 @@ export const Post = () => {
             id: 1,
             title: 'Reply',
             icon: <Icons.BiMessageRounded size={21} />,
-            numberOfTurns: 1200
+            numberOfTurns: tweet.like_count
         },
         {
             id: 2,
@@ -27,7 +31,7 @@ export const Post = () => {
             id: 3,
             title: 'Like',
             icon: like ? <Icons.FaHeart size={21} /> : <Icons.IoIosHeartEmpty size={21} />,
-            numberOfTurns: 12
+            numberOfTurns: tweet.like_count
         },
         {
             id: 4,
@@ -43,7 +47,7 @@ export const Post = () => {
 
     ]
 
-    const fakeArrayImage = [Images.background, Images.background, Images.background,Images.background,]
+
     const handleIcons = (title: string) => {
         const map = new Map([
             ['Like', () => {
@@ -62,21 +66,20 @@ export const Post = () => {
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <div className="w-[80px] h-full flex items-center ">
-                <img src={Images.logo} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
+                <img src={tweet?.user[0]?.avatar ? tweet.user[0]?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
                 <div className="mt-[8px]">
                     <div className=" w-full flex items-center font-fontFamily">
-                        <h2 className="text-[18px]">Vũ Đình Dương</h2>
-                        <p className="text-[15px] mx-1">@duonglovoi</p>
-                        <p className="text-[15px]">.20-2-001</p>
+                        <h2 className="text-[18px]">{tweet.user[0]?.name}</h2>
+                        <p className="text-[15px] mx-1">@{tweet.user[0]?.username}</p>
                     </div>
-                    <p className="font-fontFamily text-[16px] pt-[5px]">dfdfdddddddddddddddddddddddddddddddddddd</p>
+                    <p className="font-fontFamily text-[16px] pt-[5px]">{tweet.user[0]?.bio}</p>
                 </div>
-                <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes game lumni of Google's Indie Games Accelerator, Space Maverick is a real-time 2D artillery MOBA that mixes games like Worms with League of Legends!</div>
+                <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
                 <div className="w-full mt-[20px] cursor-pointer">
                     {
-                        fakeArrayImage.length > 0 && DivideImageSize({ arrayImage: fakeArrayImage })
+                        tweet.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
                         // : <VideoPlayer url='https://youtu.be/Vt4kAu-ziRY?si=R5w38MhUA4bV_HvM'  /> 
                     }
                 </div>
@@ -85,7 +88,7 @@ export const Post = () => {
                         listIcons.map(item => {
                             return <div key={item.id} onClick={() => handleIcons(item.title)} className={cn("flex items-center", {
                                 "hover:text-green2 ": item.title === 'Bookmark',
-                                "text-green2 ": bookmark ===true && item.title=== 'Bookmark',
+                                "text-green2 ": bookmark === true && item.title === 'Bookmark',
                                 "hover:text-[#1D9BF0] ": item.title === 'Reply',
                                 "hover:text-[#47CDA0] ": item.title === 'Repost',
                                 "hover:text-[#F91880] ": item.title === 'Like',

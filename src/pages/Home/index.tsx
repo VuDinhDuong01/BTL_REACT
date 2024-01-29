@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react"
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
+import { useGetListTweetQuery } from "../../apis/tweet"
 
 const actionArray = [
   { id: 1, title: 'For you' },
@@ -13,9 +15,10 @@ export const Home = () => {
   const handleOptionAction = (action: number) => {
     setOptionAction(action)
   }
+  const { data: getListTweet, isLoading } = useGetListTweetQuery()
   return (
     <div className="w-full">
-      <div className="min-w-[611px] z-[-9999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
+      <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
         {actionArray.map((action) => (
           <div
             className={cn('h-full w-full relative ', {
@@ -36,11 +39,12 @@ export const Home = () => {
       <div className="mt-[55px]">
         <PostArticle />
       </div>
-     <div className="!z-[-1]">
-     <Post />
-     </div>
-     
-
+      {
+        getListTweet?.data.map(tweet => {
+          return <div key={tweet._id}> <Post tweet={tweet} />
+          </div>
+        })
+      }
     </div>
   )
 }

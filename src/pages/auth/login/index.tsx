@@ -13,6 +13,7 @@ import { ContextAPI } from '../../../hooks';
 import { ErrorHandle } from '../../../Types/login';
 import { Loading } from '../../../assets/icons/eye';
 import { PAGE } from '../../../contants';
+import { setProfileToLS } from '../../../helps';
 
 
 
@@ -38,8 +39,9 @@ export const Login = () => {
     try {
 
       const res = await Login(data).unwrap()
+      setProfileToLS(res.data.user._id)
       setAuth({
-        role: res.data.role,
+        role: res.data.user.roles[0],
         auth: true
       })
       navigate(PAGE.HOME)

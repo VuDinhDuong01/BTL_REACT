@@ -6,13 +6,13 @@ import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 
-const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL, CONFIRM_CODE, RESET_PASSWORD,CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
 }
 
- export interface UploadImageResponse {
+export interface UploadImageResponse {
   image: string,
   type: number
 }

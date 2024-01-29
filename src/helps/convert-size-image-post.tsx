@@ -15,7 +15,7 @@ import { Icons } from "./icons"
 
 interface DivideImageSizeProps {
     arrayImage: string[],
-    setFiles: React.Dispatch<SetStateAction<string[]>>
+    setFiles: React.Dispatch<SetStateAction<File[]>>
 }
 interface RenderImageProps extends DivideImageSizeProps  {
     start: number;
@@ -29,7 +29,7 @@ interface EventImagePost extends Omit<DivideImageSizeProps, 'arrayImage'> {
 
 const handleEventImagePost = ({ setFiles, image }: EventImagePost) => {
     const handleDeleteFile = () => {
-        setFiles(prev => (prev?.filter(item => item !== image)))
+        setFiles(prev => (prev?.filter(item => URL.createObjectURL(item) !== image)))
     }
     return (
         <>

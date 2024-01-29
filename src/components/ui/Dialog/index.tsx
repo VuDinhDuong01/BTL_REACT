@@ -16,7 +16,7 @@ const DialogOverlay = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ ...props }, _
 ) => (
-   <div className="w-full relative !z-[999999]">
+   <div className="w-full relative ">
      <DialogPrimitive.Overlay
 
 className={(

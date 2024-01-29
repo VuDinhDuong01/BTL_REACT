@@ -1,5 +1,3 @@
-import { User } from "../Types/user"
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const LocalStorageEventTarget = new EventTarget()
 
@@ -29,8 +27,8 @@ export const getRefreshTokenToLS = () => {
     return localStorage.getItem(keyLocalStorage.refresh_token)
 }
 
-export const setProfileToLS = (profile: User) => {
-    return profile && localStorage.setItem(keyLocalStorage.profile, JSON.stringify(profile))
+export const setProfileToLS = (user_id: string) => {
+    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify(user_id))
 }
 
 export const getProfileToLS = () => {
