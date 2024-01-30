@@ -1,7 +1,7 @@
 
 import { ROLE } from "./roles"
 import { Outlet, Navigate } from "react-router-dom"
-import { Missing } from "../pages/Missing/Missing"
+import { Missing } from "../pages/missing/Missing"
 import { PAGE } from "../contants"
 import { getAccessTokenToLS } from "."
 

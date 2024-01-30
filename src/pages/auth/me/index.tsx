@@ -8,7 +8,7 @@ import { PAGE } from "../../../contants"
 import { PopupUpdateMe, ShowPopupHandle } from "../../../components/ui/dialog-form-update-me"
 import { useGetMeQuery } from "../../../apis"
 import { DEFAULT_IMAGE_AVATAR } from "../../../helps/image-user-default"
-import { GetUserResponse } from "../../../Types/user"
+import { GetUserResponse } from "../../../types/user"
 import { Skeleton } from "../../../components/ui/skeleton"
 
 export const Personal = () => {
@@ -22,7 +22,7 @@ export const Personal = () => {
         }
     }
     return <div className="w-full">
-         <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
+        <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
         <div className="w-full">
             {
                 isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
@@ -42,7 +42,7 @@ export const Personal = () => {
                         <img src={Boolean(getMe?.data.avatar as string) ? getMe?.data.avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] border-[1px] border-solid border-white left-0 bottom-[-50px] ml-[20px] " />
                     </div>
                     <div className=" flex justify-end ">
-                       
+
                         <Button className="!text-[16px] mr-[10px] !text-black2 !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid 
              !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] hover:bg-[#F7F9F9]" onClick={handleShowPopup}>Edit profile</Button>
                     </div>

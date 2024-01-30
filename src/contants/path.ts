@@ -7,5 +7,6 @@ export const PAGE={
     CONFIRM_CODE:'/confirm-code/:user_id',
     RESET_PASSWORD:'/reset-password/:user_id',
     NOTIFICATIONS:'/notifications',
-    PERSONAL:'/personal'
+    PERSONAL:'/personal',
+    BOOKMARK:'/bookmark'
 } as const 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AuthRequestProp, AuthResponseType } from '../Types/login'
-import { GetLogoutResponse, GetUserResponse, UpdateMe, changePasswordProps } from '../Types/user'
+import { AuthRequestProp, AuthResponseType } from '../types/login'
+import { GetLogoutResponse, GetUserResponse, UpdateMe, changePasswordProps } from '../types/user'
 import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'

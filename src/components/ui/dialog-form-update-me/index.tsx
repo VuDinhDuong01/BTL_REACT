@@ -14,7 +14,7 @@ import UpdateMeSchema, { UpdateMeSchemaType } from '../../schema/updateMe';
 import { Label } from '@radix-ui/react-label';
 import { ToastMessage } from '../../../helps/toast-message';
 import { DEFAULT_IMAGE_AVATAR, DEFAULT_IMAGE_COVER_PHOTO } from '../../../helps/image-user-default';
-import { GetUserResponse } from '../../../Types/user';
+import { GetUserResponse } from '../../../types/user';
 import { UploadImageResponse, useUpdateMeMutation, useUploadImageMutation } from '../../../apis';
 import { Loading } from '../../../assets/icons/eye';
 

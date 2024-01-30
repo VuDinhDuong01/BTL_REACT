@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { GenerateType } from '../Types/generate'
+import { GenerateType } from '../types/generate'
 import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
@@ -16,14 +16,14 @@ export const tweetAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data,
             }),
-            invalidatesTags:['getListTweet']
+            invalidatesTags: ['getListTweet']
         }),
         getListTweet: build.query<GenerateType<Tweet[]>, void>({
             query: () => ({
                 url: CREATE_TWEET,
                 method: METHOD_API.GET,
             }),
-            providesTags:['getListTweet']
+            providesTags: ['getListTweet']
         }),
     })
 })

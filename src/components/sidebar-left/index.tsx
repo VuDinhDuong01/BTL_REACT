@@ -11,7 +11,7 @@ import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
 import { PAGE } from "../../contants"
 import { useGetMeQuery, useLogoutMutation } from "../../apis";
-import { getRefreshTokenToLS } from "../../helps";
+import { getRefreshTokenToLS, setProfileToLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
 
@@ -23,6 +23,7 @@ export const SidebarLeft = () => {
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
   const { data: getMe } = useGetMeQuery(null)
+  setProfileToLS({ username: getMe?.data.username, user_id: getMe?.data._id as string })
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -42,8 +43,8 @@ export const SidebarLeft = () => {
   }
   return (
     <div className="w-full  min-h-[100vh] z-[9990" >
-        <ChangePassword ref={showChangePasswordRef} />
-      
+      <ChangePassword ref={showChangePasswordRef} />
+
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>
         <Logo />
       </div>
@@ -78,7 +79,7 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Messages</p>
         </NavLink>
-        <NavLink to='/h' className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:w-[80%] hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center hover:w-[80%] no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+        <NavLink to={PAGE.BOOKMARK} className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:w-[80%] hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center hover:w-[80%] no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">
             <BookMarkIcon />
           </div>

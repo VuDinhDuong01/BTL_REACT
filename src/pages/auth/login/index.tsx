@@ -10,10 +10,10 @@ import { Images } from "../../../assets/images"
 import ControllerInput from "../../../components/controller-form/controller-input"
 import { useLoginMutation } from '../../../apis';
 import { ContextAPI } from '../../../hooks';
-import { ErrorHandle } from '../../../Types/login';
+import { ErrorHandle } from '../../../types/login';
 import { Loading } from '../../../assets/icons/eye';
 import { PAGE } from '../../../contants';
-import { setProfileToLS } from '../../../helps';
+
 
 
 
@@ -39,7 +39,6 @@ export const Login = () => {
     try {
 
       const res = await Login(data).unwrap()
-      setProfileToLS(res.data.user._id)
       setAuth({
         role: res.data.user.roles[0],
         auth: true

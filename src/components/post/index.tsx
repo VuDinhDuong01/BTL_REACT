@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState } from "react"
 
 import { Icons } from "../../helps/icons"
@@ -5,13 +6,23 @@ import { TotalNumber } from "../../helps/sum-total-number"
 import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
+import { useLikeMutation, useUnLikeMutation } from "../../apis/like"
+import { getLikeLS } from "../../helps"
+import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
+
 
 
 interface Props {
     tweet: Tweet
 }
 export const Post = ({ tweet }: Props) => {
-    const [like, setLike] = useState<boolean>(false)
+    const likeInLS = getLikeLS()
+    const [likeTweet] = useLikeMutation()
+    const [unLikeTweet] = useUnLikeMutation()
+    const [bookmarkTweet] = useBookmarkMutation()
+    const [unBookmarkTweet] = useUnBookmarkMutation()
+    const [like, setLike] = useState<boolean>(likeInLS)
+
     const [bookmark, setBookMark] = useState<boolean>(false)
 
     const listIcons = [
@@ -19,7 +30,7 @@ export const Post = ({ tweet }: Props) => {
             id: 1,
             title: 'Reply',
             icon: <Icons.BiMessageRounded size={21} />,
-            numberOfTurns: tweet.like_count
+            numberOfTurns: 12
         },
         {
             id: 2,
@@ -46,15 +57,25 @@ export const Post = ({ tweet }: Props) => {
         },
 
     ]
-
-
-    const handleIcons = (title: string) => {
+    const handleIcons = async (title: string) => {
         const map = new Map([
-            ['Like', () => {
+            ['Like', async () => {
                 setLike(!like)
+                if (like) {
+
+                    await unLikeTweet({ tweet_id: tweet._id })
+                } else {
+                    await likeTweet({ tweet_id: tweet._id })
+                }
             }],
-            ['Bookmark', () => {
+            ['Bookmark', async () => {
                 setBookMark(!bookmark)
+                if (bookmark) {
+                    await unBookmarkTweet({ tweet_id: tweet._id })
+
+                } else {
+                    await bookmarkTweet({ tweet_id: tweet._id })
+                }
             }]
         ])
         const action = map.get(title)

@@ -12,6 +12,7 @@ function App() {
     localStorage.getItem(keyLocalStorage.lng) === null && localStorage.setItem(keyLocalStorage.lng, LANGUAGE.VI)
   }, [])
 
+
   useEffect(() => {
     LocalStorageEventTarget.addEventListener('clearLS', reset)
     return () => LocalStorageEventTarget.removeEventListener('clearLS', reset)

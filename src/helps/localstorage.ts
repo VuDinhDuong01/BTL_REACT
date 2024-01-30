@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const LocalStorageEventTarget = new EventTarget()
 
@@ -5,7 +6,9 @@ export const keyLocalStorage = {
     access_token: 'access_token',
     refresh_token: 'refresh_token',
     profile: 'profile',
-    lng: 'lng'
+    lng: 'lng',
+    like: 'like',
+    bookmark: 'bookmark'
 }
 export const setLanguageToLS = (lng: string) => {
     return lng ? localStorage.setItem(keyLocalStorage.lng, lng) : localStorage.setItem(keyLocalStorage.lng, 'vi')
@@ -27,8 +30,8 @@ export const getRefreshTokenToLS = () => {
     return localStorage.getItem(keyLocalStorage.refresh_token)
 }
 
-export const setProfileToLS = (user_id: string) => {
-    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify(user_id))
+export const setProfileToLS = ({ user_id, username }: { user_id: string, username?: string }) => {
+    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify({ user_id, username }))
 }
 
 export const getProfileToLS = () => {
@@ -43,4 +46,11 @@ export const removeLS = () => {
     const clearLSEvent = new Event('clearLS')
     LocalStorageEventTarget.dispatchEvent(clearLSEvent)
 
+}
+
+export const setLikeLS = (like: boolean) => {
+    return like && localStorage.setItem(keyLocalStorage.like, JSON.stringify(like))
+}
+export const getLikeLS = () => {
+    return Boolean(JSON.parse(localStorage.getItem(keyLocalStorage.like) as string))
 }

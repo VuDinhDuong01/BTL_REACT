@@ -18,6 +18,7 @@ import { checkHashTagsOrMentions } from '../../helps/check-metions-or-hastags';
 import { getProfileToLS, regex } from '../../helps';
 import { useUploadImageMutation } from '../../apis';
 import { useCreateTweetMutation } from '../../apis/tweet';
+import { Loading } from '../../assets/icons/eye';
 
 const listIcons = [
     {
@@ -80,7 +81,7 @@ const permissionViews: permissionViews[] = [
 
 export const PostArticle = () => {
     const [uploadImages] = useUploadImageMutation()
-    const [createTweet] = useCreateTweetMutation()
+    const [createTweet,{isLoading}] = useCreateTweetMutation()
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -209,6 +210,12 @@ export const PostArticle = () => {
                 mentions
             }
             const tweet = await createTweet(bodyRequest).unwrap();
+            setText('')
+            setFiles([])
+            setShowPermissionView({
+                title: 'Everyone can reply',
+                icon: <Icons.AiOutlineGlobal />
+            })
             console.log(tweet)
         } catch (error: unknown) {
             console.log(error)
@@ -319,8 +326,7 @@ export const PostArticle = () => {
                                 <div className='absolute top-0 left-0 right-0 bottom-0 border-[red] border-solid border-[2px] rounded-[50%]'></div>
                             </div>
                         }
-                        <Button className="!text-[15px] 
-                    !font-[700] text-white font-fontFamily mr-[15px] bg-green2  px-[15px] cursor-pointer !rounded-[50px] flex items-center justify-center">Post</Button>
+                        <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : 'Post'}</Button>
                     </div>
                 </div>
             </div>

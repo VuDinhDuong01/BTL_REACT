@@ -5,7 +5,7 @@ import { PAGE } from '../contants/path'
 import { Register } from '../pages/auth/register'
 
 import { Login } from '../pages/auth/login'
-import { Home } from '../pages/Home'
+import { Home } from '../pages/home'
 import { MainLayout } from '../layouts/MainLayout'
 import { RequestRole } from "../helps/request-role";
 import { ROLE } from "../helps/roles";
@@ -13,6 +13,7 @@ import { ConfirmPassword } from "../pages/auth/confirm-email";
 import { ConfirmCode } from "../pages/auth/confirm-code";
 import { ResetPassword } from "../pages/auth/reset-password";
 import { Personal } from "../pages/auth/me";
+import Bookmark from "../pages/bookmark";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
@@ -38,6 +39,7 @@ export const route = () => {
                 <Route element={<RequestRole allowRoles={[ROLE.USER]} />} >
                     <Route path={PAGE.HOME} element={<Home />} />
                     <Route path={PAGE.PERSONAL} element={<Personal />} />
+                    <Route path={PAGE.BOOKMARK} element={<Bookmark />} />
                 </Route>
                 
             </Route>

@@ -14,7 +14,7 @@ import { Button } from "../button";
 import changePasswordSchema, { ChangePasswordSchemaType } from "../../schema/change-password";
 import { Loading } from "../../../assets/icons/eye";
 import { useChangePasswordMutation } from "../../../apis";
-import { ErrorHandle } from "../../../Types/login";
+import { ErrorHandle } from "../../../types/login";
 import { PAGE } from "../../../contants";
 import { removeLS } from "../../../helps";
 import { ToastMessage } from "../../../helps/toast-message";
@@ -77,7 +77,7 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
     return (<div className="w-full relative">
         {
             isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword}>
-              <div className="w-full  "> <DialogOverlay /></div>
+                <div className="w-full  "> <DialogOverlay /></div>
                 <div className='w-full h-full  flex fixed inset-0 items-center justify-center z-[9999999]'>
                     <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
                         <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
