@@ -11,6 +11,7 @@ interface TweetProps {
 
 interface Tweet {
     _id: string,
+    [key in any]: string
     content: string
     user_id: string
     hashtags: string[],
@@ -22,10 +23,16 @@ interface Tweet {
     updated_at: Date,
     created_at: Date,
     like_count: number,
+    likes: {
+        status?: boolean
+    }
     user: [{
         name?: string,
         username?: string,
         avatar?: string,
         bio?: string
-    }]
+    }],
+    bookmark:{
+        status?:boolean
+    }
 }

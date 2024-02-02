@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react"
+
 
 import { Icons } from "../../helps/icons"
 import { TotalNumber } from "../../helps/sum-total-number"
@@ -7,23 +8,24 @@ import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { useLikeMutation, useUnLikeMutation } from "../../apis/like"
-import { getLikeLS } from "../../helps"
+
 import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
-
-
-
+import { useState , useRef } from "react"
+import { PopupComment, ShowPopupComment } from "../ui/dialog-comment"
 interface Props {
-    tweet: Tweet
+    tweet: Tweet,
 }
+
 export const Post = ({ tweet }: Props) => {
-    const likeInLS = getLikeLS()
+    const refShowPopupComment= useRef<ShowPopupComment>(null)
+
     const [likeTweet] = useLikeMutation()
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
-    const [like, setLike] = useState<boolean>(likeInLS)
+    const [like, setLike] = useState<boolean>(tweet.likes.status ? true : false)
 
-    const [bookmark, setBookMark] = useState<boolean>(false)
+    const [bookmark, setBookMark] = useState<boolean>(tweet.bookmark.status ? true : false)
 
     const listIcons = [
         {
@@ -41,7 +43,7 @@ export const Post = ({ tweet }: Props) => {
         {
             id: 3,
             title: 'Like',
-            icon: like ? <Icons.FaHeart size={21} /> : <Icons.IoIosHeartEmpty size={21} />,
+            icon: <Icons.IoIosHeartEmpty size={21} />,
             numberOfTurns: tweet.like_count
         },
         {
@@ -55,12 +57,13 @@ export const Post = ({ tweet }: Props) => {
             title: 'Bookmark',
             icon: bookmark ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
         },
-
     ]
+
     const handleIcons = async (title: string) => {
         const map = new Map([
             ['Like', async () => {
                 setLike(!like)
+
                 if (like) {
 
                     await unLikeTweet({ tweet_id: tweet._id })
@@ -72,11 +75,17 @@ export const Post = ({ tweet }: Props) => {
                 setBookMark(!bookmark)
                 if (bookmark) {
                     await unBookmarkTweet({ tweet_id: tweet._id })
-
                 } else {
                     await bookmarkTweet({ tweet_id: tweet._id })
                 }
-            }]
+            }],
+            [
+                'Reply', async()=>{
+                    if(refShowPopupComment.current){
+                        refShowPopupComment.current.showPopup()
+                    }
+                }
+            ]
         ])
         const action = map.get(title)
         if (action) {
@@ -86,8 +95,9 @@ export const Post = ({ tweet }: Props) => {
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
+            <PopupComment ref={refShowPopupComment}  />
             <div className="w-[80px] h-full flex items-center ">
-                <img src={tweet?.user[0]?.avatar ? tweet.user[0]?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
+                <img src={tweet?.user?.[0]?.avatar ? tweet.user?.[0]?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
                 <div className="mt-[8px]">
@@ -121,18 +131,18 @@ export const Post = ({ tweet }: Props) => {
                                     "hover:text-[#1D9BF0] hover:bg-[#98c8e7]": item.title === 'Reply',
                                     "hover:text-[#47CDA0] hover:bg-[#b1e5d4]": item.title === 'Repost',
                                     "hover:text-[#F91880] hover:bg-[#e4a2c1]": item.title === 'Like',
-                                    " text-[#F91880]": like === true && item.title === 'Like',
+                                    " text-[#F91880]": tweet.likes?.status && item.title === 'Like',
                                     "hover:text-[#4FA3DD] hover:bg-[#a8d0ee]": item.title === 'View',
 
                                 })}>
                                     {item.icon}
                                 </div>
-                                <div className="text-[13px] font-fontFamily font-[500]">{item.numberOfTurns ? TotalNumber(item.numberOfTurns) : ''}</div>
+                                 <div className="text-[13px] font-fontFamily font-[500]">{item.numberOfTurns ? TotalNumber(item.numberOfTurns) : ''}</div> 
                             </div>
                         })
                     }
                 </div>
-            </div>
+            </div> 
         </div>
     )
 }

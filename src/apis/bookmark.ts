@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { baseCreateApi } from "."
-import { GenerateType } from "../Types/generate"
+
 
 import { URL_API } from "../contants"
 import { METHOD_API } from "../helps"
+import { GenerateType } from "../types/generate"
 
 const { CREATE_BOOKMARK, UN_BOOKMARK, GET_BOOKMARK } = URL_API
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react"
+import { useState, useMemo, useEffect } from "react"
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -15,7 +15,14 @@ export const Home = () => {
   const handleOptionAction = (action: number) => {
     setOptionAction(action)
   }
-  const { data: getListTweet, isLoading } = useGetListTweetQuery()
+  const { data: getListTweet } = useGetListTweetQuery()
+console.log(getListTweet)
+
+
+
+
+
+
   return (
     <div className="w-full">
       <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
@@ -40,8 +47,8 @@ export const Home = () => {
         <PostArticle />
       </div>
       {
-        getListTweet?.data.map(tweet => {
-          return <div key={tweet._id}> <Post tweet={tweet} />
+        getListTweet?.data?.map((tweet,index) => {
+          return <div key={index}> <Post tweet={tweet}  />
           </div>
         })
       }

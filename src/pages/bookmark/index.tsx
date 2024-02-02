@@ -12,7 +12,7 @@ const Bookmark = () => {
         return getBookmark?.data.map(item => {
             return {
                 like_count: item.like_count,
-                {...item.bookmark[0]}
+                // {...item.bookmark[0]}
 
             }
         })
