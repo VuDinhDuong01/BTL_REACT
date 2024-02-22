@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
-import { useImperativeHandle, forwardRef, useState, useRef, useEffect } from 'react'
-
+import { useImperativeHandle, forwardRef, useState, useRef, useContext, Dispatch, SetStateAction } from 'react'
 import { useTranslation } from "react-i18next";
 
 
@@ -11,6 +10,10 @@ import { Icons } from '../../../helps/icons';
 
 
 import { Images } from '../../../assets/images';
+import { ContextProvider } from '../../post';
+import { convertDateToHours } from '../../../helps/convert-date-to-hour';
+import { ListIcons } from '../../list-icons';
+
 
 export type ShowPopupComment = {
     showPopup: () => void;
@@ -21,26 +24,21 @@ interface FileImageProps {
     [key: string]: File | null
 }
 
-export const PopupComment = forwardRef<ShowPopupComment, any>((props, ref) => {
+
+interface PropsDialogComment {
+    handleLike: (_id_comment: string) => Promise<void>
+    handleShowListIcon: (_id_comment?: string) => void
+    isHovered: string
+    handleHiddenListIcon:()=>void
+    setIcon:Dispatch<SetStateAction<string>>
+}
+export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ handleLike, handleShowListIcon, isHovered ,handleHiddenListIcon,setIcon}, ref) => {
+    const { data } = useContext(ContextProvider)
+
     const contentEditableRef = useRef<any>(null);
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
 
     const [comment, setComment] = useState('');
-
-    //    const moveCaretToEnd = () => {
-    //         const range = document.createRange();
-    //         const selection = window.getSelection();
-
-    //         range.selectNodeContents(contentEditableRef.current);
-    //         range.collapse(false);
-
-    //         selection?.removeAllRanges();
-    //         selection?.addRange(range);
-    //     };
-    //     useEffect(() => {
-    //         moveCaretToEnd();
-    //     }, [comment]);
-
     const showPopup = () => {
         setIsShowPopup(true)
     }
@@ -59,7 +57,6 @@ export const PopupComment = forwardRef<ShowPopupComment, any>((props, ref) => {
         const newText = contentEditableRef.current.innerText;
         setComment(newText);
     };
-
     return (<div>
         {
             isShowPopup && <Dialog open={isShowPopup}>
@@ -74,73 +71,54 @@ export const PopupComment = forwardRef<ShowPopupComment, any>((props, ref) => {
                         </div>
                         <div className='w-full flex-1 overflow-y-scroll '>
                             <div className='px-[20px]'>
-                                <div className='w-full flex mt-[10px] '>
-                                    <img src={Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-                                    <div>
-                                        <div>
-                                            <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
-                                                <h4 className='font-[600] font-fontFamily text-[16px]'>Ngọc Dương</h4>
-                                                <p className='text-[14px] font-fontFamily'>dạo này toàn xinh gái hahahahahahahah</p>
-                                            </div>
-                                            <div className='w-[200px] mt-[5px] flex items-center justify-between'>
-                                                <p className='text-[15px] font-fontFamily'>1 giờ</p>
-                                                <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline'>Thích</p>
-                                                <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline'>Phản hồi</p>
+                                {
+                                    data.data.length > 0 && data.data.map(comment => {
+                                        return <div className='w-full flex mt-[15px]' key={comment._id}>
+                                            <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+                                            <div>
+                                                <div>
+                                                    <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
+                                                        <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
+                                                        <p className='text-[14px] font-fontFamily'>{comment?.content_comment}</p>
+                                                    </div>
+                                                    <div className='w-[200px] mt-[5px] flex items-center justify-between'>
+                                                        <p className='text-[15px] font-fontFamily'>{`${convertDateToHours(comment.created_at)} giờ`}</p>
+                                                        <div className='relative'>
+                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleLike(comment._id)} onMouseEnter={() => handleShowListIcon(comment._id)} onMouseLeave={handleHiddenListIcon}>Thích</p>
+                                                            {
+                                                                isHovered === comment._id && <div className=' absolute top-[-50px]' onMouseEnter={() => handleLike(comment._id)}><ListIcons setIcon={setIcon} /></div>
+                                                            }
+                                                        </div>
+                                                        <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline'>Phản hồi</p>
+                                                    </div>
+                                                </div>
+                                                {
+                                                    comment?.replies_comments.length > 0 && Object.keys(comment.replies_comments[0]).length > 0 && comment?.replies_comments.map(replies_comment => {
+                                                        return <div className=' mt-[10px]' key={replies_comment._id}>
+                                                            <div className='flex mb-[10px]'>
+                                                                <img src={replies_comment?.avatar ? replies_comment?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+                                                                <div>
+                                                                    <div>
+                                                                        <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
+                                                                            <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
+                                                                            <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
+                                                                        </div>
+                                                                        <div className='w-[100px] mt-[5px] flex items-center justify-between'>
+                                                                            <p className='text-[15px] font-fontFamily'>1 giờ</p>
+                                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline'>Thích</p>
+                                                                        </div>
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    })
+                                                }
                                             </div>
                                         </div>
-                                        <div className=' mt-[10px]'>
-                                            <div className='flex mb-[10px]'>
-                                                <img src={Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-                                                <div>
-                                                    <div>
-                                                        <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
-                                                            <h4 className='font-[600] font-fontFamily text-[16px]'>Ngọc Dương</h4>
-                                                            <p className='text-[14px] font-fontFamily'>dạo này toàn xinh gái hahahahahahahah</p>
-                                                        </div>
-                                                        <div className='w-[100px] mt-[5px] flex items-center justify-between'>
-                                                            <p className='text-[15px] font-fontFamily'>1 giờ</p>
-                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline'>Thích</p>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            <div className='flex mb-[10px]'>
-                                                <img src={Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-                                                <div>
-                                                    <div>
-                                                        <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
-                                                            <h4 className='font-[600] font-fontFamily text-[16px]'>Ngọc Dương</h4>
-                                                            <p className='text-[14px] font-fontFamily'>dạo này toàn xinh gái hahahahahahahah</p>
-                                                        </div>
-                                                        <div className='w-[100px] mt-[5px] flex items-center justify-between'>
-                                                            <p className='text-[15px] font-fontFamily'>1 giờ</p>
-                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0]'>Thích</p>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                            <div className='flex mb-[10px]'>
-                                                <img src={Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-                                                <div>
-                                                    <div>
-                                                        <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
-                                                            <h4 className='font-[600] font-fontFamily text-[16px]'>Ngọc Dương</h4>
-                                                            <p className='text-[14px] font-fontFamily'>dạo này toàn xinh gái hahahahahahahah</p>
-                                                        </div>
-                                                        <div className='w-[100px] mt-[5px] flex items-center justify-between'>
-                                                            <p className='text-[15px] font-fontFamily'>1 giờ</p>
-                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0]'>Thích</p>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
+                                    })
+                                }
                             </div>
                         </div>
                         <div className='w-full min-h-[120px] p-[10px]  ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
@@ -178,7 +156,5 @@ export const PopupComment = forwardRef<ShowPopupComment, any>((props, ref) => {
     </div>
     )
 });
-
-
 
 

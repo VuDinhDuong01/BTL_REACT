@@ -33,8 +33,6 @@ export const Login = () => {
     resolver: zodResolver(loginSchema),
   })
 
-
-
   const onSubmit = handleSubmit(async (data) => {
     try {
 
@@ -46,7 +44,6 @@ export const Login = () => {
       navigate(PAGE.HOME)
     } catch (error) {
       const e = error as ErrorHandle
-
       for (const key in e.data.error) {
         setError(key as 'email' | 'password', { message: e.data.error[key] })
       }

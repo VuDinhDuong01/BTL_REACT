@@ -11,7 +11,7 @@ import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
 import { PAGE } from "../../contants"
 import { useGetMeQuery, useLogoutMutation } from "../../apis";
-import { getRefreshTokenToLS, setProfileToLS } from "../../helps";
+import { getRefreshTokenToLS, removeLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
 
@@ -23,7 +23,6 @@ export const SidebarLeft = () => {
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
   const { data: getMe } = useGetMeQuery(null)
-  setProfileToLS({ username: getMe?.data.username, user_id: getMe?.data._id as string })
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -31,7 +30,7 @@ export const SidebarLeft = () => {
       navigate(PAGE.LOGIN)
       ToastMessage({ status: 'success', message: t('logout.logoutSuccess') })
       setToggleLogout(!toggleLogout)
-
+      removeLS()
     } catch (error: unknown) {
       console.log(error)
     }

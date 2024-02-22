@@ -31,6 +31,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         method: METHOD_API.POST,
         data,
       }),
+      invalidatesTags:['login']
     }),
 
     register: build.mutation<AuthResponseType, AuthRequestProp>({
@@ -89,7 +90,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         url: GET_ME,
         method: METHOD_API.GET,
       }),
-      providesTags: ['getMe']
+      providesTags: ['getMe','login']
     }),
     updateMe: build.mutation<GetUserResponse, UpdateMe>({
       query: (data) => ({

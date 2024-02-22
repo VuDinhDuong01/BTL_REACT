@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState, useMemo, useEffect } from "react"
 
-import { Post } from "../../components/post"
+import { GetCommentResponse, Post, initComment } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
+import { useLikeCommentMutation } from "../../apis/comment"
+import { getProfileToLS } from "../../helps"
 
 const actionArray = [
   { id: 1, title: 'For you' },
@@ -12,17 +14,39 @@ const actionArray = [
 ]
 export const Home = () => {
   const [optionAction, setOptionAction] = useState<number>(1)
+  const [likeComment] = useLikeCommentMutation()
+  const [icon , setIcon]= useState<string>('')
+  const [listComment, setListComment] = useState<{ data: GetCommentResponse, loading: boolean }>({
+    data: initComment,
+    loading: false
+  })
   const handleOptionAction = (action: number) => {
     setOptionAction(action)
   }
-  const { data: getListTweet } = useGetListTweetQuery()
-console.log(getListTweet)
+  const { data: getListTweet } = useGetListTweetQuery({
+    limit: 10,
+    page: 1
+  })
+  const [isHovered, setIsHovered] = useState<string>('')
+  const handleShowListIcon = (_id_comment?: string) => {
+    
+      setIsHovered(_id_comment as string )
+   
+    
+  }
+  const handleHiddenListIcon=()=>{
+    setIsHovered('')
+  }
 
+  const { user_id } = getProfileToLS() as { user_id: string }
 
-
-
-
-
+  const handleLike = async (_id_comment: string) => {
+    try {
+      await likeComment({ comment_id: _id_comment, user_id,icon }).unwrap()
+    } catch (error: unknown) {
+      console.log(error)
+    }
+  }
   return (
     <div className="w-full">
       <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
@@ -47,8 +71,17 @@ console.log(getListTweet)
         <PostArticle />
       </div>
       {
-        getListTweet?.data?.map((tweet,index) => {
-          return <div key={index}> <Post tweet={tweet}  />
+        getListTweet?.data?.map((tweet, index) => {
+          return <div key={index}> <Post
+            tweet={tweet}
+            setListComment={setListComment}
+            listComment={listComment}
+            handleLike={handleLike}
+            isHovered={isHovered}
+            handleShowListIcon={handleShowListIcon}
+            handleHiddenListIcon={handleHiddenListIcon}
+            setIcon={setIcon}
+          />
           </div>
         })
       }

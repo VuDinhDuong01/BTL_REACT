@@ -9,30 +9,28 @@ interface TweetProps {
     audience?: number
 }
 
-interface Tweet {
-    _id: string,
-    [key in any]: string
-    content: string
+export interface Tweet {
+    _id?: ObjectId
+    content?: string
+    hashtags?: string[]
     user_id: string
-    hashtags: string[],
+    mentions?: string[]
     medias: string[]
-    mentions: string[],
-    audience: number,
-    user_views: number,
-    guest_views: number,
-    updated_at: Date,
-    created_at: Date,
-    like_count: number,
-    likes: {
-        status?: boolean
-    }
-    user: [{
-        name?: string,
-        username?: string,
-        avatar?: string,
-        bio?: string
-    }],
-    bookmark:{
-        status?:boolean
-    }
-}
+    audience?: TweetAudience
+    guest_views?: number
+    user_views?: number
+    updated_at?: Date
+    created_at?: Date
+    user: { username: string; avatar: string; name: string ,bio:string}
+    likes:Like[]
+    like_count?: number
+    bookmarks?: Like[],
+    comment_count?:number
+  }
+ export interface Like {
+    _id: string
+    user_id: string
+    tweet_id: string
+    created_at: string
+    updated_at: string
+  }
