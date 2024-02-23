@@ -19,6 +19,7 @@ import { getProfileToLS, regex } from '../../helps';
 import { useUploadImageMutation } from '../../apis';
 import { useCreateTweetMutation } from '../../apis/tweet';
 import { Loading } from '../../assets/icons/eye';
+import { EmojiPickers, ShowEmoji } from '../common/emoji-picker';
 
 const listIcons = [
     {
@@ -77,27 +78,23 @@ const permissionViews: permissionViews[] = [
     },
 ]
 
-// const MAX_CHAR = 500
-
 export const PostArticle = () => {
     const [uploadImages] = useUploadImageMutation()
     const [createTweet,{isLoading}] = useCreateTweetMutation()
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
-    const emojiRef = useRef<HTMLDivElement>(null)
     const { register, handleSubmit } = useForm({
         defaultValues: {
             textPost: ''
         }
     })
 
-    const [isShowEmoji, setIsShowEmoji] = useState<boolean>(false)
     const [showPermissionView, setShowPermissionView] = useState<{ title: string, icon: JSX.Element }>({
         title: 'Everyone can reply',
         icon: <Icons.AiOutlineGlobal />
     })
-
+    const emojiRef = useRef<ShowEmoji>(null)
     const [countCharPost, setCountCharPost] = useState<number>(0)
     const [audience, setAudience] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
@@ -114,7 +111,7 @@ export const PostArticle = () => {
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
             ['Media', () => mediaRef.current && mediaRef.current.click()],
-            ['Emoji', () => setIsShowEmoji(!isShowEmoji)],
+            ['Emoji', () => emojiRef && emojiRef.current?.toggleShowEmoji()],
             ['Location', () => { }],
             ['Gif', () => gifRef.current && gifRef.current.handleShowPopup()],
         ]);
@@ -122,12 +119,10 @@ export const PostArticle = () => {
         const action = actionMap.get(title);
         if (action) {
             action();
-        } else {
-            //
-        }
+        } 
     };
 
-    useClickOutSide({ onClickOutSide: () => setIsShowEmoji(false), ref: emojiRef })
+   
     const handleShowPermissionView = (item: permissionViews) => () => {
         setPopupPermission(false)
         setAudience(item.audience)
@@ -162,6 +157,7 @@ export const PostArticle = () => {
     useEffect(() => {
         highlightHashtags();
     }, [text]);
+
     const moveCaretToEnd = () => {
         const range = document.createRange();
         const selection = window.getSelection();
@@ -197,6 +193,7 @@ export const PostArticle = () => {
     for (let i = 0; i < files.length; i++) {
         formData.append('image', files[i])
     }
+
     const onSubmit = (handleSubmit(async () => {
         try {
             const uploadImage = await uploadImages(formData).unwrap()
@@ -216,7 +213,6 @@ export const PostArticle = () => {
                 title: 'Everyone can reply',
                 icon: <Icons.AiOutlineGlobal />
             })
-            console.log(tweet)
         } catch (error: unknown) {
             console.log(error)
         }
@@ -318,7 +314,7 @@ export const PostArticle = () => {
                             })
                         }
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
-                        {isShowEmoji && <div className='w-full absolute top-[44px] right-[50px] z-[9]' ref={emojiRef}><EmojiPicker onEmojiClick={handleShowEmojiPicker} autoFocusSearch /></div>}
+                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute top-[44px] z-[9]' />
                     </div>
                     <div className='flex items-center'>
                         {

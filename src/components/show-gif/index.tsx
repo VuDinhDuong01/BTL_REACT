@@ -24,10 +24,13 @@ export const ShowGIF = forwardRef<handleShowPopup, Pops>(({ limit, setGif }, ref
         setIsShowPopup(true)
     }
 
+
     const handleClosePopup = () => {
         setIsShowPopup(false)
     }
-
+//  const handleCloseGif = () => {
+//         setGif('')
+//     }
     useImperativeHandle(ref, () => ({
         handleShowPopup: handleShowPopup
     }));
