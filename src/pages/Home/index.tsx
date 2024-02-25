@@ -15,11 +15,13 @@ const actionArray = [
 export const Home = () => {
   const [optionAction, setOptionAction] = useState<number>(1)
   const [likeComment] = useLikeCommentMutation()
-  const [icon , setIcon]= useState<string>('')
+  const [icon, setIcon] = useState<string>('')
+  const [isHovered, setIsHovered] = useState<string>('')
   const [listComment, setListComment] = useState<{ data: GetCommentResponse, loading: boolean }>({
     data: initComment,
     loading: false
   })
+  const [isShowInputRepliesComment , setIsShowInputRepliesComment]=useState<string >('')
   const handleOptionAction = (action: number) => {
     setOptionAction(action)
   }
@@ -27,14 +29,11 @@ export const Home = () => {
     limit: 10,
     page: 1
   })
-  const [isHovered, setIsHovered] = useState<string>('')
+
   const handleShowListIcon = (_id_comment?: string) => {
-    
-      setIsHovered(_id_comment as string )
-   
-    
+    setIsHovered(_id_comment as string)
   }
-  const handleHiddenListIcon=()=>{
+  const handleHiddenListIcon = () => {
     setIsHovered('')
   }
 
@@ -42,7 +41,7 @@ export const Home = () => {
 
   const handleLike = async (_id_comment: string) => {
     try {
-      await likeComment({ comment_id: _id_comment, user_id,icon }).unwrap()
+      await likeComment({ comment_id: _id_comment, user_id, icon }).unwrap()
     } catch (error: unknown) {
       console.log(error)
     }
@@ -81,6 +80,8 @@ export const Home = () => {
             handleShowListIcon={handleShowListIcon}
             handleHiddenListIcon={handleHiddenListIcon}
             setIcon={setIcon}
+            isShowInputRepliesComment={isShowInputRepliesComment}
+            setIsShowInputRepliesComment={setIsShowInputRepliesComment}
           />
           </div>
         })

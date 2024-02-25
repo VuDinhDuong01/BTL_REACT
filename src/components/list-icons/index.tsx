@@ -28,7 +28,7 @@ export const ListIcons = ({setIcon}:{setIcon: Dispatch<SetStateAction<string>>})
                     'text-[#039CFC]': Icon.id === 1,
                     'text-[#F44D65]': Icon.id === 2,
                     'text-[#F7B42D]': Icon.id === 3 || Icon.id === 4,
-                })} onClick={() => handleSelectIcon(Icon.icon)}><Icon.icon size={35} /></div>
+                })} onClick={() => handleSelectIcon(Icon.icon)} key={Icon.id}><Icon.icon size={35} /></div>
             })
         }
     </div>

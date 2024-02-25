@@ -21,7 +21,7 @@ export interface Tweet {
     user_views?: number
     updated_at?: Date
     created_at?: Date
-    user: { username: string; avatar: string; name: string ,bio:string}
+    users: { username: string; avatar: string; name: string ,bio:string}
     likes:Like[]
     like_count?: number
     bookmarks?: Like[],

@@ -42,3 +42,13 @@
 .placeholder-textarea::placeholder {
   font-size: 25px;
 }
+.auto-resizable-textarea {
+  resize: none; /* Ngăn chặn việc thay đổi kích thước bằng chuột */
+  overflow-y: hidden; /* Ẩn thanh cuộn theo chiều dọc nếu cần */
+  min-height: 2.4em; /* Chiều cao tối thiểu */
+  padding: 10px; /* Phần đệm */
+  font-size: 16px; /* Cỡ chữ */
+  line-height: 1.4; /* Độ cao dòng */
+  border: 1px solid #ccc; /* Viền */
+  border-radius: 4px; /* Bo góc */
+}

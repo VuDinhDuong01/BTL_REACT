@@ -184,8 +184,7 @@ export const PostArticle = () => {
     const handlePlaceholderClick = () => {
         contentEditableRef.current.focus();
     };
-
-
+    
     const user_id = getProfileToLS()
 
     const formData = new FormData();

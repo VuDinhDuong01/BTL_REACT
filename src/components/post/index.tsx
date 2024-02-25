@@ -26,13 +26,15 @@ interface Props {
         data: GetCommentResponse;
         loading: boolean;
     },
-    handleLike:(_id_comment: string) => Promise<void>
-    
-    isHovered:string 
-    
-    handleShowListIcon:(_id_comment?: string) => void,
-    handleHiddenListIcon:()=>void
-    setIcon: Dispatch<SetStateAction<string>>
+    handleLike: (_id_comment: string) => Promise<void>
+
+    isHovered: string
+
+    handleShowListIcon: (_id_comment?: string) => void,
+    handleHiddenListIcon: () => void
+    setIcon: Dispatch<SetStateAction<string>>,
+    isShowInputRepliesComment:string 
+    setIsShowInputRepliesComment:Dispatch<SetStateAction<string >>,
 }
 
 export const initComment = {
@@ -45,7 +47,7 @@ export const ContextProvider = createContext<{ data: GetCommentResponse, loading
     data: initComment,
     loading: false
 })
-export const Post = ({ tweet, setListComment, listComment ,handleLike,isHovered,handleShowListIcon,handleHiddenListIcon ,setIcon}: Props) => {
+export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered, handleShowListIcon, handleHiddenListIcon, setIcon , isShowInputRepliesComment, setIsShowInputRepliesComment}: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const profile = getProfileToLS() as { user_id: string, username: string }
     const [likeTweet] = useLikeMutation()
@@ -117,12 +119,11 @@ export const Post = ({ tweet, setListComment, listComment ,handleLike,isHovered,
                         refShowPopupComment.current.showPopup()
                         const response = await getComment({
                             tweet_id: tweet._id,
-                            limit: 10,
+                            limit: 20,
                             page: 1
                         }).unwrap()
                         setListComment({ data: response, loading: isLoading })
                     }
-
                 }
             ]
         ])
@@ -135,19 +136,19 @@ export const Post = ({ tweet, setListComment, listComment ,handleLike,isHovered,
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <ContextProvider.Provider value={listComment}>
-                <PopupComment ref={refShowPopupComment} setIcon={setIcon} handleHiddenListIcon={handleHiddenListIcon} handleLike={handleLike} isHovered={isHovered} handleShowListIcon={handleShowListIcon} />
+                <PopupComment ref={refShowPopupComment} setIcon={setIcon} handleHiddenListIcon={handleHiddenListIcon} handleLike={handleLike} isHovered={isHovered} handleShowListIcon={handleShowListIcon} tweet_id={tweet._id} users={tweet?.users}  setIsShowInputRepliesComment={setIsShowInputRepliesComment}  isShowInputRepliesComment={isShowInputRepliesComment} />
             </ContextProvider.Provider>
 
             <div className="w-[80px] h-full flex items-center ">
-                <img src={tweet?.user?.avatar ? tweet.user?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
+                <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
                 <div className="mt-[8px]">
                     <div className=" w-full flex items-center font-fontFamily">
-                        <h2 className="text-[18px]">{tweet.user?.username}</h2>
-                        <p className="text-[15px] mx-1">@{tweet.user?.name}</p>
+                        <h2 className="text-[18px]">{tweet.users?.username}</h2>
+                        <p className="text-[15px] mx-1">@{tweet.users?.name}</p>
                     </div>
-                    <p className="font-fontFamily text-[16px] pt-[5px]">{tweet.user?.bio}</p>
+                    <p className="font-fontFamily text-[16px] pt-[5px]">{tweet.users?.bio}</p>
                 </div>
                 <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
                 <div className="w-full mt-[20px] cursor-pointer">

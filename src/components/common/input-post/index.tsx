@@ -1,16 +1,26 @@
+/* eslint-disable no-extra-boolean-cast */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, useState } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef } from "react"
 import { FaCamera } from "react-icons/fa6";
 import { MdGifBox } from "react-icons/md";
 import { FaRegSmileBeam } from "react-icons/fa";
+import { EmojiClickData } from "emoji-picker-react";
+import { IoSend } from "react-icons/io5";
+
 import { ShowGIF, handleShowPopup } from "../../show-gif";
 import { EmojiPickers, ShowEmoji } from "../emoji-picker";
-import { EmojiClickData } from "emoji-picker-react";
 import { cn } from "../../../helps/cn";
+import { Button } from "../../ui/button";
+import { Images } from "../../../assets/images";
 
 interface InputPost {
-
+    content: string,
+    setContent: Dispatch<SetStateAction<string>>,
+    file: File, avatar_user: string,
+    setFile: Dispatch<SetStateAction<File | string>>,
+    handleCreateComment: () => Promise<void>
 }
+
 
 interface ListIcon {
     icon: JSX.Element,
@@ -29,35 +39,12 @@ const listIcon = [
     }
 ]
 
-
-export const InputPost = ({ comment_id, file, setFile }: { comment_id: string, file: string, setFile: Dispatch<SetStateAction<string>> }) => {
-    const [comment, setComment] = useState('')
-    const contentEditableRef = useRef<any>(null)
+export const InputPost = ({ content, setContent, file, setFile, avatar_user, handleCreateComment }: InputPost) => {
     const inputRef = useRef<HTMLInputElement>(null)
-    // const [file, setFile] = useState<string>('')
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const emojiRef = useRef<ShowEmoji>(null)
-
     const refGif = useRef<handleShowPopup>(null)
-    const handleTextChange = () => {
-        const newText = contentEditableRef?.current?.innerText;
-        setComment(newText as string);
-    }
-    const moveCaretToEnd = () => {
-        const range = document.createRange();
-        const selection = window.getSelection();
 
-        range.selectNodeContents(contentEditableRef.current);
-        range.collapse(false);
-
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-    };
-    useEffect(() => {
-        moveCaretToEnd();
-    }, [comment]);
-    const handlePlaceholderClick = () => {
-        contentEditableRef?.current?.focus();
-    };
     const handleIcon = (Item: ListIcon) => {
         switch (Item.id) {
             case 1:
@@ -75,51 +62,53 @@ export const InputPost = ({ comment_id, file, setFile }: { comment_id: string, f
     }
     const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
         console.log(emojiData.emoji)
-        setComment(prev => (prev + emojiData.emoji))
+        setContent(prev => (prev + emojiData.emoji))
     }
     const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = (e.target.files as FileList)[0].name;
-        setFile(file)
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    }
+    const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(e.target.value);
     }
 
-    return <div className='w-full relative'>
-        <div
-            ref={contentEditableRef}
-            contentEditable="true"
-            onInput={handleTextChange}
-            className='border-none outline-none bg-[#F0F2F5] font-fontFamily rounded-lg text-[17px]  text-[#667581] w-full overflow-hidden whitespace-normal h-full'
-            style={{
-                padding: '5px',
-                minHeight: '50px',
-                maxWidth: '630px',
-                whiteSpace: 'pre-wrap',
-                wordWrap: 'break-word',
-            }}
-        />
-        {!comment && (
-            <div
-                className=" absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[15px]"
-                onClick={handlePlaceholderClick}
-            >
-                Viết bình luận...
+    useEffect(() => {
+        if (textAreaRef.current) {
+            (textAreaRef?.current as any).style.height = "auto";
+            (textAreaRef.current as any).style.height = (textAreaRef.current as any).scrollHeight + "px";
+        }
+    }, [content])
+
+    return <div className='w-full min-h-[100px]  flex '>
+        <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+        <div className='w-full relative'>
+            <textarea className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]' placeholder='Viết bình luận...' value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>
+            <ShowGIF ref={refGif} limit={50} setGif={setFile} />
+            <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute  top-[-460px] right-[50px] z-[9]' />
+            <div className="w-full flex items-center absolute bottom-[5px] left-[10px]">
+                {
+                    listIcon.map((Item) => {
+                        return <div key={Item.id} className={cn("text-black mx-[3px] cursor-pointer", {
+                            'text-[#C9CCD1] !cursor-not-allowed pointer-events-none': file && Item.id === 1,
+                            'text-[#C9CCD1] !cursor-not-allowed pointer-events-none ': file && Item.id === 2
+                        })} onClick={() => handleIcon(Item)}>{
+                                Item.icon
+                            }</div>
+                    })
+                }
+                <input type="file" style={{ display: 'none' }} ref={inputRef} onChange={handleFile} />
             </div>
-        )}
-        <ShowGIF ref={refGif} limit={50} setGif={setFile} />
-        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute  top-[-460px] right-[50px] z-[9]' />
-        <div className="w-full flex items-center absolute bottom-0 left-[10px]">
-            {
-                listIcon.map((Item) => {
-                    return <div key={Item.id} className={cn("text-black mx-[3px] cursor-pointer", {
-                        'text-[#C9CCD1] !cursor-not-allowed': file !== '' && Item.id === 1,
-                        'text-[#C9CCD1] !cursor-not-allowed ': file !== '' && Item.id === 2
-                    })} onClick={() => handleIcon(Item)}>{
-                            Item.icon
-                        }</div>
-                })
-            }
-            <input type="file" style={{ display: 'none' }} ref={inputRef} onChange={handleFile} />
+            <div className="absolute bottom-[5px] right-0">
+                <Button disabled={
+                    !Boolean(content)} className={cn("w-[]    border-none outline-none ", {
+                        '!text-[#3C87DA] cursor-pointer': Boolean(content),
+                        'text-[#686a6f] !cursor-not-allowed': !Boolean(content)
+                    })} onClick={handleCreateComment}><div><IoSend /></div></Button>
+            </div>
         </div>
     </div>
+
 
 
 }

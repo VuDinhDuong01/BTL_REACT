@@ -20,5 +20,7 @@ export const URL_API = {
     UN_BOOKMARK: 'bookmark',
     GET_BOOKMARK: 'bookmark',
     GET_COMMENT:'comment',
-    LIKE_COMMENT:'like_comment'
+    LIKE_COMMENT:'like_comment',
+    CREATE_COMMENT:'create_comment',
+    CREATE_REPLIES_COMMENT:'replies_comment'
 } as const 
