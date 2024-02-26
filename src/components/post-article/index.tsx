@@ -3,7 +3,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ChangeEvent, useRef, useState, useEffect } from 'react'
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import  { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
 
@@ -80,7 +80,7 @@ const permissionViews: permissionViews[] = [
 
 export const PostArticle = () => {
     const [uploadImages] = useUploadImageMutation()
-    const [createTweet,{isLoading}] = useCreateTweetMutation()
+    const [createTweet, { isLoading }] = useCreateTweetMutation()
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -95,7 +95,6 @@ export const PostArticle = () => {
         icon: <Icons.AiOutlineGlobal />
     })
     const emojiRef = useRef<ShowEmoji>(null)
-    const [countCharPost, setCountCharPost] = useState<number>(0)
     const [audience, setAudience] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
@@ -119,10 +118,10 @@ export const PostArticle = () => {
         const action = actionMap.get(title);
         if (action) {
             action();
-        } 
+        }
     };
 
-   
+
     const handleShowPermissionView = (item: permissionViews) => () => {
         setPopupPermission(false)
         setAudience(item.audience)
@@ -184,18 +183,19 @@ export const PostArticle = () => {
     const handlePlaceholderClick = () => {
         contentEditableRef.current.focus();
     };
-    
+
     const user_id = getProfileToLS()
 
-    const formData = new FormData();
-
-    for (let i = 0; i < files.length; i++) {
-        formData.append('image', files[i])
-    }
-
     const onSubmit = (handleSubmit(async () => {
+        let uploadImage: { image: string, type: number }[] = []
         try {
-            const uploadImage = await uploadImages(formData).unwrap()
+            if (files.length > 0) {
+                const formData = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    formData.append('image', files[i])
+                }
+                uploadImage = await uploadImages(formData).unwrap()
+            }
             const medias = uploadImage.map(item => item.image)
             const bodyRequest = {
                 content: text,
@@ -205,7 +205,7 @@ export const PostArticle = () => {
                 hashtags,
                 mentions
             }
-            const tweet = await createTweet(bodyRequest).unwrap();
+            await createTweet(bodyRequest).unwrap();
             setText('')
             setFiles([])
             setShowPermissionView({
@@ -315,14 +315,7 @@ export const PostArticle = () => {
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
                         <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute top-[44px] z-[9]' />
                     </div>
-                    <div className='flex items-center'>
-                        {
-                            countCharPost > 0 && <div className='w-[30px] h-[30px] relative mr-[20px]'>
-                                <div className='absolute top-0 left-0 right-0 bottom-0 border-[red] border-solid border-[2px] rounded-[50%]'></div>
-                            </div>
-                        }
-                        <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : 'Post'}</Button>
-                    </div>
+                    <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : 'Post'}</Button>
                 </div>
             </div>
 

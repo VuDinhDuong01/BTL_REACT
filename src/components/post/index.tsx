@@ -26,15 +26,14 @@ interface Props {
         data: GetCommentResponse;
         loading: boolean;
     },
-    handleLike: (_id_comment: string) => Promise<void>
+    handleLike: (_id_comment: string) =>void
 
     isHovered: string
-
-    handleShowListIcon: (_id_comment?: string) => void,
-    handleHiddenListIcon: () => void
-    setIcon: Dispatch<SetStateAction<string>>,
-    isShowInputRepliesComment:string 
-    setIsShowInputRepliesComment:Dispatch<SetStateAction<string >>,
+    handleLikeComment:(_id_comment?: string ,icon:string)=> Promise<void>
+    // handleShowListIcon: (_id_comment?: string) => void,
+    // handleHiddenListIcon: () => void
+    isShowInputRepliesComment: string
+    setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>,
 }
 
 export const initComment = {
@@ -47,7 +46,7 @@ export const ContextProvider = createContext<{ data: GetCommentResponse, loading
     data: initComment,
     loading: false
 })
-export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered, handleShowListIcon, handleHiddenListIcon, setIcon , isShowInputRepliesComment, setIsShowInputRepliesComment}: Props) => {
+export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered , isShowInputRepliesComment, setIsShowInputRepliesComment ,handleLikeComment}: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const profile = getProfileToLS() as { user_id: string, username: string }
     const [likeTweet] = useLikeMutation()
@@ -119,7 +118,7 @@ export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered
                         refShowPopupComment.current.showPopup()
                         const response = await getComment({
                             tweet_id: tweet._id,
-                            limit: 20,
+                            limit: 50,
                             page: 1
                         }).unwrap()
                         setListComment({ data: response, loading: isLoading })
@@ -136,7 +135,7 @@ export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <ContextProvider.Provider value={listComment}>
-                <PopupComment ref={refShowPopupComment} setIcon={setIcon} handleHiddenListIcon={handleHiddenListIcon} handleLike={handleLike} isHovered={isHovered} handleShowListIcon={handleShowListIcon} tweet_id={tweet._id} users={tweet?.users}  setIsShowInputRepliesComment={setIsShowInputRepliesComment}  isShowInputRepliesComment={isShowInputRepliesComment} />
+                <PopupComment ref={refShowPopupComment}  handleLike={handleLike} isHovered={isHovered}  tweet_id={tweet._id} users={tweet?.users} setIsShowInputRepliesComment={setIsShowInputRepliesComment} isShowInputRepliesComment={isShowInputRepliesComment} handleLikeComment={handleLikeComment} />
             </ContextProvider.Provider>
 
             <div className="w-[80px] h-full flex items-center ">

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useMemo, useEffect } from "react"
+import { useState, useRef, useEffect } from "react"
 
 import { GetCommentResponse, Post, initComment } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -15,13 +15,14 @@ const actionArray = [
 export const Home = () => {
   const [optionAction, setOptionAction] = useState<number>(1)
   const [likeComment] = useLikeCommentMutation()
-  const [icon, setIcon] = useState<string>('')
+  
+  
   const [isHovered, setIsHovered] = useState<string>('')
   const [listComment, setListComment] = useState<{ data: GetCommentResponse, loading: boolean }>({
     data: initComment,
     loading: false
   })
-  const [isShowInputRepliesComment , setIsShowInputRepliesComment]=useState<string >('')
+  const [isShowInputRepliesComment, setIsShowInputRepliesComment] = useState<string>('')
   const handleOptionAction = (action: number) => {
     setOptionAction(action)
   }
@@ -30,22 +31,37 @@ export const Home = () => {
     page: 1
   })
 
-  const handleShowListIcon = (_id_comment?: string) => {
-    setIsHovered(_id_comment as string)
-  }
-  const handleHiddenListIcon = () => {
-    setIsHovered('')
-  }
+  // const handleShowListIcon = (_id_comment?: string) => {
+  //   refSetTimeOut.current = setTimeout(() => {
+  //     setIsHovered(_id_comment as string)
+  //   }, 1300)
+  // }
+  // const handleHiddenListIcon = () => {
+  //   clearTimeout(refSetTimeOut.current as number)
+  //   setIsHovered('')
+  // }
 
   const { user_id } = getProfileToLS() as { user_id: string }
 
-  const handleLike = async (_id_comment: string) => {
+  const handleLike = (_id_comment: string) => {
+    setIsHovered(_id_comment)
+    // try {
+    //   await likeComment({ comment_id: _id_comment, user_id, icon: '👍' }).unwrap()
+    // } catch (error: unknown) {
+    //   console.log(error)
+    // }
+  }
+  const handleLikeComment = async (_id_comment?: string, icon:string) => {
     try {
-      await likeComment({ comment_id: _id_comment, user_id, icon }).unwrap()
+      console.log(icon)
+      console.log(_id_comment)
+      // await likeComment({ comment_id: _id_comment as string, user_id, icon: '👍' }).unwrap()
     } catch (error: unknown) {
       console.log(error)
     }
   }
+
+
   return (
     <div className="w-full">
       <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
@@ -77,9 +93,7 @@ export const Home = () => {
             listComment={listComment}
             handleLike={handleLike}
             isHovered={isHovered}
-            handleShowListIcon={handleShowListIcon}
-            handleHiddenListIcon={handleHiddenListIcon}
-            setIcon={setIcon}
+            handleLikeComment={handleLikeComment}
             isShowInputRepliesComment={isShowInputRepliesComment}
             setIsShowInputRepliesComment={setIsShowInputRepliesComment}
           />

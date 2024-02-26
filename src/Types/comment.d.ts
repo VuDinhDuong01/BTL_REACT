@@ -4,21 +4,24 @@ interface User{
     username:string 
 }
 
-interface LikeComment{
+export interface LikeComment{
     _id:string ,
     comment_id:string 
     user_id:string 
     created_at:string 
     updated_at:string 
+    icon:string
 }
 interface RepliesComment{
     _id:string 
     user_id:string 
     replies_content_comment:string 
-    replies_image_comment:string[]
+    replies_image_comment:string
     replies_like_comments:[]
     avatar:string 
     username:string 
+    created_at: string 
+    updated_at: string 
 }
 export interface Comment{
     _id:string 

@@ -11,52 +11,62 @@ import { convertDateToHours } from '../../../helps/convert-date-to-hour';
 import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
 import { useCreateCommentMutation, useCreateRepliesCommentMutation } from '../../../apis/comment';
-import { useUploadImageMutation } from '../../../apis';
+import { UploadImageResponse, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
+import { ListIcons } from '../../list-icons';
+import { LikeComment } from '../../../types/comment';
+import { cn } from '../../../helps/cn';
 
 export type ShowPopupComment = {
     showPopup: () => void;
 };
 interface PropsDialogComment {
-    handleLike: (_id_comment: string) => Promise<void>
-    handleShowListIcon: (_id_comment?: string) => void
+    handleLike: (_id_comment: string) => void
     isHovered: string
-    handleHiddenListIcon: () => void
-    setIcon: Dispatch<SetStateAction<string>>
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
     isShowInputRepliesComment: string
     setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>
+    handleLikeComment:(_id_comment: string,icon:string) => Promise<void>
 }
-
-export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, setIsShowInputRepliesComment, isShowInputRepliesComment, handleLike, tweet_id, handleShowListIcon, isHovered, handleHiddenListIcon, setIcon }, ref) => {
+export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, setIsShowInputRepliesComment,handleLikeComment, isShowInputRepliesComment, handleLike, tweet_id, isHovered }, ref) => {
     const { data } = useContext(ContextProvider)
     const refPopComment = useRef<HTMLDivElement>(null)
     const [createComment] = useCreateCommentMutation()
     const [createRepliesComment] = useCreateRepliesCommentMutation()
     const [content, setContent] = useState<string>('')
+    const [RepliesContent, setRepliesContent] = useState<string>('')
+    const [file, SetFile] = useState<File | string>('')
+    const [icon, setIcon] = useState<string>('')
+    const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const profile = getProfileToLS() as { user_id: string, username: string }
     const showPopup = () => {
         setIsShowPopup(true)
     }
-  
+
     const hiddenPopup = () => {
         setIsShowPopup(false)
         SetFile('')
+        setRepliesContent('')
+        setContent('')
+        setFileRepliesComment('')
         setIsShowInputRepliesComment('')
     }
     useImperativeHandle(ref, () => ({
         showPopup: showPopup
     }));
 
-    const [file, SetFile] = useState<File | string>('')
+
     useClickOutSide({
         onClickOutSide: () => {
             setIsShowPopup(false)
             SetFile('')
+            setRepliesContent('')
+            setContent('')
             setIsShowInputRepliesComment('')
+            setFileRepliesComment('')
         }, ref: refPopComment
     })
 
@@ -65,19 +75,22 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     }
     const handleCreateComment = async () => {
         try {
-            const formData = new FormData()
-            if (typeof file === 'string') {
-                formData.append("video", file)
-            } else {
-                formData.append("image", file)
+            let uploadImage: UploadImageResponse[] = [];
+            if (file !== '') {
+                const formData = new FormData()
+                if (typeof file === 'string') {
+                    formData.append("video", file)
+                } else {
+                    formData.append("image", file)
+                }
+                uploadImage = await uploadImages(formData).unwrap()
             }
-            const uploadImage = await uploadImages(formData).unwrap()
-    
+
             await createComment({
                 tweet_id: tweet_id,
                 user_id: profile.user_id,
                 content_comment: content,
-                image_comment: uploadImage[0].image
+                image_comment: file !== '' ? uploadImage[0].image : ''
             }).unwrap()
             SetFile('')
             setContent('')
@@ -86,27 +99,58 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
         }
     }
 
-    const  handleCreateRepliesComment=async()=>{
-        
+    const handleCreateRepliesComment = async () => {
         try {
-            const formData = new FormData()
-            if (typeof file === 'string') {
-                formData.append("video", file)
-            } else {
-                formData.append("image", file)
+            let uploadImage: UploadImageResponse[] = [];
+            if (fileRepliesComment !== '') {
+                const formData = new FormData()
+                if (typeof fileRepliesComment === 'string') {
+                    formData.append("video", fileRepliesComment)
+                } else {
+                    formData.append("image", fileRepliesComment)
+                }
+                uploadImage = await uploadImages(formData).unwrap()
             }
-            const uploadImage = await uploadImages(formData).unwrap()
             await createRepliesComment({
                 user_id: profile.user_id,
                 replies_comment_id: isShowInputRepliesComment,
-                replies_content_comment: content,
-                replies_image_comment: uploadImage[0].image
+                replies_content_comment: RepliesContent,
+                replies_image_comment: fileRepliesComment !== '' ? uploadImage[0].image : ''
             }).unwrap()
-            
-            SetFile('')
-            setContent('')
+            setRepliesContent('')
+            setFileRepliesComment('')
         } catch (error: unknown) {
             console.log(error)
+        }
+    }
+
+    const handleFilerIcon = (listIcon: LikeComment[]) => {
+        const icons = listIcon.map(icon => icon.icon)
+        return Array.from(new Set(icons))
+
+    }
+
+    const renderColorLike = (icon: string, like_comment: LikeComment[]) => {
+        return like_comment.some(item => item.user_id === profile.user_id && item.icon === icon)
+    }
+
+    const renderTextLike = (like_comment: LikeComment[]) => {
+        const findUerLike = like_comment.filter(item => item.user_id === profile.user_id)
+        if (findUerLike.length === 0) {
+            return 'Thích'
+        }
+        else {
+            if (findUerLike[0].icon === '👍') {
+                return 'Thích';
+            } else if (findUerLike[0].icon === '❤️') {
+                return 'Yêu thích';
+            } else if (findUerLike[0].icon === '😂') {
+                return 'Haha';
+            } else if (findUerLike[0].icon === '😢') {
+                return 'Buồn';
+            } else {
+                return 'Thất vọng';
+            }
         }
     }
 
@@ -123,9 +167,9 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                             </div>
                         </div>
                         <div className='w-full flex-1 overflow-auto pb-[20px] '>
-                            <div className='px-[20px]  cursor-pointer  w-full'>
+                            <div className='px-[20px]  cursor-pointer  w-full h-full'>
                                 {
-                                    data.data.length > 0 && data.data.map(comment => {
+                                    data.data.length > 0 ? data.data.map(comment => {
                                         return <div className='w-full flex mt-[15px]' key={comment._id}>
                                             <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                             <div className='w-full'>
@@ -139,30 +183,66 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                             <img src={comment.image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
                                                         </div>
                                                     }
-                                                    <div className='w-[200px] mt-[5px] flex items-center justify-between'>
-                                                        <p className='text-[15px] font-fontFamily'>{`${convertDateToHours(comment.created_at)} giờ`}</p>
-                                                        <div className='relative'>
-                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleLike(comment._id)} onMouseEnter={() => handleShowListIcon(comment._id)} onMouseLeave={handleHiddenListIcon}>Thích</p>
-                                                            {/* {
-                                                                isHovered === comment._id && <div className='absolute top-[-50px]' onMouseEnter={() => handleLike(comment._id)}><ListIcons setIcon={setIcon} /></div>
-                                                            } */}
-
+                                                    <div className='w-full items-center justify-between flex'>
+                                                        <div className='w-[200px] mt-[5px] flex items-center justify-between'>
+                                                            <p className='text-[15px] font-fontFamily'>{convertDateToHours(comment.created_at)}</p>
+                                                            <div className='relative'>
+                                                                <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
+                                                                    'text-[#1B90DF] font-[600]': renderColorLike('👍', comment.like_comments),
+                                                                    'text-[#FD6068] font-[600]': renderColorLike('❤️', comment.like_comments),
+                                                                    'text-[#FFE15B] font-[600]': renderColorLike('😂', comment.like_comments),
+                                                                    'text-[#FFE15B]  font-[600]': renderColorLike('😌', comment.like_comments),
+                                                                    'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
+                                                                })} onClick={() => handleLike(comment._id)}
+                                                                >{
+                                                                        renderTextLike(comment.like_comments)
+                                                                    }</p>
+                                                                {
+                                                                    isHovered === comment._id && <div className='absolute top-[-50px]' onClick={()=>handleLikeComment(comment._id,icon)}><ListIcons setIcon={setIcon} /></div>
+                                                                }
+                                                            </div>
+                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
                                                         </div>
-                                                        <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
-                                                    </div>
-                                                    <div className='w-full mt-[20px]'>
-                                                        {
-                                                            isShowInputRepliesComment === comment._id &&
-                                                            <InputPost
-                                                                file={file as File}
-                                                                setFile={SetFile}
-                                                                avatar_user={users.avatar}
-                                                                content={content}
-                                                                setContent={setContent}
-                                                                handleCreateComment={handleCreateRepliesComment}
-                                                            />
+                                                        {comment.like_comments.length > 0 &&
+                                                            <div className=' bg-white flex items-center px-[8px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+                                                                {
+                                                                    handleFilerIcon(comment.like_comments).map((Icon, index) => {
+                                                                        return <div key={index} className='text-[13px]'>
+                                                                            {Icon}
+                                                                        </div>
+                                                                    })
+                                                                }
+                                                                <div className='font-[550] font-fontFamily ml-[5px]'>{comment.like_comments.length}</div>
+                                                            </div>
                                                         }
                                                     </div>
+
+                                                    <div className='w-full mt-[20px]'>
+                                                        {
+                                                            isShowInputRepliesComment === comment._id && (<>
+                                                                <InputPost
+                                                                    file={fileRepliesComment as File}
+                                                                    setFile={setFileRepliesComment}
+                                                                    avatar_user={users.avatar}
+                                                                    content={RepliesContent}
+                                                                    setContent={setRepliesContent}
+                                                                    handleCreateComment={handleCreateRepliesComment}
+                                                                />
+                                                                <div className='relative'>
+                                                                    {
+                                                                        fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+                                                                    }
+                                                                    <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                                                        {
+                                                                            fileRepliesComment && <Icons.IoMdClose size={25} />
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </>
+                                                            )
+                                                        }
+                                                    </div>
+
 
                                                 </div>
                                                 {
@@ -172,13 +252,44 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 <img src={replies_comment?.avatar ? replies_comment?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                                                 <div>
                                                                     <div>
-                                                                        <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
-                                                                            <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
-                                                                            <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
+                                                                        <div className='flex items-center relative '>
+                                                                            <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px] '>
+                                                                                <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
+                                                                                <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
+                                                                            </div>
+                                                                            <div className=' absolute right-[0]'>
+                                                                                {replies_comment.replies_like_comments.length > 0 &&
+                                                                                    <div className=' bg-white flex items-center    px-[5px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+                                                                                        {
+                                                                                            handleFilerIcon(replies_comment.replies_like_comments).map((Icon, index) => {
+                                                                                                return <div key={index} className='text-[13px]'>
+                                                                                                    {Icon}
+                                                                                                </div>
+                                                                                            })
+                                                                                        }
+                                                                                        <div className='font-[550] font-fontFamily ml-[5px]'>{replies_comment.replies_like_comments.length}</div>
+                                                                                    </div>
+                                                                                }
+                                                                            </div>
+
                                                                         </div>
-                                                                        <div className='w-[100px] mt-[5px] flex items-center justify-between'>
-                                                                            <p className='text-[15px] font-fontFamily'>1 giờ</p>
-                                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline'>Thích</p>
+
+                                                                        {
+                                                                            replies_comment.replies_image_comment !== '' && <div className='mt-[20px]'>
+                                                                                <img src={replies_comment.replies_image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
+                                                                            </div>
+                                                                        }
+                                                                        <div className='w-[200px] mt-[5px] flex items-center'>
+                                                                            <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
+                                                                            <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
+                                                                                {
+                                                                                    'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
+                                                                                    'text-[#FD6068] font-[600]': renderColorLike('❤️', replies_comment.replies_like_comments),
+                                                                                    '!text-[#FFE15B] font-[600]': renderColorLike('😂', replies_comment.replies_like_comments),
+                                                                                    '!text-[#FFE15B]  font-[600]': renderColorLike('😌', replies_comment.replies_like_comments),
+                                                                                    '!text-[#FFE15B]   font-[600]': renderColorLike('😢', replies_comment.replies_like_comments)
+                                                                                }
+                                                                            )}>{renderTextLike(replies_comment.replies_like_comments)}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -188,7 +299,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                 }
                                             </div>
                                         </div>
-                                    })
+                                    }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default'>Chưa có bình luận nào cho bài Post</div>
                                 }
                             </div>
                         </div>

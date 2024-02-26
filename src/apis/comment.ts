@@ -17,7 +17,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
             }),
             invalidatesTags: ['getListTweet', 'getComment']
         }),
-        likeComment: build.mutation<GenerateType<{ data: {} }>, { comment_id: string, user_id: string, icon: string }>({
+        likeComment: build.mutation<GenerateType<{ data: {} }>, { comment_id: string, user_id: string, icon?: string }>({
             query: (data) => ({
                 url: LIKE_COMMENT,
                 method: METHOD_API.POST,
