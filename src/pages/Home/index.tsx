@@ -1,66 +1,79 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState, useRef, useEffect } from "react"
+import { createContext, useState, type Dispatch, type SetStateAction } from "react"
 
-import { GetCommentResponse, Post, initComment } from "../../components/post"
+import { GetCommentResponse, Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
 import { useLikeCommentMutation } from "../../apis/comment"
 import { getProfileToLS } from "../../helps"
 
+
 const actionArray = [
   { id: 1, title: 'For you' },
   { id: 2, title: 'Following' }
 ]
+
+interface TweetContext {
+  handleLike: (_id_comment: string) => void
+  isHovered: string
+  isShowInputRepliesComment: string
+  handleSelectIcon: (icon: string) => Promise<void>
+  setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>
+  listComment: {
+    data: GetCommentResponse,
+    loading: boolean
+
+  },
+
+}
+const initComment = {
+  data: {
+    message: '',
+    data: []
+  },
+  loading: false
+}
+
+
+const initContext = {
+  handleLike: (_id_comment: string) => null,
+  isHovered: '',
+  isShowInputRepliesComment: '',
+  handleSelectIcon: async (icon: string) => { },
+  setIsShowInputRepliesComment: () => null,
+  listComment: initComment
+
+}
+export const TweetProvider = createContext<TweetContext>(initContext)
 export const Home = () => {
   const [optionAction, setOptionAction] = useState<number>(1)
   const [likeComment] = useLikeCommentMutation()
-  
-  
   const [isHovered, setIsHovered] = useState<string>('')
-  const [listComment, setListComment] = useState<{ data: GetCommentResponse, loading: boolean }>({
-    data: initComment,
-    loading: false
-  })
+  const [listComment, setListComment] = useState<{ data: GetCommentResponse, loading: boolean }>(initComment)
   const [isShowInputRepliesComment, setIsShowInputRepliesComment] = useState<string>('')
   const handleOptionAction = (action: number) => {
     setOptionAction(action)
   }
+  const { user_id } = getProfileToLS()
   const { data: getListTweet } = useGetListTweetQuery({
     limit: 10,
     page: 1
   })
 
-  // const handleShowListIcon = (_id_comment?: string) => {
-  //   refSetTimeOut.current = setTimeout(() => {
-  //     setIsHovered(_id_comment as string)
-  //   }, 1300)
-  // }
-  // const handleHiddenListIcon = () => {
-  //   clearTimeout(refSetTimeOut.current as number)
-  //   setIsHovered('')
-  // }
-
-  const { user_id } = getProfileToLS() as { user_id: string }
-
   const handleLike = (_id_comment: string) => {
     setIsHovered(_id_comment)
-    // try {
-    //   await likeComment({ comment_id: _id_comment, user_id, icon: '👍' }).unwrap()
-    // } catch (error: unknown) {
-    //   console.log(error)
-    // }
   }
-  const handleLikeComment = async (_id_comment?: string, icon:string) => {
+
+  const handleSelectIcon = async (icon: string) => {
     try {
-      console.log(icon)
-      console.log(_id_comment)
-      // await likeComment({ comment_id: _id_comment as string, user_id, icon: '👍' }).unwrap()
-    } catch (error: unknown) {
+      await likeComment({ comment_id: isHovered as string, user_id, icon: icon }).unwrap()
+      setIsHovered('')
+    }
+    catch (error: unknown) {
       console.log(error)
     }
   }
-
 
   return (
     <div className="w-full">
@@ -85,21 +98,19 @@ export const Home = () => {
       <div className="mt-[55px]">
         <PostArticle />
       </div>
-      {
-        getListTweet?.data?.map((tweet, index) => {
-          return <div key={index}> <Post
-            tweet={tweet}
-            setListComment={setListComment}
-            listComment={listComment}
-            handleLike={handleLike}
-            isHovered={isHovered}
-            handleLikeComment={handleLikeComment}
-            isShowInputRepliesComment={isShowInputRepliesComment}
-            setIsShowInputRepliesComment={setIsShowInputRepliesComment}
-          />
-          </div>
-        })
-      }
+      <TweetProvider.Provider value={{ handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment }}>
+        {
+          getListTweet?.data?.map((tweet, index) => {
+            return <div key={index}> <Post
+              tweet={tweet}
+              setListComment={setListComment}
+
+            />
+            </div>
+          })
+        }
+      </TweetProvider.Provider>
+
     </div>
   )
 }

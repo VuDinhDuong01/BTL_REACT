@@ -9,7 +9,7 @@ import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { useLikeMutation, useUnLikeMutation } from "../../apis/like"
 
 import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
-import { useState, useRef, useMemo, createContext, type SetStateAction, type Dispatch } from "react"
+import { useState, useRef, useMemo, Dispatch, SetStateAction } from "react"
 import { PopupComment, ShowPopupComment } from "../ui/dialog-comment"
 import { Like, Tweet } from "../../types/tweet"
 import { getProfileToLS } from "../../helps"
@@ -18,35 +18,15 @@ import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
 interface Props {
     tweet: Tweet,
-    setListComment: Dispatch<SetStateAction<{
+    setListComment:Dispatch<SetStateAction<{
         data: GetCommentResponse;
         loading: boolean;
     }>>
-    listComment: {
-        data: GetCommentResponse;
-        loading: boolean;
-    },
-    handleLike: (_id_comment: string) =>void
 
-    isHovered: string
-    handleLikeComment:(_id_comment?: string ,icon:string)=> Promise<void>
-    // handleShowListIcon: (_id_comment?: string) => void,
-    // handleHiddenListIcon: () => void
-    isShowInputRepliesComment: string
-    setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>,
 }
-
-export const initComment = {
-    message: '',
-    data: []
-}
-
 export type GetCommentResponse = GenerateType<Comment[]>
-export const ContextProvider = createContext<{ data: GetCommentResponse, loading: boolean, }>({
-    data: initComment,
-    loading: false
-})
-export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered , isShowInputRepliesComment, setIsShowInputRepliesComment ,handleLikeComment}: Props) => {
+
+export const Post = ({ tweet,setListComment }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const profile = getProfileToLS() as { user_id: string, username: string }
     const [likeTweet] = useLikeMutation()
@@ -134,10 +114,7 @@ export const Post = ({ tweet, setListComment, listComment, handleLike, isHovered
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
-            <ContextProvider.Provider value={listComment}>
-                <PopupComment ref={refShowPopupComment}  handleLike={handleLike} isHovered={isHovered}  tweet_id={tweet._id} users={tweet?.users} setIsShowInputRepliesComment={setIsShowInputRepliesComment} isShowInputRepliesComment={isShowInputRepliesComment} handleLikeComment={handleLikeComment} />
-            </ContextProvider.Provider>
-
+            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>

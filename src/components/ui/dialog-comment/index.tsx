@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
-import { useImperativeHandle, forwardRef, useState, useRef, useContext, Dispatch, SetStateAction } from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, useContext } from 'react'
 
 import { Dialog, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
 import { Images } from '../../../assets/images';
-import { ContextProvider } from '../../post';
+
 import { convertDateToHours } from '../../../helps/convert-date-to-hour';
 import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
@@ -16,32 +16,33 @@ import { getProfileToLS } from '../../../helps';
 import { ListIcons } from '../../list-icons';
 import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
+import {  GetCommentResponse } from '../../post';
+import { TweetProvider } from '../../../pages/home';
 
 export type ShowPopupComment = {
     showPopup: () => void;
 };
 interface PropsDialogComment {
-    handleLike: (_id_comment: string) => void
-    isHovered: string
+
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
-    isShowInputRepliesComment: string
-    setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>
-    handleLikeComment:(_id_comment: string,icon:string) => Promise<void>
+
+   
+
 }
-export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, setIsShowInputRepliesComment,handleLikeComment, isShowInputRepliesComment, handleLike, tweet_id, isHovered }, ref) => {
-    const { data } = useContext(ContextProvider)
+export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id }, ref) => {
+ 
     const refPopComment = useRef<HTMLDivElement>(null)
     const [createComment] = useCreateCommentMutation()
     const [createRepliesComment] = useCreateRepliesCommentMutation()
     const [content, setContent] = useState<string>('')
     const [RepliesContent, setRepliesContent] = useState<string>('')
     const [file, SetFile] = useState<File | string>('')
-    const [icon, setIcon] = useState<string>('')
     const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
-    const profile = getProfileToLS() as { user_id: string, username: string }
+    const { user_id } = getProfileToLS() as { user_id: string, username: string }
+    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon,setIsShowInputRepliesComment ,listComment} = useContext(TweetProvider)
     const showPopup = () => {
         setIsShowPopup(true)
     }
@@ -88,7 +89,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
 
             await createComment({
                 tweet_id: tweet_id,
-                user_id: profile.user_id,
+                user_id: user_id,
                 content_comment: content,
                 image_comment: file !== '' ? uploadImage[0].image : ''
             }).unwrap()
@@ -112,7 +113,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 uploadImage = await uploadImages(formData).unwrap()
             }
             await createRepliesComment({
-                user_id: profile.user_id,
+                user_id: user_id,
                 replies_comment_id: isShowInputRepliesComment,
                 replies_content_comment: RepliesContent,
                 replies_image_comment: fileRepliesComment !== '' ? uploadImage[0].image : ''
@@ -131,11 +132,11 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     }
 
     const renderColorLike = (icon: string, like_comment: LikeComment[]) => {
-        return like_comment.some(item => item.user_id === profile.user_id && item.icon === icon)
+        return like_comment.some(item => item.user_id === user_id && item.icon === icon)
     }
 
     const renderTextLike = (like_comment: LikeComment[]) => {
-        const findUerLike = like_comment.filter(item => item.user_id === profile.user_id)
+        const findUerLike = like_comment.filter(item => item.user_id === user_id)
         if (findUerLike.length === 0) {
             return 'Thích'
         }
@@ -169,7 +170,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                         <div className='w-full flex-1 overflow-auto pb-[20px] '>
                             <div className='px-[20px]  cursor-pointer  w-full h-full'>
                                 {
-                                    data.data.length > 0 ? data.data.map(comment => {
+                                    listComment.data.data.length > 0 ? (listComment.data as GetCommentResponse).data.map(comment => {
                                         return <div className='w-full flex mt-[15px]' key={comment._id}>
                                             <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                             <div className='w-full'>
@@ -193,12 +194,15 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                     'text-[#FFE15B] font-[600]': renderColorLike('😂', comment.like_comments),
                                                                     'text-[#FFE15B]  font-[600]': renderColorLike('😌', comment.like_comments),
                                                                     'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
-                                                                })} onClick={() => handleLike(comment._id)}
+                                                                })} onClick={() => {
+
+                                                                    handleLike(comment._id)
+                                                                }}
                                                                 >{
                                                                         renderTextLike(comment.like_comments)
                                                                     }</p>
                                                                 {
-                                                                    isHovered === comment._id && <div className='absolute top-[-50px]' onClick={()=>handleLikeComment(comment._id,icon)}><ListIcons setIcon={setIcon} /></div>
+                                                                    isHovered === comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>
                                                                 }
                                                             </div>
                                                             <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
