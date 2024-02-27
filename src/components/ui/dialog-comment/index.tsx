@@ -16,7 +16,7 @@ import { getProfileToLS } from '../../../helps';
 import { ListIcons } from '../../list-icons';
 import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
-import {  GetCommentResponse } from '../../post';
+import { GetCommentResponse } from '../../post';
 import { TweetProvider } from '../../../pages/home';
 
 export type ShowPopupComment = {
@@ -27,11 +27,11 @@ interface PropsDialogComment {
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
 
-   
+
 
 }
 export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id }, ref) => {
- 
+
     const refPopComment = useRef<HTMLDivElement>(null)
     const [createComment] = useCreateCommentMutation()
     const [createRepliesComment] = useCreateRepliesCommentMutation()
@@ -42,7 +42,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string, username: string }
-    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon,setIsShowInputRepliesComment ,listComment} = useContext(TweetProvider)
+    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment } = useContext(TweetProvider)
     const showPopup = () => {
         setIsShowPopup(true)
     }
@@ -195,7 +195,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                     'text-[#FFE15B]  font-[600]': renderColorLike('😌', comment.like_comments),
                                                                     'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
                                                                 })} onClick={() => {
-
                                                                     handleLike(comment._id)
                                                                 }}
                                                                 >{
@@ -246,8 +245,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                             )
                                                         }
                                                     </div>
-
-
                                                 </div>
                                                 {
                                                     comment?.replies_comments.length > 0 && Object.keys(comment.replies_comments[0]).length > 0 && comment?.replies_comments.map(replies_comment => {
@@ -285,15 +282,22 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                         }
                                                                         <div className='w-[200px] mt-[5px] flex items-center'>
                                                                             <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
-                                                                            <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
+                                                                            <div className=' relative'>
+                                                                                <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
+                                                                                    {
+                                                                                        'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
+                                                                                        'text-[#FD6068] font-[600]': renderColorLike('❤️', replies_comment.replies_like_comments),
+                                                                                        '!text-[#FFE15B] font-[600]': renderColorLike('😂', replies_comment.replies_like_comments),
+                                                                                        '!text-[#FFE15B]  font-[600]': renderColorLike('😌', replies_comment.replies_like_comments),
+                                                                                        '!text-[#FFE15B]   font-[600]': renderColorLike('😢', replies_comment.replies_like_comments)
+                                                                                    }
+                                                                                )} onClick={() => {
+                                                                                    handleLike(replies_comment._id)
+                                                                                }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
                                                                                 {
-                                                                                    'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
-                                                                                    'text-[#FD6068] font-[600]': renderColorLike('❤️', replies_comment.replies_like_comments),
-                                                                                    '!text-[#FFE15B] font-[600]': renderColorLike('😂', replies_comment.replies_like_comments),
-                                                                                    '!text-[#FFE15B]  font-[600]': renderColorLike('😌', replies_comment.replies_like_comments),
-                                                                                    '!text-[#FFE15B]   font-[600]': renderColorLike('😢', replies_comment.replies_like_comments)
+                                                                                    isHovered === replies_comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                                                                 }
-                                                                            )}>{renderTextLike(replies_comment.replies_like_comments)}</p>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>

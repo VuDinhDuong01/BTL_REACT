@@ -22,5 +22,6 @@ export const URL_API = {
     GET_COMMENT:'comment',
     LIKE_COMMENT:'like_comment',
     CREATE_COMMENT:'create_comment',
-    CREATE_REPLIES_COMMENT:'replies_comment'
+    CREATE_REPLIES_COMMENT:'replies_comment',
+    UPDATE_COMMENT:'update_replies_comment'
 } as const 

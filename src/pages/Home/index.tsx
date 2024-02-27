@@ -5,7 +5,7 @@ import { GetCommentResponse, Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
-import { useLikeCommentMutation } from "../../apis/comment"
+import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from "../../apis/comment"
 import { getProfileToLS } from "../../helps"
 
 
@@ -19,6 +19,7 @@ interface TweetContext {
   isHovered: string
   isShowInputRepliesComment: string
   handleSelectIcon: (icon: string) => Promise<void>
+  handleSelectIconRepliesComment: (icon: string) => Promise<void>
   setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>
   listComment: {
     data: GetCommentResponse,
@@ -42,13 +43,15 @@ const initContext = {
   isShowInputRepliesComment: '',
   handleSelectIcon: async (icon: string) => { },
   setIsShowInputRepliesComment: () => null,
-  listComment: initComment
+  listComment: initComment,
+  handleSelectIconRepliesComment: async (icon: string) => { }
 
 }
 export const TweetProvider = createContext<TweetContext>(initContext)
 export const Home = () => {
   const [optionAction, setOptionAction] = useState<number>(1)
   const [likeComment] = useLikeCommentMutation()
+  const [likeRepliesComment] = useCreateLikeRepliesCommentMutation()
   const [isHovered, setIsHovered] = useState<string>('')
   const [listComment, setListComment] = useState<{ data: GetCommentResponse, loading: boolean }>(initComment)
   const [isShowInputRepliesComment, setIsShowInputRepliesComment] = useState<string>('')
@@ -75,6 +78,15 @@ export const Home = () => {
     }
   }
 
+  const handleSelectIconRepliesComment = async (icon: string) => {
+    try {
+      await likeRepliesComment({ user_id, icon, replies_comment_id: isHovered }).unwrap()
+      setIsHovered('')
+    }
+    catch (error: unknown) {
+      console.log(error)
+    }
+  }
   return (
     <div className="w-full">
       <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
@@ -98,7 +110,7 @@ export const Home = () => {
       <div className="mt-[55px]">
         <PostArticle />
       </div>
-      <TweetProvider.Provider value={{ handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment }}>
+      <TweetProvider.Provider value={{ handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment }}>
         {
           getListTweet?.data?.map((tweet, index) => {
             return <div key={index}> <Post
