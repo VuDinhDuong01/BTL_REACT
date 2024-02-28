@@ -30,8 +30,8 @@ export const getRefreshTokenToLS = () => {
     return localStorage.getItem(keyLocalStorage.refresh_token)
 }
 
-export const setProfileToLS = ({ user_id, username }: { user_id: string, username?: string }) => {
-    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify({ user_id, username }))
+export const setProfileToLS = ({ user_id, username, avatar }: { user_id: string, username?: string , avatar?:string}) => {
+    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify({ user_id, username , avatar}))
 }
 
 export const getProfileToLS = () => {

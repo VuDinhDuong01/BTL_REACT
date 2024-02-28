@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, useState, type Dispatch, type SetStateAction } from "react"
+import { createSearchParams, useNavigate } from "react-router-dom"
 
 import { GetCommentResponse, Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -7,6 +8,8 @@ import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
 import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from "../../apis/comment"
 import { getProfileToLS } from "../../helps"
+import { queryList } from "../../hooks"
+import { Button } from "../../components/ui/button"
 
 
 const actionArray = [
@@ -49,6 +52,8 @@ const initContext = {
 }
 export const TweetProvider = createContext<TweetContext>(initContext)
 export const Home = () => {
+  const [limits, setLimit] = useState<number>(Number(queryList.limit))
+  const navigate = useNavigate()
   const [optionAction, setOptionAction] = useState<number>(1)
   const [likeComment] = useLikeCommentMutation()
   const [likeRepliesComment] = useCreateLikeRepliesCommentMutation()
@@ -60,9 +65,12 @@ export const Home = () => {
   }
   const { user_id } = getProfileToLS()
   const { data: getListTweet } = useGetListTweetQuery({
-    limit: 10,
-    page: 1
-  })
+    ...queryList,
+    limit: limits,
+    // page: nextPage,
+
+  } as unknown as { limit: number, page: number })
+
 
   const handleLike = (_id_comment: string) => {
     setIsHovered(_id_comment)
@@ -87,6 +95,23 @@ export const Home = () => {
       console.log(error)
     }
   }
+
+  const handleNextPage = () => {
+    setLimit(prev => {
+      const nextLimit = prev + 3
+      navigate({
+        pathname: '',
+        search: createSearchParams({
+          ...queryList,
+          limit: String(nextLimit)
+        }).toString()
+      });
+      return nextLimit;
+    });
+
+  }
+
+ 
   return (
     <div className="w-full">
       <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
@@ -122,7 +147,12 @@ export const Home = () => {
           })
         }
       </TweetProvider.Provider>
-
+      {
+        getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
+          <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">Loading...</Button>
+        </div>)
+      }
+  
     </div>
   )
 }

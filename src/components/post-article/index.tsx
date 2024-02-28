@@ -3,7 +3,7 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { type ChangeEvent, useRef, useState, useEffect } from 'react'
-import  { EmojiClickData } from 'emoji-picker-react';
+import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
 
@@ -16,10 +16,11 @@ import { useClickOutSide } from '../../hooks/useClickOutSide';
 import { ConvertSizeImagesPost } from '../../helps/convert-size-image-post';
 import { checkHashTagsOrMentions } from '../../helps/check-metions-or-hastags';
 import { getProfileToLS, regex } from '../../helps';
-import { useUploadImageMutation } from '../../apis';
+import { useUploadImageMutation, useUploadVideoMutation } from '../../apis';
 import { useCreateTweetMutation } from '../../apis/tweet';
 import { Loading } from '../../assets/icons/eye';
 import { EmojiPickers, ShowEmoji } from '../common/emoji-picker';
+import { VideoPlayer } from '../video';
 
 const listIcons = [
     {
@@ -44,6 +45,8 @@ const listIcons = [
     },
 ]
 
+const typeImages = ['image/png', 'image/jpg', 'image/jpeg']
+const typeVideo = ['video/mp4', 'video/webm']
 interface permissionViews {
     id: number,
     title: string,
@@ -80,6 +83,7 @@ const permissionViews: permissionViews[] = [
 
 export const PostArticle = () => {
     const [uploadImages] = useUploadImageMutation()
+    const [uploadVideo] = useUploadVideoMutation()
     const [createTweet, { isLoading }] = useCreateTweetMutation()
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
@@ -98,8 +102,7 @@ export const PostArticle = () => {
     const [audience, setAudience] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
-    const [gif, setGif] = useState<string>('')
-
+    const [gif, setGif] = useState<string | File>('')
     const [text, setText] = useState('');
     const contentEditableRef = useRef<any>(null);
     const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
@@ -135,7 +138,6 @@ export const PostArticle = () => {
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const arrayFile = Array.from(e.target.files);
-
             setFiles(arrayFile)
         }
     }
@@ -184,22 +186,29 @@ export const PostArticle = () => {
         contentEditableRef.current.focus();
     };
 
-    const user_id = getProfileToLS()
+    const {user_id, avatar} = getProfileToLS() as {user_id: string , avatar: string }
 
     const onSubmit = (handleSubmit(async () => {
         let uploadImage: { image: string, type: number }[] = []
+        let uploadVideos: { image: string, type: number }[] = []
         try {
             if (files.length > 0) {
                 const formData = new FormData();
-                for (let i = 0; i < files.length; i++) {
-                    formData.append('image', files[i])
+                if (typeImages.includes(files[0].type)) {
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append('image', files[i])
+                    }
+                    uploadImage = await uploadImages(formData).unwrap()
+                } else {
+                    formData.append('video', files[0])
+                    uploadVideos = await uploadVideo(formData).unwrap()
                 }
-                uploadImage = await uploadImages(formData).unwrap()
+
             }
-            const medias = uploadImage.map(item => item.image)
+            const medias = typeImages.includes(files[0].type) ? uploadImage.map(item => item.image) : [uploadVideos[0].image]
             const bodyRequest = {
                 content: text,
-                medias,
+                medias: files.length > 0 ? medias : [gif],
                 user_id,
                 audience,
                 hashtags,
@@ -208,6 +217,7 @@ export const PostArticle = () => {
             await createTweet(bodyRequest).unwrap();
             setText('')
             setFiles([])
+            setGif('')
             setShowPermissionView({
                 title: 'Everyone can reply',
                 icon: <Icons.AiOutlineGlobal />
@@ -216,6 +226,7 @@ export const PostArticle = () => {
             console.log(error)
         }
     }))
+    console.log(files)
 
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
@@ -223,7 +234,7 @@ export const PostArticle = () => {
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full  min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
-                    <img src={Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
+                    <img src={avatar ? avatar :Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
                 <div className="flex-1">
                     <div className='w-full relative'>
@@ -253,11 +264,21 @@ export const PostArticle = () => {
                         'mb-[10px] mt-[10px]': files.length > 0
                     })}>
                         {
-                            files !== null && files.length > 0 && ConvertSizeImagesPost({ arrayImage: files.map(file => URL.createObjectURL(file)), setFiles })
+                            files.length > 0 && typeImages.includes(files[0]?.type) &&
+                            ConvertSizeImagesPost({ arrayImage: files.map(file => URL.createObjectURL(file)), setFiles })
+                        }
+                        {
+                            files.length > 0 && typeVideo.includes(files[0]?.type) &&
+                            <div className='w-full relative'>
+                                <video controls className='w-full rounded-lg'>
+                                    <source src={URL.createObjectURL(files[0])} type={files[0].type} />
+                                </video>
+                                <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={() => setFiles([])}><Icons.IoMdClose /></div>
+                            </div>
                         }
                         {
                             Boolean(gif) && <div className='w-full relative'>
-                                <img src={gif} alt='gif' className='w-full object-cover rounded-lg h-[200px]' />
+                                <img src={gif as string } alt='gif' className='w-full object-cover rounded-lg h-[200px]' />
                                 <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={handleCloseGif}><Icons.IoMdClose /></div>
                             </div>
                         }

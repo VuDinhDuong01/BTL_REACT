@@ -18,19 +18,20 @@ import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
 import { GetCommentResponse } from '../../post';
 import { TweetProvider } from '../../../pages/home';
+import { Skeleton } from '../skeleton';
 
 export type ShowPopupComment = {
     showPopup: () => void;
 };
 interface PropsDialogComment {
-
+    loading: boolean
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
 
 
 
 }
-export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id }, ref) => {
+export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, loading }, ref) => {
 
     const refPopComment = useRef<HTMLDivElement>(null)
     const [createComment] = useCreateCommentMutation()
@@ -43,6 +44,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string, username: string }
     const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment } = useContext(TweetProvider)
+
     const showPopup = () => {
         setIsShowPopup(true)
     }
@@ -167,147 +169,153 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                 <div className='w-full flex items-center justify-center text-[20px] font-fontFamily'><h2 className='text-[20px]'>{`Bài viết của ${users?.username}`}</h2></div>
                             </div>
                         </div>
+
+
                         <div className='w-full flex-1 overflow-auto pb-[20px] '>
                             <div className='px-[20px]  cursor-pointer  w-full h-full'>
                                 {
-                                    listComment.data.data.length > 0 ? (listComment.data as GetCommentResponse).data.map(comment => {
-                                        return <div className='w-full flex mt-[15px]' key={comment._id}>
-                                            <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-                                            <div className='w-full'>
-                                                <div className='w-full'>
-                                                    <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
-                                                        <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
-                                                        <p className='text-[14px] font-fontFamily'>{comment?.content_comment}</p>
-                                                    </div>
-                                                    {
-                                                        comment.image_comment !== '' && <div className='mt-[20px]'>
-                                                            <img src={comment.image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
-                                                        </div>
-                                                    }
-                                                    <div className='w-full items-center justify-between flex'>
-                                                        <div className='w-[200px] mt-[5px] flex items-center justify-between'>
-                                                            <p className='text-[15px] font-fontFamily'>{convertDateToHours(comment.created_at)}</p>
-                                                            <div className='relative'>
-                                                                <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
-                                                                    'text-[#1B90DF] font-[600]': renderColorLike('👍', comment.like_comments),
-                                                                    'text-[#FD6068] font-[600]': renderColorLike('❤️', comment.like_comments),
-                                                                    'text-[#FFE15B] font-[600]': renderColorLike('😂', comment.like_comments),
-                                                                    'text-[#FFE15B]  font-[600]': renderColorLike('😌', comment.like_comments),
-                                                                    'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
-                                                                })} onClick={() => {
-                                                                    handleLike(comment._id)
-                                                                }}
-                                                                >{
-                                                                        renderTextLike(comment.like_comments)
-                                                                    }</p>
-                                                                {
-                                                                    isHovered === comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>
-                                                                }
+                                    loading ? <Skeleton /> : <>
+                                        {
+                                            listComment.data.data.length > 0 ? (listComment.data as GetCommentResponse).data.map(comment => {
+                                                return <div className='w-full flex mt-[15px]' key={comment._id}>
+                                                    <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+                                                    <div className='w-full'>
+                                                        <div className='w-full'>
+                                                            <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
+                                                                <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
+                                                                <p className='text-[14px] font-fontFamily'>{comment?.content_comment}</p>
                                                             </div>
-                                                            <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
-                                                        </div>
-                                                        {comment.like_comments.length > 0 &&
-                                                            <div className=' bg-white flex items-center px-[8px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
-                                                                {
-                                                                    handleFilerIcon(comment.like_comments).map((Icon, index) => {
-                                                                        return <div key={index} className='text-[13px]'>
-                                                                            {Icon}
-                                                                        </div>
-                                                                    })
-                                                                }
-                                                                <div className='font-[550] font-fontFamily ml-[5px]'>{comment.like_comments.length}</div>
-                                                            </div>
-                                                        }
-                                                    </div>
-
-                                                    <div className='w-full mt-[20px]'>
-                                                        {
-                                                            isShowInputRepliesComment === comment._id && (<>
-                                                                <InputPost
-                                                                    file={fileRepliesComment as File}
-                                                                    setFile={setFileRepliesComment}
-                                                                    avatar_user={users.avatar}
-                                                                    content={RepliesContent}
-                                                                    setContent={setRepliesContent}
-                                                                    handleCreateComment={handleCreateRepliesComment}
-                                                                />
-                                                                <div className='relative'>
-                                                                    {
-                                                                        fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
-                                                                    }
-                                                                    <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                                            {
+                                                                comment.image_comment !== '' && <div className='mt-[20px]'>
+                                                                    <img src={comment.image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
+                                                                </div>
+                                                            }
+                                                            <div className='w-full items-center justify-between flex'>
+                                                                <div className='w-[200px] mt-[5px] flex items-center justify-between'>
+                                                                    <p className='text-[15px] font-fontFamily'>{convertDateToHours(comment.created_at)}</p>
+                                                                    <div className='relative'>
+                                                                        <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
+                                                                            'text-[#1B90DF] font-[600]': renderColorLike('👍', comment.like_comments),
+                                                                            'text-[#FD6068] font-[600]': renderColorLike('❤️', comment.like_comments),
+                                                                            'text-[#FFE15B] font-[600]': renderColorLike('😂', comment.like_comments),
+                                                                            'text-[#FFE15B]  font-[600]': renderColorLike('😌', comment.like_comments),
+                                                                            'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
+                                                                        })} onClick={() => {
+                                                                            handleLike(comment._id)
+                                                                        }}
+                                                                        >{
+                                                                                renderTextLike(comment.like_comments)
+                                                                            }</p>
                                                                         {
-                                                                            fileRepliesComment && <Icons.IoMdClose size={25} />
+                                                                            isHovered === comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>
                                                                         }
                                                                     </div>
+                                                                    <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
                                                                 </div>
-                                                            </>
-                                                            )
+                                                                {comment.like_comments.length > 0 &&
+                                                                    <div className=' bg-white flex items-center px-[8px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+                                                                        {
+                                                                            handleFilerIcon(comment.like_comments).map((Icon, index) => {
+                                                                                return <div key={index} className='text-[13px]'>
+                                                                                    {Icon}
+                                                                                </div>
+                                                                            })
+                                                                        }
+                                                                        <div className='font-[550] font-fontFamily ml-[5px]'>{comment.like_comments.length}</div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+
+                                                            <div className='w-full mt-[20px]'>
+                                                                {
+                                                                    isShowInputRepliesComment === comment._id && (<>
+                                                                        <InputPost
+                                                                            file={fileRepliesComment as File}
+                                                                            setFile={setFileRepliesComment}
+                                                                            avatar_user={users.avatar}
+                                                                            content={RepliesContent}
+                                                                            setContent={setRepliesContent}
+                                                                            handleCreateComment={handleCreateRepliesComment}
+                                                                        />
+                                                                        <div className='relative'>
+                                                                            {
+                                                                                fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+                                                                            }
+                                                                            <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                                                                {
+                                                                                    fileRepliesComment && <Icons.IoMdClose size={25} />
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                    </>
+                                                                    )
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        {
+                                                            comment?.replies_comments.length > 0 && Object.keys(comment.replies_comments[0]).length > 0 && comment?.replies_comments.map(replies_comment => {
+                                                                return <div className=' mt-[10px]' key={replies_comment._id}>
+                                                                    <div className='flex mb-[10px]'>
+                                                                        <img src={replies_comment?.avatar ? replies_comment?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+                                                                        <div>
+                                                                            <div>
+                                                                                <div className='flex items-center relative '>
+                                                                                    <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px] '>
+                                                                                        <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
+                                                                                        <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
+                                                                                    </div>
+                                                                                    <div className=' absolute right-[0]'>
+                                                                                        {replies_comment.replies_like_comments.length > 0 &&
+                                                                                            <div className=' bg-white flex items-center    px-[5px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+                                                                                                {
+                                                                                                    handleFilerIcon(replies_comment.replies_like_comments).map((Icon, index) => {
+                                                                                                        return <div key={index} className='text-[13px]'>
+                                                                                                            {Icon}
+                                                                                                        </div>
+                                                                                                    })
+                                                                                                }
+                                                                                                <div className='font-[550] font-fontFamily ml-[5px]'>{replies_comment.replies_like_comments.length}</div>
+                                                                                            </div>
+                                                                                        }
+                                                                                    </div>
+
+                                                                                </div>
+
+                                                                                {
+                                                                                    replies_comment.replies_image_comment !== '' && <div className='mt-[20px]'>
+                                                                                        <img src={replies_comment.replies_image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
+                                                                                    </div>
+                                                                                }
+                                                                                <div className='w-[200px] mt-[5px] flex items-center'>
+                                                                                    <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
+                                                                                    <div className=' relative'>
+                                                                                        <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
+                                                                                            {
+                                                                                                'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
+                                                                                                'text-[#FD6068] font-[600]': renderColorLike('❤️', replies_comment.replies_like_comments),
+                                                                                                '!text-[#FFE15B] font-[600]': renderColorLike('😂', replies_comment.replies_like_comments),
+                                                                                                '!text-[#FFE15B]  font-[600]': renderColorLike('😌', replies_comment.replies_like_comments),
+                                                                                                '!text-[#FFE15B]   font-[600]': renderColorLike('😢', replies_comment.replies_like_comments)
+                                                                                            }
+                                                                                        )} onClick={() => {
+                                                                                            handleLike(replies_comment._id)
+                                                                                        }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
+                                                                                        {
+                                                                                            isHovered === replies_comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            })
                                                         }
                                                     </div>
                                                 </div>
-                                                {
-                                                    comment?.replies_comments.length > 0 && Object.keys(comment.replies_comments[0]).length > 0 && comment?.replies_comments.map(replies_comment => {
-                                                        return <div className=' mt-[10px]' key={replies_comment._id}>
-                                                            <div className='flex mb-[10px]'>
-                                                                <img src={replies_comment?.avatar ? replies_comment?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-                                                                <div>
-                                                                    <div>
-                                                                        <div className='flex items-center relative '>
-                                                                            <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px] '>
-                                                                                <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
-                                                                                <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
-                                                                            </div>
-                                                                            <div className=' absolute right-[0]'>
-                                                                                {replies_comment.replies_like_comments.length > 0 &&
-                                                                                    <div className=' bg-white flex items-center    px-[5px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
-                                                                                        {
-                                                                                            handleFilerIcon(replies_comment.replies_like_comments).map((Icon, index) => {
-                                                                                                return <div key={index} className='text-[13px]'>
-                                                                                                    {Icon}
-                                                                                                </div>
-                                                                                            })
-                                                                                        }
-                                                                                        <div className='font-[550] font-fontFamily ml-[5px]'>{replies_comment.replies_like_comments.length}</div>
-                                                                                    </div>
-                                                                                }
-                                                                            </div>
-
-                                                                        </div>
-
-                                                                        {
-                                                                            replies_comment.replies_image_comment !== '' && <div className='mt-[20px]'>
-                                                                                <img src={replies_comment.replies_image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
-                                                                            </div>
-                                                                        }
-                                                                        <div className='w-[200px] mt-[5px] flex items-center'>
-                                                                            <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
-                                                                            <div className=' relative'>
-                                                                                <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
-                                                                                    {
-                                                                                        'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
-                                                                                        'text-[#FD6068] font-[600]': renderColorLike('❤️', replies_comment.replies_like_comments),
-                                                                                        '!text-[#FFE15B] font-[600]': renderColorLike('😂', replies_comment.replies_like_comments),
-                                                                                        '!text-[#FFE15B]  font-[600]': renderColorLike('😌', replies_comment.replies_like_comments),
-                                                                                        '!text-[#FFE15B]   font-[600]': renderColorLike('😢', replies_comment.replies_like_comments)
-                                                                                    }
-                                                                                )} onClick={() => {
-                                                                                    handleLike(replies_comment._id)
-                                                                                }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
-                                                                                {
-                                                                                    isHovered === replies_comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
-                                                                                }
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    })
-                                                }
-                                            </div>
-                                        </div>
-                                    }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default'>Chưa có bình luận nào cho bài Post</div>
+                                            }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default'>Chưa có bình luận nào cho bài Post</div>
+                                        }
+                                    </>
                                 }
                             </div>
                         </div>

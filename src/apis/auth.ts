@@ -6,7 +6,7 @@ import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 
-const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL,UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -31,7 +31,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         method: METHOD_API.POST,
         data,
       }),
-      invalidatesTags:['login']
+      invalidatesTags: ['login']
     }),
 
     register: build.mutation<AuthResponseType, AuthRequestProp>({
@@ -90,7 +90,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         url: GET_ME,
         method: METHOD_API.GET,
       }),
-      providesTags: ['getMe','login']
+      providesTags: ['getMe', 'login']
     }),
     updateMe: build.mutation<GetUserResponse, UpdateMe>({
       query: (data) => ({
@@ -103,6 +103,13 @@ export const authAPI = baseCreateApi.injectEndpoints({
     uploadImage: build.mutation<UploadImageResponse[], FormData>({
       query: (data) => ({
         url: UPLOAD_IMAGE,
+        method: METHOD_API.POST,
+        data
+      }),
+    }),
+    uploadVideo: build.mutation<UploadImageResponse[], FormData>({
+      query: (data) => ({
+        url: UPLOAD_VIDEO,
         method: METHOD_API.POST,
         data
       }),
@@ -128,6 +135,7 @@ export const { useLoginMutation,
   useLogoutMutation,
   useUpdateMeMutation,
   useUploadImageMutation,
-  useChangePasswordMutation
+  useChangePasswordMutation,
+  useUploadVideoMutation
 }
   = authAPI

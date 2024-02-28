@@ -50,7 +50,7 @@ instance.interceptors.response.use(function (response) {
         setAccessTokenToLS(accessToken)
         setRefreshTokenToLS(refreshToken)
         console.log(response.data.da)
-        setProfileToLS({ username: response?.data.data.user.username, user_id: response?.data.data.user._id as string })
+        setProfileToLS({ username: response?.data.data.user.username, user_id: response?.data.data.user._id as string , avatar: response?.data.data.user.avatar})
     } else if (response.config.url === URL_API.LOGOUT_OUT) {
         accessToken = ''
         refreshToken = ''

@@ -16,9 +16,10 @@ import { getProfileToLS } from "../../helps"
 import { useGetCommentMutation } from "../../apis/comment"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
+import { VideoPlayer } from "../video"
 interface Props {
     tweet: Tweet,
-    setListComment:Dispatch<SetStateAction<{
+    setListComment: Dispatch<SetStateAction<{
         data: GetCommentResponse;
         loading: boolean;
     }>>
@@ -26,7 +27,7 @@ interface Props {
 }
 export type GetCommentResponse = GenerateType<Comment[]>
 
-export const Post = ({ tweet,setListComment }: Props) => {
+export const Post = ({ tweet, setListComment }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const profile = getProfileToLS() as { user_id: string, username: string }
     const [likeTweet] = useLikeMutation()
@@ -34,6 +35,7 @@ export const Post = ({ tweet,setListComment }: Props) => {
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
     const [getComment, { isLoading }] = useGetCommentMutation()
+    console.log(isLoading)
     const checkLike = useMemo(() => {
         return tweet?.likes?.some(item => item.user_id === profile.user_id)
     }, [tweet.likes])
@@ -101,7 +103,7 @@ export const Post = ({ tweet,setListComment }: Props) => {
                             limit: 50,
                             page: 1
                         }).unwrap()
-                        setListComment({ data: response, loading: isLoading })
+                        setListComment({ data: response, loading:  isLoading })
                     }
                 }
             ]
@@ -114,7 +116,7 @@ export const Post = ({ tweet,setListComment }: Props) => {
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
-            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} />
+            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} loading={isLoading} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
@@ -130,7 +132,11 @@ export const Post = ({ tweet,setListComment }: Props) => {
                 <div className="w-full mt-[20px] cursor-pointer">
                     {
                         tweet?.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
-                        // : <VideoPlayer url='https://youtu.be/Vt4kAu-ziRY?si=R5w38MhUA4bV_HvM'  /> 
+
+                            // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
+                        //    <VideoPlayer url='https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g' /> 
+                       
+
                     }
                 </div>
                 <div className="w-full py-[10px]  flex justify-between items-center">

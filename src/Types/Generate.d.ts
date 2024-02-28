@@ -5,5 +5,5 @@ export interface  GenerateType<T>{
     total_records?:number
     limit?:number
     current_page?:number
-    total_page?:number
+    total_pages?:number
 }
