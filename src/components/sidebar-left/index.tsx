@@ -11,7 +11,7 @@ import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
 import { PAGE } from "../../contants"
 import { useGetMeQuery, useLogoutMutation } from "../../apis";
-import { getRefreshTokenToLS, removeLS } from "../../helps";
+import { getProfileToLS, getRefreshTokenToLS, removeLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
 
@@ -20,6 +20,7 @@ export const SidebarLeft = () => {
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
   const navigate = useNavigate()
+  const profile= getProfileToLS() as {user_id: string }
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
   const { data: getMe } = useGetMeQuery(null)
@@ -78,7 +79,7 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Messages</p>
         </NavLink>
-        <NavLink to={PAGE.BOOKMARK} className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:w-[80%] hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center hover:w-[80%] no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+        <NavLink to={`/bookmark/${profile?.user_id}`} className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:w-[80%] hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex items-center hover:w-[80%] no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">
             <BookMarkIcon />
           </div>

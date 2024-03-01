@@ -52,7 +52,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const [likeRepliesComment] = useCreateLikeRepliesCommentMutation()
     const [auth, setAuth] = useState<AuthType | null>(Object)
     const [isHovered, setIsHovered] = useState<string>('')
-    const { user_id } = getProfileToLS()
+    const profile = getProfileToLS() as {user_id: string }
     const handleLike = (_id_comment: string) => {
         setIsHovered(_id_comment)
     }
@@ -60,7 +60,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const [listComment, setListComment] = useState<GetCommentResponse>(initComment)
     const handleSelectIcon = async (icon: string) => {
         try {
-            await likeComment({ comment_id: isHovered as string, user_id, icon: icon }).unwrap()
+            await likeComment({ comment_id: isHovered as string, user_id:profile?.user_id, icon: icon }).unwrap()
             setIsHovered('')
         }
         catch (error: unknown) {
@@ -72,7 +72,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     }
     const handleSelectIconRepliesComment = async (icon: string) => {
         try {
-            await likeRepliesComment({ user_id, icon, replies_comment_id: isHovered }).unwrap()
+            await likeRepliesComment({ user_id: profile?.user_id, icon, replies_comment_id: isHovered }).unwrap()
             setIsHovered('')
         }
         catch (error: unknown) {

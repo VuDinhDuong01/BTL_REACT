@@ -9,7 +9,7 @@ import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { useLikeMutation, useUnLikeMutation } from "../../apis/like"
 
 import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
-import { useState, useRef, useMemo, useContext } from "react"
+import {useRef, useContext } from "react"
 import { PopupComment, ShowPopupComment } from "../ui/dialog-comment"
 import { Like, Tweet } from "../../types/tweet"
 import { getProfileToLS } from "../../helps"
@@ -25,23 +25,19 @@ export type GetCommentResponse = GenerateType<Comment[]>
 
 export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
-    const profile = getProfileToLS() as { user_id: string, username: string }
+    const { user_id } = getProfileToLS() as { user_id: string, username: string }
     const [likeTweet] = useLikeMutation()
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
     const [getComment, { isLoading }] = useGetCommentMutation()
-    // const { user_id } = getProfileToLS() as { user_id: string, username: string }
-    const {  setListComment} = useContext(ContextAPI)
-    const checkLike = useMemo(() => {
-        return tweet?.likes?.some(item => item.user_id === profile.user_id)
-    }, [tweet.likes])
-    const checkBookmark = useMemo(() => {
-        return (tweet?.bookmarks as Like[])?.some(item => item.user_id === profile.user_id)
-    }, [tweet.bookmarks])
-    const [like, setLike] = useState<boolean>(checkLike)
-    const [bookmark, setBookMark] = useState<boolean>(checkBookmark)
-
+    const { setListComment } = useContext(ContextAPI)
+    const checkBookmark = (bookmarks: Like[]) => {
+        return bookmarks?.some(item => item.user_id === user_id)
+    }
+    const checkLike=(Likes:Like[])=>{
+        return Likes?.some(item => item.user_id === user_id)
+    }
     const listIcons = [
         {
             id: 1,
@@ -70,25 +66,26 @@ export const Post = ({ tweet }: Props) => {
         {
             id: 5,
             title: 'Bookmark',
-            icon: bookmark ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
+            icon: checkBookmark(tweet.bookmarks as Like[]) ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
         },
     ]
+
     const handleIcons = async (title: string) => {
         const map = new Map([
             ['Like', async () => {
-                setLike(!like)
-                if (like) {
+                // setLike(!like)
+                if (checkLike(tweet.likes as Like[])) {
                     await unLikeTweet({ tweet_id: tweet._id })
                 } else {
                     await likeTweet({ tweet_id: tweet._id })
                 }
             }],
             ['Bookmark', async () => {
-                setBookMark(!bookmark)
-                if (bookmark) {
-                    await unBookmarkTweet({ tweet_id: tweet._id })
+                // setBookMark(!bookmark)
+                if (checkBookmark(tweet.bookmarks as Like[])) {
+                    await unBookmarkTweet({ tweet_id: tweet._id, user_id })
                 } else {
-                    await bookmarkTweet({ tweet_id: tweet._id })
+                    await bookmarkTweet({ tweet_id: tweet._id, user_id })
                 }
             }],
             [
@@ -128,7 +125,7 @@ export const Post = ({ tweet }: Props) => {
                 <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
                 <div className="w-full mt-[20px] cursor-pointer">
                     {
-                        tweet?.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
+                        tweet?.medias?.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
 
                         // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
                         //    <VideoPlayer url='https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g' /> 
@@ -141,19 +138,19 @@ export const Post = ({ tweet }: Props) => {
                         listIcons.map(item => {
                             return <div key={item.id} onClick={() => handleIcons(item.title)} className={cn("flex items-center", {
                                 "hover:text-green2 ": item.title === 'Bookmark',
-                                "text-green2 ": bookmark && item.title === 'Bookmark',
+                                "text-green2 ": checkBookmark(tweet.bookmarks as Like[]) && item.title === 'Bookmark',
                                 "hover:text-[#1D9BF0] ": item.title === 'Reply',
                                 "hover:text-[#47CDA0] ": item.title === 'Repost',
                                 "hover:text-[#F91880] ": item.title === 'Like',
-                                "text-[#F91880] ": like && item.title === 'Like',
+                                "text-[#F91880] ": checkLike(tweet.likes as Like[]) && item.title === 'Like',
                                 "hover:text-[rgb(29,155,240)] ": item.title === 'View',
                             })}>
                                 <div key={item.id} title={item.title} className={cn("w-[35px]  h-[35px]   flex items-center justify-center rounded-[50%] cursor-pointer", {
-                                    "hover:text-green2 hover:bg-[#b9daef]": checkBookmark && item.title === 'Bookmark',
+                                    "hover:text-green2 hover:bg-[#b9daef]": checkBookmark(tweet.bookmarks as Like[]) && item.title === 'Bookmark',
                                     "hover:text-[#1D9BF0] hover:bg-[#98c8e7]": item.title === 'Reply',
                                     "hover:text-[#47CDA0] hover:bg-[#b1e5d4]": item.title === 'Repost',
                                     "hover:text-[#F91880] hover:bg-[#e4a2c1]": item.title === 'Like',
-                                    " text-[#F91880]": checkLike && item.title === 'Like',
+                                    " text-[#F91880]": checkLike(tweet.likes as Like[]) && item.title === 'Like',
                                     "hover:text-[#4FA3DD] hover:bg-[#a8d0ee]": item.title === 'View',
 
                                 })}>

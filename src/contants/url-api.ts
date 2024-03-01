@@ -17,7 +17,7 @@ export const URL_API = {
     LIKE_TWEET: 'like',
     UN_LIKE_TWEET: 'unlike',
     CREATE_BOOKMARK: 'bookmark',
-    UN_BOOKMARK: 'bookmark',
+    UN_BOOKMARK: 'delete_bookmark',
     GET_BOOKMARK: 'bookmark',
     GET_COMMENT:'comment',
     LIKE_COMMENT:'like_comment',

@@ -1,5 +1,6 @@
 interface BookmarkProps {
     tweet_id: string
+    user_id:string 
 }
 
 interface BookmarkResponse {
@@ -15,7 +16,6 @@ interface BookmarkResponse {
             audience: number,
             user_views: number,
             guest_views: number,
-          
         }
     ],
 }

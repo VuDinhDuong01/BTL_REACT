@@ -15,7 +15,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data
             }),
-            invalidatesTags: ['getListTweet', 'getComment']
+            invalidatesTags: ['getListTweet', 'getComment','getListBookmark']
         }),
         likeComment: build.mutation<GenerateType<{ data: {} }>, { comment_id: string, user_id: string, icon?: string }>({
             query: (data) => ({
@@ -31,7 +31,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data
             }),
-            invalidatesTags: ['getComment', 'getListTweet']
+            invalidatesTags: ['getComment', 'getListTweet','getListBookmark']
         }),
         createRepliesComment: build.mutation<GenerateType<{ data: {} }>, { replies_comment_id: string, user_id: string, replies_content_comment: string, replies_image_comment?: string }>({
             query: (data) => ({
