@@ -16,14 +16,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <I18nextProvider i18n={i18n}>
       <ToastContainer />
-      <ProviderContext>
-        <BrowserRouter>
-          <Provider store={store}>
-
+      <Provider store={store}>
+        <ProviderContext>
+          <BrowserRouter>
             <App />
-          </Provider>
-        </BrowserRouter>
-      </ProviderContext>
+          </BrowserRouter>
+        </ProviderContext>
+      </Provider>
     </I18nextProvider>
   </React.StrictMode>,
 )

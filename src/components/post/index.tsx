@@ -9,25 +9,21 @@ import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { useLikeMutation, useUnLikeMutation } from "../../apis/like"
 
 import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
-import { useState, useRef, useMemo, Dispatch, SetStateAction } from "react"
+import { useState, useRef, useMemo, useContext } from "react"
 import { PopupComment, ShowPopupComment } from "../ui/dialog-comment"
 import { Like, Tweet } from "../../types/tweet"
 import { getProfileToLS } from "../../helps"
 import { useGetCommentMutation } from "../../apis/comment"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
-import { VideoPlayer } from "../video"
+// import { VideoPlayer } from "../video"
+import { ContextAPI } from "../../hooks"
 interface Props {
     tweet: Tweet,
-    setListComment: Dispatch<SetStateAction<{
-        data: GetCommentResponse;
-        loading: boolean;
-    }>>
-
 }
 export type GetCommentResponse = GenerateType<Comment[]>
 
-export const Post = ({ tweet, setListComment }: Props) => {
+export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const profile = getProfileToLS() as { user_id: string, username: string }
     const [likeTweet] = useLikeMutation()
@@ -35,7 +31,8 @@ export const Post = ({ tweet, setListComment }: Props) => {
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
     const [getComment, { isLoading }] = useGetCommentMutation()
-    console.log(isLoading)
+    // const { user_id } = getProfileToLS() as { user_id: string, username: string }
+    const {  setListComment} = useContext(ContextAPI)
     const checkLike = useMemo(() => {
         return tweet?.likes?.some(item => item.user_id === profile.user_id)
     }, [tweet.likes])
@@ -103,7 +100,7 @@ export const Post = ({ tweet, setListComment }: Props) => {
                             limit: 50,
                             page: 1
                         }).unwrap()
-                        setListComment({ data: response, loading:  isLoading })
+                        setListComment(response)
                     }
                 }
             ]
@@ -133,9 +130,9 @@ export const Post = ({ tweet, setListComment }: Props) => {
                     {
                         tweet?.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
 
-                            // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
+                        // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
                         //    <VideoPlayer url='https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g' /> 
-                       
+
 
                     }
                 </div>

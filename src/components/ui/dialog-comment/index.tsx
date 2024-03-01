@@ -17,8 +17,8 @@ import { ListIcons } from '../../list-icons';
 import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
 import { GetCommentResponse } from '../../post';
-import { TweetProvider } from '../../../pages/home';
 import { Skeleton } from '../skeleton';
+import { ContextAPI } from '../../../hooks';
 
 export type ShowPopupComment = {
     showPopup: () => void;
@@ -43,7 +43,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string, username: string }
-    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment } = useContext(TweetProvider)
+    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
     const showPopup = () => {
         setIsShowPopup(true)
@@ -176,7 +176,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                 {
                                     loading ? <Skeleton /> : <>
                                         {
-                                            listComment.data.data.length > 0 ? (listComment.data as GetCommentResponse).data.map(comment => {
+                                            listComment.data.length > 0 ? (listComment as GetCommentResponse).data.map(comment => {
                                                 return <div className='w-full flex mt-[15px]' key={comment._id}>
                                                     <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                                     <div className='w-full'>

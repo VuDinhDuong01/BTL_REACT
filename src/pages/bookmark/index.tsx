@@ -4,7 +4,6 @@ import { useGetBookmarkQuery } from "../../apis/bookmark";
 import { Post } from "../../components/post";
 import { getProfileToLS } from "../../helps";
 
-
 const Bookmark = () => {
     const profile = getProfileToLS() as { username?: string, user_id: string }
     const { data: getBookmark } = useGetBookmarkQuery()
