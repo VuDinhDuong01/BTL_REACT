@@ -27,5 +27,6 @@ export const URL_API = {
     UPLOAD_VIDEO:'upload_video',
     GET_USERS:'get_user',
     FOLLOW:'follow',
-    GET_FOLLOW:'get_follow'
+    GET_FOLLOW:'get_follow',
+    GET_TWEET_USER:'get_tweet_user'
 } as const 

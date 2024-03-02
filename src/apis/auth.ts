@@ -5,8 +5,10 @@ import { GetLogoutResponse, GetUserResponse, UpdateMe, changePasswordProps } fro
 import { URL_API } from '../contants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
+import { GenerateType } from '../types/generate'
+import { Tweet } from '../types/tweet'
 
-const { REGISTER, LOGIN, VERIFY_EMAIL, CONFIRM_EMAIL,UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -85,10 +87,11 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
     }),
 
-    getMe: build.query<GetUserResponse, any>({
-      query: () => ({
-        url: GET_ME,
+    getMe: build.query<GetUserResponse, { user_id: string }>({
+      query: ({ user_id }) => ({
+        url: `${GET_ME}/${user_id}`,
         method: METHOD_API.GET,
+
       }),
       providesTags: ['getMe', 'login']
     }),
@@ -121,6 +124,15 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data
       }),
     }),
+    getTweetUser: build.query<GenerateType<Tweet[]>, { user_id: string, limit?: string, page?: string, title?: string }>({
+      query: ({ user_id, limit, page, title }) => ({
+        url: `${GET_TWEET_USER}/${user_id}`,
+        method: METHOD_API.GET,
+        params: { limit, page, title }
+
+      }),
+      providesTags: ['getMe', 'login','getListTweet']
+    }),
   })
 })
 
@@ -136,6 +148,7 @@ export const { useLoginMutation,
   useUpdateMeMutation,
   useUploadImageMutation,
   useChangePasswordMutation,
-  useUploadVideoMutation
+  useUploadVideoMutation,
+  useGetTweetUserQuery
 }
   = authAPI

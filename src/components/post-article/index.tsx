@@ -9,7 +9,6 @@ import { useForm } from 'react-hook-form'
 
 import { Icons } from "../../helps/icons"
 import { Button } from "../ui/button"
-import { Images } from "../../assets/images"
 import { ShowGIF, handleShowPopup } from '../show-gif';
 import { cn } from '../../helps/cn';
 import { useClickOutSide } from '../../hooks/useClickOutSide';
@@ -21,6 +20,7 @@ import { useCreateTweetMutation } from '../../apis/tweet';
 import { Loading } from '../../assets/icons/eye';
 import { EmojiPickers, ShowEmoji } from '../common/emoji-picker';
 import { VideoPlayer } from '../video';
+import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 
 const listIcons = [
     {
@@ -234,7 +234,7 @@ export const PostArticle = () => {
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full  min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
-                    <img src={avatar ? avatar :Images.bg} className="w-[40px] h-[40px] rounded-[50%] " />
+                    <img src={avatar ? avatar :DEFAULT_IMAGE_AVATAR} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
                 <div className="flex-1">
                     <div className='w-full relative'>

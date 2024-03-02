@@ -1,25 +1,77 @@
 /* eslint-disable no-extra-boolean-cast */
-import { useRef } from "react"
+import { useRef, useState } from "react"
+import { createSearchParams, useNavigate } from "react-router-dom"
 
 import { Button } from "../../../components/ui/button"
 import { Icons } from "../../../helps/icons"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { PAGE } from "../../../contants"
 import { PopupUpdateMe, ShowPopupHandle } from "../../../components/ui/dialog-form-update-me"
-import { useGetMeQuery } from "../../../apis"
+import { useGetMeQuery, useGetTweetUserQuery } from "../../../apis"
 import { DEFAULT_IMAGE_AVATAR } from "../../../helps/image-user-default"
 import { GetUserResponse } from "../../../types/user"
 import { Skeleton } from "../../../components/ui/skeleton"
+import { cn } from "../../../helps/cn"
+import { ProviderContext, queryList } from "../../../hooks"
+import { Post } from "../../../components/post"
+import { GenerateType } from "../../../types/generate"
+import { Tweet } from "../../../types/tweet"
+
+
+const actionTweet = [
+    { id: 1, title: 'Posts' },
+    { id: 2, title: 'Comments' },
+    { id: 3, title: 'Likes' },
+]
 
 export const Personal = () => {
-
-    const { data: getMe, isLoading } = useGetMeQuery(null)
+    const navigate = useNavigate()
+    const [optionAction, setOptionAction] = useState<number>(1)
+    const [title, setTitle] = useState<string>(String(queryList.title))
+    const { user_id } = useParams()
+    const [limits, setLimit] = useState<number>(Number(queryList.limit))
+    const { data: getMe, isLoading } = useGetMeQuery({
+        user_id: user_id as string
+    })
+    const { data: getTweetUser, isLoading: isLoadingGetTweetUser } = useGetTweetUserQuery(
+        {
+            ...queryList,
+            title: title,
+            limit: String(limits),
+            user_id: user_id as string
+        }
+    )
     const showPopupUpdateMe = useRef<ShowPopupHandle>(null)
 
     const handleShowPopup = () => {
         if (showPopupUpdateMe.current) {
             showPopupUpdateMe.current.showPopup()
         }
+    }
+    const handleOptionAction = (action: { id: number, title: string }) => {
+        setTitle(action.title)
+        setOptionAction(action.id)
+        navigate({
+            pathname: '',
+            search: createSearchParams({
+                ...queryList,
+                title: action.title
+            }).toString()
+        });
+    }
+
+    const handleNextPage = () => {
+        setLimit(prev => {
+            const nextLimit = prev + 3
+            navigate({
+                pathname: '',
+                search: createSearchParams({
+                    ...queryList,
+                    limit: String(nextLimit)
+                }).toString()
+            });
+            return nextLimit;
+        });
     }
     return <div className="w-full">
         <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
@@ -75,6 +127,48 @@ export const Personal = () => {
 
                     </div>
                 </>
+            }
+            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px]">
+                {actionTweet.map((action) => (
+                    <div
+                        className={cn('h-full w-full relative ', {
+                            'before:content-[""] before:absolute before:-bottom-[2px] before:w-full  before:left-0 before:h-[2px]  before:rounded-[2px] before:bg-green2':
+                                action.id === optionAction,
+                        })}
+                        key={action.id}
+                    >
+                        <div
+                            onClick={() => handleOptionAction(action)}
+                            className="h-full text-[18px] flex items-center justify-center cursor-pointer font-[700] font-fontFamily hover:bg-white1  "
+                        >
+                            {action.title}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            {
+                (getTweetUser as GenerateType<Tweet[]>)?.data.length > 0 ? <>
+                    {
+                        isLoadingGetTweetUser ? <div className="w-full h-full flex items-center justify-center mt-[200px]"><Skeleton /></div> : <>
+                            <ProviderContext>
+                                {
+                                    getTweetUser?.data?.map((tweet, index) => {
+                                        return <div key={index}> <Post
+                                            tweet={tweet}
+                                        />
+                                        </div>
+                                    })
+                                }
+                            </ProviderContext>
+                            {
+                                getTweetUser !== undefined && Number(limits) < Number(getTweetUser?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
+                                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">Loading...</Button>
+                                </div>)
+                            }
+                        </>
+                    }
+                </> : <div className="w-full items-center flex justify-center mt-[100px] text-[20px] text-black font-[600] font-fontFamily">Không có bài Post nào</div>
+
             }
         </div>
     </div>

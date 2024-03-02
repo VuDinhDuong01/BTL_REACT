@@ -23,7 +23,9 @@ export const SidebarLeft = () => {
   const profile= getProfileToLS() as {user_id: string }
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
-  const { data: getMe } = useGetMeQuery(null)
+  const { data: getMe } = useGetMeQuery({
+    user_id:profile?.user_id
+  })
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -67,7 +69,7 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">Communities</p>
         </NavLink>
-        <NavLink to={PAGE.PERSONAL} className={({ isActive }) => isActive ? "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+        <NavLink to={`/personal/${profile?.user_id}`} className={({ isActive }) => isActive ? "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">
             <UserIcon className="text-black" />
           </div>

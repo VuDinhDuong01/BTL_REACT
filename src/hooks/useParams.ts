@@ -6,7 +6,8 @@ const queryString = queryStringSearch()
 
 export const queryList = omitBy({
     limit: queryString?.limit ?? "3",
-    page: queryString?.page ?? "1"
+    page: queryString?.page ?? "1",
+    title: queryString?.title ?? 'Posts'
 }, isUndefined)
 
 
