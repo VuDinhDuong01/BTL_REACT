@@ -54,13 +54,13 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
 
     const { register, handleSubmit, control, formState: { errors }, getValues } = useForm<UpdateMeSchemaType>({
         defaultValues: {
-            username: dataMe && dataMe?.data.username,
-            website: dataMe && dataMe?.data.website,
-            bio: dataMe && dataMe?.data.bio,
-            location: dataMe && dataMe?.data.location,
-            name: dataMe && dataMe?.data.name,
-            cover_photo: dataMe && dataMe.data.cover_photo,
-            avatar: dataMe && dataMe.data.avatar
+            username: dataMe && dataMe?.data[0].username,
+            website: dataMe && dataMe?.data[0].website,
+            bio: dataMe && dataMe?.data[0].bio,
+            location: dataMe && dataMe.data[0].location,
+            name: dataMe && dataMe?.data[0].name,
+            cover_photo: dataMe && dataMe.data[0].cover_photo,
+            avatar: dataMe && dataMe.data[0].avatar
         },
         resolver: zodResolver(UpdateMeSchema),
     })
@@ -94,11 +94,11 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             }
 
             const bodyRequest = {
-                ...(username !== dataMe?.data.username && { username: username }),
-                ...(name !== dataMe?.data.name && { name: name }),
-                ...(bio !== dataMe?.data.bio && { bio: bio }),
-                ...(website !== dataMe?.data.website && { website: website }),
-                ...(location !== dataMe?.data.location && { location: location }),
+                ...(username !== dataMe?.data[0].username && { username: username }),
+                ...(name !== dataMe?.data[0].name && { name: name }),
+                ...(bio !== dataMe?.data[0].bio && { bio: bio }),
+                ...(website !== dataMe?.data[0].website && { website: website }),
+                ...(location !== dataMe?.data[0].location && { location: location }),
                 ...(fileImage.cover_photo !== null && res.length === 2 && { cover_photo: res?.[1].image }),
                 ...(fileImage.cover_photo !== null && res.length === 1 && { cover_photo: res?.[0].image }),
                 ...(fileImage.avatar !== null && { avatar: res?.[0].image })
@@ -150,7 +150,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             <>
                 {
                     <div className='w-[600px] relative '>
-                        <img className='w-full h-[190px]' src={Boolean(fileImage.cover_photo) ? URL.createObjectURL(fileImage.cover_photo as File) : Boolean(dataMe?.data.cover_photo) ? dataMe?.data.cover_photo : DEFAULT_IMAGE_COVER_PHOTO} />
+                        <img className='w-full h-[190px]' src={Boolean(fileImage.cover_photo) ? URL.createObjectURL(fileImage.cover_photo as File) : Boolean(dataMe?.data[0].cover_photo) ? dataMe?.data[0].cover_photo : DEFAULT_IMAGE_COVER_PHOTO} />
                         <div className='w-full  items-center flex justify-center absolute inset-0'>
                             <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto('cover_photo')}>
                                 <input type='file' style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
@@ -185,7 +185,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                     }
                                     <div className='w-[100px] h-[100px] relative'>
                                         <img
-                                            src={Boolean(fileImage.avatar) ? URL.createObjectURL(fileImage.avatar as File) : Boolean(dataMe?.data.avatar) ? dataMe?.data.avatar : DEFAULT_IMAGE_AVATAR}
+                                            src={Boolean(fileImage.avatar) ? URL.createObjectURL(fileImage.avatar as File) : Boolean(dataMe?.data[0].avatar) ? dataMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR}
                                             className='w-full h-full mt-[-50px] ml-[20px] rounded-[50%] border-solid border-[2px] border-white'
                                         />
                                         <div className='absolute top-1/2 left-1/2' style={{ margin: '-67px 10px 0 0px' }} >

@@ -1,4 +1,6 @@
 import { useMemo } from "react"
+import { useNavigate} from "react-router-dom"
+
 import { useFollowMutation, useGetFollowQuery, useGetUserQuery } from "../../apis/follow"
 // import { Search } from "../search"
 import { Button } from "../ui/button"
@@ -8,8 +10,9 @@ import { Loading } from "../../assets/icons/eye"
 import { cn } from "../../helps/cn"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 
-export const SidebarRight = () => {
 
+export const SidebarRight = () => {
+  const navigate= useNavigate()
   const { data: getUser, isLoading } = useGetUserQuery()
   const { data: getFollow } = useGetFollowQuery()
   const [follow, { isLoading: isLoadingFollow }] = useFollowMutation()
@@ -51,7 +54,7 @@ export const SidebarRight = () => {
                   <div className="flex items-center">
                     <img src={user.avatar ? user.avatar : DEFAULT_IMAGE_AVATAR} alt='avatar' className="w-[50px] h-[50px] object-cover rounded-[50%] mr-[10px]" />
                     <div>
-                      <h3 className="text-[15px] font-fontFamily font-[700] text-[#0f1419] my-[3px]">{user.name ?? ''}</h3>
+                        <h3 className="text-[15px] font-fontFamily cursor-pointer font-[700] text-[#0f1419] my-[3px] hover:underline" onClick={()=>navigate(`/personal/${user._id}`)}>{user.name ?? ''}</h3>
                       <p className="text-[13px] text-[#536471] font-fontFamily">@{user.username ?? ''}</p>
                     </div>
                   </div>

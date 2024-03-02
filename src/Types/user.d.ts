@@ -13,6 +13,9 @@ export interface User{
     roles: string[]
     created_at: string,
     updated_at: string,
+    count_tweet?:number
+    count_follower?:number
+    count_following?:number
 }
 
 export interface UpdateMe{
@@ -26,6 +29,6 @@ export interface changePasswordProps {
     new_password:string ,
     password:string 
 }
-export type  GetUserResponse= GenerateType<User>
+export type  GetUserResponse= GenerateType<User[]>
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type GetLogoutResponse= GenerateType<{}>
