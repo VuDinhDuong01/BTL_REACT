@@ -73,7 +73,6 @@ export const Post = ({ tweet }: Props) => {
     const handleIcons = async (title: string) => {
         const map = new Map([
             ['Like', async () => {
-                // setLike(!like)
                 if (checkLike(tweet.likes as Like[])) {
                     await unLikeTweet({ tweet_id: tweet._id })
                 } else {
@@ -81,7 +80,6 @@ export const Post = ({ tweet }: Props) => {
                 }
             }],
             ['Bookmark', async () => {
-                // setBookMark(!bookmark)
                 if (checkBookmark(tweet.bookmarks as Like[])) {
                     await unBookmarkTweet({ tweet_id: tweet._id, user_id })
                 } else {

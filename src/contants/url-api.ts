@@ -24,5 +24,8 @@ export const URL_API = {
     CREATE_COMMENT:'create_comment',
     CREATE_REPLIES_COMMENT:'replies_comment',
     UPDATE_COMMENT:'update_replies_comment',
-    UPLOAD_VIDEO:'upload_video'
+    UPLOAD_VIDEO:'upload_video',
+    GET_USERS:'get_user',
+    FOLLOW:'follow',
+    GET_FOLLOW:'get_follow'
 } as const 

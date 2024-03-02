@@ -8,6 +8,7 @@ import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
 import { ProviderContext, queryList } from "../../hooks"
 import { Button } from "../../components/ui/button"
+import { Skeleton } from "../../components/ui/skeleton"
 
 
 const actionArray = [
@@ -24,7 +25,7 @@ export const Home = () => {
     setOptionAction(action)
   }
 
-  const { data: getListTweet } = useGetListTweetQuery({
+  const { data: getListTweet, isLoading } = useGetListTweetQuery({
     ...queryList,
     limit: limits,
   } as unknown as { limit: number, page: number })
@@ -66,21 +67,27 @@ export const Home = () => {
       <div className="mt-[55px]">
         <PostArticle />
       </div>
-      <ProviderContext>
-        {
-          getListTweet?.data?.map((tweet, index) => {
-            return <div key={index}> <Post
-              tweet={tweet}
-            />
-            </div>
-          })
-        }
-      </ProviderContext>
+
       {
-        getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
-          <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">Loading...</Button>
-        </div>)
+        isLoading ? <div className="w-full h-full flex items-center justify-center mt-[200px]"><Skeleton /></div> : <>
+          <ProviderContext>
+            {
+              getListTweet?.data?.map((tweet, index) => {
+                return <div key={index}> <Post
+                  tweet={tweet}
+                />
+                </div>
+              })
+            }
+          </ProviderContext>
+          {
+            getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
+              <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">Loading...</Button>
+            </div>)
+          }
+        </>
       }
+
 
     </div>
   )

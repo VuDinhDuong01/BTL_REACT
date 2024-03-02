@@ -46,7 +46,7 @@ const Bookmark = () => {
                 </div>
             </div>
             {
-                isLoading ? <div className="mt-[100px]"><Skeleton /></div> : <>{
+                isLoading ? <div className="w-full h-full flex items-center  justify-center mt-[200px]"><Skeleton /></div> : <>{
                     (getBookmark as GenerateType<Tweet[]>)?.data.length > 0 ? <>
                         <div className="mt-[55px]">
                             <ProviderContext>

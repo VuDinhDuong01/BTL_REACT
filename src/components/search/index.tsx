@@ -56,6 +56,7 @@ const listSearch = [
 
 
 export const Search = () => {
+    
     const [countCharSearch, setCountCharSearch] = useState<number>(0)
     const { register, handleSubmit, reset, getValues } = useForm({
         defaultValues: {
@@ -95,7 +96,7 @@ export const Search = () => {
                         }
                     </form>
                 </div>
-                <div className=" top-[56px] fixed  z-[0]  mr-[320px] items-center justify-center w-[370px] bg-white" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}> 
+                {/* <div className=" top-[56px] fixed  z-[0]  mr-[320px] items-center justify-center w-[370px] bg-white" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}> 
                     <div className="text-[15px] font-fontFamily overflow-hidden whitespace-nowrap line-clamp-1 w-[350px] flex border-solid border-[1px]  border-b-[#EFF3F4] border-l-transparent border-r-transparent border-t-transparent h-[45px] items-center pl-[10px]">Search for {text}</div>
                     {
                         listSearch.length > 0 && <div className='w-full max-h-[400px] overflow-y-scroll '>
@@ -115,7 +116,7 @@ export const Search = () => {
                         </div>
                     }
 
-                </div>
+                </div> */}
             </div>
         </div>
     )
