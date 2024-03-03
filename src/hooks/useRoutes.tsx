@@ -14,6 +14,8 @@ import { ConfirmCode } from "../pages/auth/confirm-code";
 import { ResetPassword } from "../pages/auth/reset-password";
 import { Personal } from "../pages/auth/me";
 import Bookmark from "../pages/bookmark";
+import { Message } from "../pages/message";
+import { MessageDetail } from "../pages/message-detail";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
@@ -40,6 +42,8 @@ export const route = () => {
                     <Route path={PAGE.HOME} element={<Home />} />
                     <Route path={PAGE.PERSONAL} element={<Personal />} />
                     <Route path={PAGE.BOOKMARK} element={<Bookmark />} />
+                    <Route path={PAGE.MESSAGE} element={<Message />} />
+                    <Route path={PAGE.MESSAGE_DETAIL} element={<MessageDetail />} />
                 </Route>
                 
             </Route>

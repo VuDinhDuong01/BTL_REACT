@@ -8,5 +8,7 @@ export const PAGE={
     RESET_PASSWORD:'/reset-password/:user_id',
     NOTIFICATIONS:'/notifications',
     PERSONAL:'/personal/:user_id',
-    BOOKMARK:'/bookmark/:user_id'
+    BOOKMARK:'/bookmark/:user_id',
+    MESSAGE:'/message',
+    MESSAGE_DETAIL:'/message/:receiver_id'
 } as const 
