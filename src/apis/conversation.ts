@@ -5,8 +5,7 @@ import { URL_API } from "../contants"
 import { METHOD_API } from "../helps"
 
 
-const { GET_CONVERSATION, CREATE_CONVERSATIONS } = URL_API
-
+const { GET_CONVERSATION } = URL_API
 export interface conversations {
     _id: string,
     sender_id: string
@@ -18,7 +17,7 @@ export interface conversations {
 }
 export const conversationsAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({
-        getConversations: build.mutation<GenerateType<conversations[]>, { limit: number, page: number, receiver_id: string }>({
+        getConversations: build.query<GenerateType<conversations[]>, { limit: number, page: number, receiver_id: string }>({
             query: ({ limit, page, receiver_id }) => ({
                 url: `${GET_CONVERSATION}/${receiver_id}`,
                 method: METHOD_API.GET,
@@ -27,20 +26,12 @@ export const conversationsAPI = baseCreateApi.injectEndpoints({
             // invalidatesTags: ['getListTweet', 'getComment', 'getListBookmark']
         }),
 
-        createConversations: build.mutation<GenerateType<{}>, { receiver_id: string, content: string, images: string[] }>({
-            query: ({ receiver_id, images, content }) => ({
-                url: `${CREATE_CONVERSATIONS}/${receiver_id}`,
-                method: METHOD_API.POST,
-                data: { content, images }
-            }),
-            // invalidatesTags: ['getComment', 'getListTweet', 'getListBookmark']
-        }),
 
     })
 })
 
 export const {
-    useCreateConversationsMutation,
-    useGetConversationsMutation,
+    
+    useGetConversationsQuery,
 }
     = conversationsAPI

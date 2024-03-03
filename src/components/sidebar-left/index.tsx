@@ -44,7 +44,7 @@ export const SidebarLeft = () => {
     }
   }
   return (
-    <div className="w-full  min-h-[100vh] z-[9990" >
+    <div className="w-full  min-h-[100vh] z-[9990]" >
       <ChangePassword ref={showChangePasswordRef} />
 
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>

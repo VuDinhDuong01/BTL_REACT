@@ -19,6 +19,8 @@ interface InputPost {
     file: File, avatar_user: string,
     setFile: Dispatch<SetStateAction<File | string>>,
     handleCreateComment: () => Promise<void>
+    className?: string
+    classNameIcons?: string
 }
 
 
@@ -39,7 +41,7 @@ const listIcon = [
     }
 ]
 
-export const InputPost = ({ content, setContent, file, setFile, avatar_user, handleCreateComment }: InputPost) => {
+export const InputPost = ({ content, setContent, file, setFile, avatar_user, handleCreateComment  }: InputPost) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const emojiRef = useRef<ShowEmoji>(null)
@@ -80,7 +82,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
         }
     }, [content])
 
-    return <div className='w-full min-h-[100px]  flex '>
+    return <div className='w-full min-h-[100px]  flex'>
         <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
         <div className='w-full relative'>
             <textarea className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]' placeholder='Viết bình luận...' value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>

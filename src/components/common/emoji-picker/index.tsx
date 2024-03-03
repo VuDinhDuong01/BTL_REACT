@@ -5,7 +5,7 @@ import { useClickOutSide } from '../../../hooks/useClickOutSide';
 
 export interface Props {
     handleShowEmojiPicker: (emojiData: EmojiClickData) => void
-    className: string
+    className?: string
 }
 
 export interface ShowEmoji {
@@ -13,7 +13,7 @@ export interface ShowEmoji {
 }
 
 export const EmojiPickers = forwardRef<ShowEmoji, Props>(({ handleShowEmojiPicker, className }, ref) => {
-
+    
     const emojiRef = useRef<HTMLDivElement>(null)
     const [isShowEmoji, setIsShowEmoji] = useState<boolean>(false)
 

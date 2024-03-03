@@ -230,6 +230,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 {
                                                                     isShowInputRepliesComment === comment._id && (<>
                                                                         <InputPost
+                                                                           
                                                                             file={fileRepliesComment as File}
                                                                             setFile={setFileRepliesComment}
                                                                             avatar_user={users.avatar}
@@ -321,6 +322,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                         </div>
                         <div className='w-full min-h-[120px] p-[10px] ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
                             <InputPost
+                                className='w-full min-h-[100px]  flex'
+                                classNameIcons="w-full flex items-center absolute bottom-[5px] left-[10px]"
                                 file={file as File}
                                 setFile={SetFile}
                                 avatar_user={users.avatar}

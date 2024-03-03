@@ -29,6 +29,5 @@ export const URL_API = {
     FOLLOW:'follow',
     GET_FOLLOW:'get_follow',
     GET_TWEET_USER:'get_tweet_user',
-    CREATE_CONVERSATIONS:'conversations',
     GET_CONVERSATION:'conversations'
 } as const 
