@@ -230,7 +230,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 {
                                                                     isShowInputRepliesComment === comment._id && (<>
                                                                         <InputPost
-                                                                           
+
                                                                             file={fileRepliesComment as File}
                                                                             setFile={setFileRepliesComment}
                                                                             avatar_user={users.avatar}

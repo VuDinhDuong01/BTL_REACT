@@ -1,14 +1,14 @@
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, useLocation } from "react-router-dom"
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useMemo } from "react";
+import { useContext, useMemo, useState } from "react";
 
 import { Icons } from "../../helps/icons"
 import { Images } from "../../assets/images"
 import { PAGE } from "../../contants"
 import { useGetTweetDetailQuery } from "../../apis/tweet";
-import { Skeleton2 } from "../../components/ui/skeleton";
+import { Skeleton, Skeleton2 } from "../../components/ui/skeleton";
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default";
 import { Like } from "../../types/tweet";
 import { cn } from "../../helps/cn";
@@ -16,6 +16,15 @@ import { getProfileToLS } from "../../helps";
 import { TotalNumber } from "../../helps/sum-total-number";
 import { useLikeMutation, useUnLikeMutation } from "../../apis/like";
 import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark";
+import { InputPost } from "../../components/common/input-post";
+import { ContextAPI } from "../../hooks";
+import { convertDateToHours } from "../../helps/convert-date-to-hour";
+import { Comment, LikeComment } from "../../types/comment";
+import { ListIcons } from "../../components/list-icons";
+import { UploadImageResponse, useUploadImageMutation } from "../../apis";
+import { useCreateCommentMutation, useCreateRepliesCommentMutation } from "../../apis/comment";
+import { GetCommentResponse } from "../../components/post";
+
 
 
 export const TweetDetail = () => {
@@ -23,6 +32,16 @@ export const TweetDetail = () => {
   const [unLikeTweet] = useUnLikeMutation()
   const [bookmarkTweet] = useBookmarkMutation()
   const [unBookmarkTweet] = useUnBookmarkMutation()
+  const [content, setContent] = useState<string>('')
+  const [createComment] = useCreateCommentMutation()
+  const [createRepliesComment] = useCreateRepliesCommentMutation()
+  const [uploadImages] = useUploadImageMutation()
+  const { data, loading } = useLocation().state
+  const { data: getComment } = data as GetCommentResponse
+
+  const [RepliesContent, setRepliesContent] = useState<string>('')
+  const [file, SetFile] = useState<File | string>('')
+  const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
   const { tweet_id } = useParams()
   const { user_id } = getProfileToLS() as { user_id: string }
   const navigate = useNavigate()
@@ -66,6 +85,28 @@ export const TweetDetail = () => {
     return Likes?.some(item => item.user_id === user_id)
   }
 
+  const renderTextLike = (like_comment: LikeComment[]) => {
+    const findUerLike = like_comment.filter(item => item.user_id === user_id)
+    if (findUerLike.length === 0) {
+      return 'Thích'
+    }
+    else {
+      if (findUerLike[0].icon === '👍') {
+        return 'Thích';
+      } else if (findUerLike[0].icon === '❤️') {
+        return 'Yêu thích';
+      } else if (findUerLike[0].icon === '😂') {
+        return 'Haha';
+      } else if (findUerLike[0].icon === '😢') {
+        return 'Buồn';
+      } else {
+        return 'Thất vọng';
+      }
+    }
+  }
+  const renderColorLike = (icon: string, like_comment: LikeComment[]) => {
+    return like_comment.some(item => item.user_id === user_id && item.icon === icon)
+  }
 
   const handleIcons = async (title: string) => {
 
@@ -90,6 +131,67 @@ export const TweetDetail = () => {
       action()
     }
   }
+  const handleFilerIcon = (listIcon: LikeComment[]) => {
+    const icons = listIcon.map(icon => icon.icon)
+    return Array.from(new Set(icons))
+
+  }
+
+  const handleCreateComment = async () => {
+    try {
+      let uploadImage: UploadImageResponse[] = [];
+      if (file !== '') {
+        const formData = new FormData()
+        if (typeof file === 'string') {
+          formData.append("video", file)
+        } else {
+          formData.append("image", file)
+        }
+        uploadImage = await uploadImages(formData).unwrap()
+      }
+
+      await createComment({
+        tweet_id: tweet_id as string,
+        user_id: user_id,
+        content_comment: content,
+        image_comment: file !== '' ? uploadImage[0].image : ''
+      }).unwrap()
+      SetFile('')
+      setContent('')
+    } catch (error: unknown) {
+      console.log(error)
+    }
+  }
+
+  const handleCreateRepliesComment = async () => {
+    try {
+      let uploadImage: UploadImageResponse[] = [];
+      if (fileRepliesComment !== '') {
+        const formData = new FormData()
+        if (typeof fileRepliesComment === 'string') {
+          formData.append("video", fileRepliesComment)
+        } else {
+          formData.append("image", fileRepliesComment)
+        }
+        uploadImage = await uploadImages(formData).unwrap()
+      }
+      await createRepliesComment({
+        user_id: user_id,
+        replies_comment_id: isShowInputRepliesComment,
+        replies_content_comment: RepliesContent,
+        replies_image_comment: fileRepliesComment !== '' ? uploadImage[0].image : ''
+      }).unwrap()
+      setRepliesContent('')
+      setFileRepliesComment('')
+    } catch (error: unknown) {
+      console.log(error)
+    }
+  }
+  const handleRepliesComment = (comment_id: string) => {
+    setIsShowInputRepliesComment(comment_id)
+  }
+  const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
+
   return (
     <div className="w-full h-[100vh] flex">
       <div className="!min-w-[1500px] bg-black overflow-hidden ">
@@ -125,18 +227,22 @@ export const TweetDetail = () => {
         </div >
       </div>
       <div className="flex-1 ">
-        <div className="flex items-center ml-[20px]">
-          <div className="w-[80px] h-full">
-            <img src={tweetDetail?.data[0]?.users.avatar ? tweetDetail?.data[0]?.users.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
-          </div>
-          <div >
-            <div className="mt-[30px] font-fontFamily ">
-              <h2 className="text-[18px]">{tweetDetail?.data[0]?.users.username}</h2>
-              <p className="text-[15px] mx-1">@{tweetDetail?.data[0]?.users.name}</p>
+        {
+          isLoading ? <div className="my-[50px]"><Skeleton /></div> : <div className="flex items-center ml-[20px]">
+            <div className="w-[80px] h-full">
+              <img src={tweetDetail?.data[0]?.users.avatar ? tweetDetail?.data[0]?.users.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
-            <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweetDetail?.data[0]?.content}</div>
+            <div >
+              <div className="mt-[30px] font-fontFamily ">
+                <h2 className="text-[18px]">{tweetDetail?.data[0]?.users.username}</h2>
+                <p className="text-[15px] mx-1">@{tweetDetail?.data[0]?.users.name}</p>
+              </div>
+              <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweetDetail?.data[0]?.content}</div>
+            </div>
           </div>
-        </div>
+
+        }
+
         <div className="mt-[50px] w-full py-[10px] border border-solid border-t-[1px] border-b-[1px] border-t-[#CED0D4] border-b-[#CED0D4]  flex justify-between items-center px-[20px]">
           {
             listIcons.map(item => {
@@ -161,6 +267,180 @@ export const TweetDetail = () => {
             })
           }
         </div>
+
+        <div className='w-full flex-1 overflow-auto pb-[20px] '>
+          <div className='px-[20px]  cursor-pointer  w-full h-full'>
+            {
+              loading ? <div className="mt-[500px]"><Skeleton /></div> : <>
+                {
+                  getComment.length > 0 ? (getComment as Comment[]).map(comment => {
+                    return <div className='w-full flex mt-[15px]' key={comment._id}>
+                      <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+                      <div className='w-full'>
+                        <div className='w-full'>
+                          <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
+                            <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
+                            <p className='text-[14px] font-fontFamily'>{comment?.content_comment}</p>
+                          </div>
+                          {
+                            comment.image_comment !== '' && <div className='mt-[20px]'>
+                              <img src={comment.image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
+                            </div>
+                          }
+                          <div className='w-full items-center justify-between flex'>
+                            <div className='w-[200px] mt-[5px] flex items-center justify-between'>
+                              <p className='text-[15px] font-fontFamily'>{convertDateToHours(comment.created_at)}</p>
+                              <div className='relative'>
+                                <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
+                                  'text-[#1B90DF] font-[600]': renderColorLike('👍', comment.like_comments),
+                                  'text-[#FD6068] font-[600]': renderColorLike('❤️', comment.like_comments),
+                                  'text-[#FFE15B] font-[600]': renderColorLike('😂', comment.like_comments),
+                                  'text-[#FFE15B]  font-[600]': renderColorLike('😌', comment.like_comments),
+                                  'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
+                                })} onClick={() => {
+                                  handleLike(comment._id)
+                                }}
+                                >{
+                                    renderTextLike(comment.like_comments)
+                                  }</p>
+                                {
+                                  isHovered === comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>
+                                }
+                              </div>
+                              <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
+                            </div>
+                            {comment.like_comments.length > 0 &&
+                              <div className=' bg-white flex items-center px-[8px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+                                {
+                                  handleFilerIcon(comment.like_comments).map((Icon, index) => {
+                                    return <div key={index} className='text-[13px]'>
+                                      {Icon}
+                                    </div>
+                                  })
+                                }
+                                <div className='font-[550] font-fontFamily ml-[5px]'>{comment.like_comments.length}</div>
+                              </div>
+                            }
+                          </div>
+
+                          <div className='w-full mt-[20px]'>
+                            {
+                              isShowInputRepliesComment === comment._id && (<>
+                                <InputPost
+
+                                  file={fileRepliesComment as File}
+                                  setFile={setFileRepliesComment}
+                                  avatar_user={tweetDetail?.data[0].users.avatar as string}
+                                  content={RepliesContent}
+                                  setContent={setRepliesContent}
+                                  handleCreateComment={handleCreateRepliesComment}
+                                />
+                                <div className='relative'>
+                                  {
+                                    fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+                                  }
+                                  <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                    {
+                                      fileRepliesComment && <Icons.IoMdClose size={25} />
+                                    }
+                                  </div>
+                                </div>
+                              </>
+                              )
+                            }
+                          </div>
+                        </div>
+                        {
+                          comment?.replies_comments.length > 0 && Object.keys(comment.replies_comments[0]).length > 0 && comment?.replies_comments.map(replies_comment => {
+                            return <div className=' mt-[10px]' key={replies_comment._id}>
+                              <div className='flex mb-[10px]'>
+                                <img src={replies_comment?.avatar ? replies_comment?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+                                <div>
+                                  <div>
+                                    <div className='flex items-center relative '>
+                                      <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px] '>
+                                        <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
+                                        <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
+                                      </div>
+                                      <div className=' absolute right-[0]'>
+                                        {replies_comment.replies_like_comments.length > 0 &&
+                                          <div className=' bg-white flex items-center    px-[5px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+                                            {
+                                              handleFilerIcon(replies_comment.replies_like_comments).map((Icon, index) => {
+                                                return <div key={index} className='text-[13px]'>
+                                                  {Icon}
+                                                </div>
+                                              })
+                                            }
+                                            <div className='font-[550] font-fontFamily ml-[5px]'>{replies_comment.replies_like_comments.length}</div>
+                                          </div>
+                                        }
+                                      </div>
+
+                                    </div>
+
+                                    {
+                                      replies_comment.replies_image_comment !== '' && <div className='mt-[20px]'>
+                                        <img src={replies_comment.replies_image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
+                                      </div>
+                                    }
+                                    <div className='w-[200px] mt-[5px] flex items-center'>
+                                      <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
+                                      <div className=' relative'>
+                                        <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
+                                          {
+                                            'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
+                                            'text-[#FD6068] font-[600]': renderColorLike('❤️', replies_comment.replies_like_comments),
+                                            '!text-[#FFE15B] font-[600]': renderColorLike('😂', replies_comment.replies_like_comments),
+                                            '!text-[#FFE15B]  font-[600]': renderColorLike('😌', replies_comment.replies_like_comments),
+                                            '!text-[#FFE15B]   font-[600]': renderColorLike('😢', replies_comment.replies_like_comments)
+                                          }
+                                        )} onClick={() => {
+                                          handleLike(replies_comment._id)
+                                        }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
+                                        {
+                                          isHovered === replies_comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                        }
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          })
+                        }
+                      </div>
+                    </div>
+                  }) : <div className='w-full h-full my-[50px] flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default'>Chưa có bình luận nào cho bài Post</div>
+                }
+              </>
+            }
+          </div>
+        </div>
+        <div className='w-full min-h-[120px] p-[10px] ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+          <InputPost
+            className='w-full min-h-[100px]  flex'
+            classNameIcons="w-full flex items-center absolute bottom-[5px] left-[10px]"
+            file={file as File}
+            setFile={SetFile}
+            avatar_user={tweetDetail?.data[0].users.avatar as string}
+            handleCreateComment={handleCreateComment}
+            content={content}
+            setContent={setContent}
+          />
+
+          <div className='relative'>
+            {
+              file && <img src={typeof file === 'string' ? file : URL.createObjectURL(file as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+            }
+            <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => SetFile('')}>
+              {
+                file && <Icons.IoMdClose size={25} />
+              }
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   )

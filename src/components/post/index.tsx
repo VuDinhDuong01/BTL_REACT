@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {useRef, useContext } from "react"
-import { useNavigate } from "react-router-dom" 
+import { useRef, useContext } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { Icons } from "../../helps/icons"
 import { TotalNumber } from "../../helps/sum-total-number"
@@ -35,7 +35,7 @@ export const Post = ({ tweet }: Props) => {
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
-  
+
     const listIcons = [
         {
             id: 1,
@@ -67,12 +67,12 @@ export const Post = ({ tweet }: Props) => {
             icon: checkBookmark(tweet.bookmarks as Like[]) ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
         },
     ]
-    const checkLike=(Likes:Like[])=>{
+    const checkLike = (Likes: Like[]) => {
         return Likes?.some(item => item.user_id === user_id)
     }
-    const navigate= useNavigate()
+    const navigate = useNavigate()
     const handleIcons = async (title: string) => {
-       
+
         const map = new Map([
             ['Like', async () => {
                 if (checkLike(tweet.likes as Like[])) {
@@ -108,35 +108,52 @@ export const Post = ({ tweet }: Props) => {
         }
     }
 
-    const handleNavigateDetail=(tweet_id: string)=>{
-        navigate(`/tweet/${tweet_id}`)
+    const handleNavigateDetail = async (tweet_id: string) => {
+        try {
+            const response = await getComment({
+                tweet_id: tweet._id,
+                limit: 50,
+                page: 1
+            }).unwrap()
+            // setListComment(response)
+            navigate(`/tweet/${tweet_id}`, {
+                state: {
+                    data: response,
+                    loading: isLoading
+                }
+            })
+        } catch (error: unknown) {
+            console.log(error)
+        }
     }
 
     return (
-        <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent" onClick={()=>handleNavigateDetail(tweet._id)}>
+        <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} loading={isLoading} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
-                <div className="mt-[8px]">
-                    <div className=" w-full flex items-center font-fontFamily">
-                        <h2 className="text-[18px]">{tweet.users?.username}</h2>
-                        <p className="text-[15px] mx-1">@{tweet.users?.name}</p>
+                <div onClick={() => handleNavigateDetail(tweet._id)}>
+                    <div className="mt-[8px]">
+                        <div className=" w-full flex items-center font-fontFamily">
+                            <h2 className="text-[18px]">{tweet.users?.username}</h2>
+                            <p className="text-[15px] mx-1">@{tweet.users?.name}</p>
+                        </div>
+                        <p className="font-fontFamily text-[16px] pt-[5px]">{tweet.users?.bio}</p>
                     </div>
-                    <p className="font-fontFamily text-[16px] pt-[5px]">{tweet.users?.bio}</p>
+                    <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
+                    <div className="w-full mt-[20px] cursor-pointer">
+                        {
+                            tweet?.medias?.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
+
+                            // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
+                            //    <VideoPlayer url='https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g' /> 
+
+                        }
+                    </div>
                 </div>
-                <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
-                <div className="w-full mt-[20px] cursor-pointer">
-                    {
-                        tweet?.medias?.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
 
-                        // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
-                        //    <VideoPlayer url='https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g' /> 
-
-
-                    }
-                </div>
                 <div className="w-full py-[10px]  flex justify-between items-center">
                     {
                         listIcons.map(item => {

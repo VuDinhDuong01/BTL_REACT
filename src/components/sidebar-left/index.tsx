@@ -57,18 +57,6 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily  ml-[30px]  !text-black">Home</p>
         </NavLink>
-        <NavLink to={PAGE.NOTIFICATIONS} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
-          <div className="ml-[10px]">
-            <BellIcon className="text-black" />
-          </div>
-          <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">Notifications</p>
-        </NavLink>
-        <NavLink to='/f' className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
-          <div className="ml-[10px]">
-            <CommunicationIcon />
-          </div>
-          <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">Communities</p>
-        </NavLink>
         <NavLink to={`/personal/${profile?.user_id}`} className={({ isActive }) => isActive ? "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">
             <UserIcon className="text-black" />
@@ -86,6 +74,18 @@ export const SidebarLeft = () => {
             <BookMarkIcon />
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">Bookmark</p>
+        </NavLink>
+        <NavLink to={PAGE.NOTIFICATIONS} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+          <div className="ml-[10px]">
+            <BellIcon className="text-black" />
+          </div>
+          <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">Notifications</p>
+        </NavLink>
+        <NavLink to={PAGE.COMMUNITIES} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+          <div className="ml-[10px]">
+            <CommunicationIcon />
+          </div>
+          <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">Communities</p>
         </NavLink>
         <Tippy
           hideOnClick={isShowTippy}
