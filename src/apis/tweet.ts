@@ -7,7 +7,7 @@ import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 import { Tweet, TweetProps } from '../types/tweet'
 
-const { CREATE_TWEET } = URL_API
+const { CREATE_TWEET ,TWEET_DETAIL} = URL_API
 
 export const tweetAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({
@@ -27,11 +27,19 @@ export const tweetAPI = baseCreateApi.injectEndpoints({
             }),
             providesTags: ['getListTweet']
         }),
+        getTweetDetail: build.query<GenerateType<Tweet[]>, { tweet_id: string  }>({
+            query: ({tweet_id}) => ({
+                url: `${TWEET_DETAIL}/${tweet_id}`,
+                method: METHOD_API.GET,
+            }),
+            providesTags: ['getListTweet']
+        }),
     })
 })
 
 export const {
     useCreateTweetMutation,
-    useGetListTweetQuery
+    useGetListTweetQuery,
+    useGetTweetDetailQuery
 }
     = tweetAPI

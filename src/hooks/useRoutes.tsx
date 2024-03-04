@@ -16,6 +16,7 @@ import { Personal } from "../pages/auth/me";
 import Bookmark from "../pages/bookmark";
 import { Message } from "../pages/message";
 import { MessageDetail } from "../pages/message-detail";
+import { TweetDetail } from "../pages/tweet-detail";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
@@ -44,9 +45,11 @@ export const route = () => {
                     <Route path={PAGE.BOOKMARK} element={<Bookmark />} />
                     <Route path={PAGE.MESSAGE} element={<Message />} />
                     <Route path={PAGE.MESSAGE_DETAIL} element={<MessageDetail />} />
+                    
                 </Route>
                 
             </Route>
+            <Route path={PAGE.TWEET_DETAIL} element={<TweetDetail />} />
         </Routes>
     )
 }

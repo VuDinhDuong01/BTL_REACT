@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
+import {useRef, useContext } from "react"
+import { useNavigate } from "react-router-dom" 
 
 import { Icons } from "../../helps/icons"
 import { TotalNumber } from "../../helps/sum-total-number"
@@ -7,9 +9,7 @@ import { cn } from "../../helps/cn"
 import { DivideImageSize } from "../../helps/divide-size-image"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { useLikeMutation, useUnLikeMutation } from "../../apis/like"
-
 import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
-import {useRef, useContext } from "react"
 import { PopupComment, ShowPopupComment } from "../ui/dialog-comment"
 import { Like, Tweet } from "../../types/tweet"
 import { getProfileToLS } from "../../helps"
@@ -35,9 +35,7 @@ export const Post = ({ tweet }: Props) => {
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
-    const checkLike=(Likes:Like[])=>{
-        return Likes?.some(item => item.user_id === user_id)
-    }
+  
     const listIcons = [
         {
             id: 1,
@@ -61,7 +59,7 @@ export const Post = ({ tweet }: Props) => {
             id: 4,
             title: 'View',
             icon: <Icons.CiViewList size={21} />,
-            numberOfTurns: 12
+            numberOfTurns: tweet.user_views
         },
         {
             id: 5,
@@ -69,8 +67,12 @@ export const Post = ({ tweet }: Props) => {
             icon: checkBookmark(tweet.bookmarks as Like[]) ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
         },
     ]
-
+    const checkLike=(Likes:Like[])=>{
+        return Likes?.some(item => item.user_id === user_id)
+    }
+    const navigate= useNavigate()
     const handleIcons = async (title: string) => {
+       
         const map = new Map([
             ['Like', async () => {
                 if (checkLike(tweet.likes as Like[])) {
@@ -106,8 +108,12 @@ export const Post = ({ tweet }: Props) => {
         }
     }
 
+    const handleNavigateDetail=(tweet_id: string)=>{
+        navigate(`/tweet/${tweet_id}`)
+    }
+
     return (
-        <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
+        <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent" onClick={()=>handleNavigateDetail(tweet._id)}>
             <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} loading={isLoading} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />

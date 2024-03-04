@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react"
-import { createSearchParams, useNavigate } from "react-router-dom"
+import {  createSearchParams, useNavigate } from "react-router-dom"
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -73,9 +73,12 @@ export const Home = () => {
           <ProviderContext>
             {
               getListTweet?.data?.map((tweet, index) => {
-                return <div key={index}> <Post
-                  tweet={tweet}
-                />
+                return <div key={index}>
+                 
+                    <Post
+                      tweet={tweet}
+                    />
+                  
                 </div>
               })
             }

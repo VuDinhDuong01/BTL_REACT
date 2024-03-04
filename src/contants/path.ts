@@ -10,5 +10,6 @@ export const PAGE={
     PERSONAL:'/personal/:user_id',
     BOOKMARK:'/bookmark/:user_id',
     MESSAGE:'/message',
-    MESSAGE_DETAIL:'/message/:receiver_id'
+    MESSAGE_DETAIL:'/message/:receiver_id',
+    TWEET_DETAIL:'/tweet/:tweet_id'
 } as const 
