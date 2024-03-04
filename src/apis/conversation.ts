@@ -23,10 +23,7 @@ export const conversationsAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.GET,
                 params: { limit, page }
             }),
-            // invalidatesTags: ['getListTweet', 'getComment', 'getListBookmark']
         }),
-
-
     })
 })
 

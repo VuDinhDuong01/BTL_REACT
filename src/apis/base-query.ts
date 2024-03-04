@@ -6,6 +6,7 @@ import { URL_API } from '../contants';
 import { ToastMessage } from '../helps/toast-message';
 import { checkToken } from '../helps/check-token';
 
+
 let accessToken: string = ''
 let refreshToken: string = ''
 let getToken: Promise<{ access_token: string, refresh_token: string }> | null = null
@@ -37,6 +38,7 @@ instance.interceptors.request.use(function (config) {
     const access_token = getAccessTokenToLS();
     if (access_token) {
         config.headers.Authorization = `Bearer ${access_token}`
+        
     }
     return config;
 }, function (error) {
@@ -49,7 +51,6 @@ instance.interceptors.response.use(function (response) {
         refreshToken = response.data.data.refresh_token
         setAccessTokenToLS(accessToken)
         setRefreshTokenToLS(refreshToken)
-        console.log(response.data.da)
         setProfileToLS({ username: response?.data.data.user.username, user_id: response?.data.data.user._id as string , avatar: response?.data.data.user.avatar})
     } else if (response.config.url === URL_API.LOGOUT_OUT) {
         accessToken = ''

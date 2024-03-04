@@ -6,7 +6,6 @@ import { useFollowMutation, useGetFollowQuery, useGetUserQuery } from "../../api
 import { Button } from "../ui/button"
 import { getProfileToLS } from "../../helps"
 import { Skeleton } from "../ui/skeleton"
-import { Loading } from "../../assets/icons/eye"
 import { cn } from "../../helps/cn"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 
@@ -15,12 +14,14 @@ export const SidebarRight = () => {
   const navigate= useNavigate()
   const { data: getUser, isLoading } = useGetUserQuery()
   const { data: getFollow } = useGetFollowQuery()
-  const [follow, { isLoading: isLoadingFollow }] = useFollowMutation()
+  const [follow] = useFollowMutation()
 
   const profile = getProfileToLS() as { user_id?: string }
   const getListUser = useMemo(() => {
     return getUser?.data.filter(user => user._id !== profile?.user_id)
   }, [getUser?.data, profile?.user_id])
+
+  // check
   const checkStatusFollow = (following_id: string) => {
     return getFollow?.data.some(item => {
       if (item.follower_id === profile?.user_id && item.following_id === following_id) {
@@ -59,8 +60,7 @@ export const SidebarRight = () => {
                     </div>
                   </div>
                   <Button className={cn("w-[150px] text-[15px] !font-[600] bg-black text-white flex items-center justify-center !cursor-pointer hover:opacity-70 ", {
-                    '!cursor-not-allowed': isLoadingFollow
-                  })} disabled={isLoadingFollow} onClick={() => handleFollowUser(user._id)}>{isLoadingFollow ? <Loading /> : checkStatusFollow(user._id) ? 'Following' : 'Follow'}</Button>
+                  })}  onClick={() => handleFollowUser(user._id)}>{checkStatusFollow(user._id) ? 'Following' : 'Follow'}</Button>
                 </div>
               })
             }

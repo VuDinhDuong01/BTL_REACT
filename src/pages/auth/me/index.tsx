@@ -28,7 +28,7 @@ const actionTweet = [
 
 export const Personal = () => {
     const navigate = useNavigate()
-    const [follow, { isLoading: isLoadingFollow }] = useFollowMutation()
+    const [follow] = useFollowMutation()
     const { data: getFollow } = useGetFollowQuery()
     const [optionAction, setOptionAction] = useState<number>(1)
     const [title, setTitle] = useState<string>(String(queryList.title))
@@ -123,6 +123,12 @@ export const Personal = () => {
                         <img src={Boolean(getMe?.data[0].avatar as string) ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] border-[1px] border-solid border-white left-0 bottom-[-50px] ml-[20px] " />
                     </div>
                     <div className=" flex justify-end ">
+                        {
+                            !checkUser() && <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
+                                'bg-black hover:opacity-70 text-white': !checkUser(),
+                                '!text-black2 hover:bg-[#F7F9F9]': checkUser()
+                            })} onClick={() => navigate(`/message/${user_id}`)}>Message</Button>
+                        }
                         <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
                             'bg-black hover:opacity-70 text-white': !checkUser(),
                             '!text-black2 hover:bg-[#F7F9F9]': checkUser()
