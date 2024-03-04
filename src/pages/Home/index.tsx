@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react"
-import {  createSearchParams, useNavigate } from "react-router-dom"
+import { createSearchParams, useNavigate } from "react-router-dom"
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -9,25 +9,43 @@ import { useGetListTweetQuery } from "../../apis/tweet"
 import { ProviderContext, queryList } from "../../hooks"
 import { Button } from "../../components/ui/button"
 import { Skeleton } from "../../components/ui/skeleton"
+import { getProfileToLS } from "../../helps"
 
+interface ActionTweet {
+  id: number,
+  title: string
+  title_tweet: string
+}
 
-const actionArray = [
-  { id: 1, title: 'For you' },
-  { id: 2, title: 'Following' }
+const actionArray: ActionTweet[] = [
+  { id: 1, title: 'For you', title_tweet: 'for_you' },
+  { id: 2, title: 'Following', title_tweet: 'following' }
 ]
 
 export const Home = () => {
   const [limits, setLimit] = useState<number>(Number(queryList.limit))
+  const [titleTweet, setTitleTweet] = useState<string>(String(queryList.title_tweet))
+  const profile = getProfileToLS() as { user_id: string }
   const navigate = useNavigate()
   const [optionAction, setOptionAction] = useState<number>(1)
 
-  const handleOptionAction = (action: number) => {
-    setOptionAction(action)
+  const handleOptionAction = (action: ActionTweet) => {
+    setOptionAction(action.id)
+    setTitleTweet(action.title_tweet)
+    navigate({
+      pathname: '',
+      search: createSearchParams({
+        ...queryList,
+        title_tweet: action.title_tweet,
+        user_id: profile.user_id
+      }).toString()
+    });
   }
 
   const { data: getListTweet, isLoading } = useGetListTweetQuery({
     ...queryList,
     limit: limits,
+    title_tweet: titleTweet
   } as unknown as { limit: number, page: number })
 
   const handleNextPage = () => {
@@ -56,7 +74,7 @@ export const Home = () => {
             key={action.id}
           >
             <div
-              onClick={() => handleOptionAction(action.id)}
+              onClick={() => handleOptionAction(action)}
               className="h-full text-[18px] flex items-center justify-center cursor-pointer font-[700] font-fontFamily hover:bg-white1  "
             >
               {action.title}
@@ -74,11 +92,11 @@ export const Home = () => {
             {
               getListTweet?.data?.map((tweet, index) => {
                 return <div key={index}>
-                 
-                    <Post
-                      tweet={tweet}
-                    />
-                  
+
+                  <Post
+                    tweet={tweet}
+                  />
+
                 </div>
               })
             }
