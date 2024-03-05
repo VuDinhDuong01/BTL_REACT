@@ -268,7 +268,7 @@ export const TweetDetail = () => {
           }
         </div>
 
-        <div className='w-full flex-1 overflow-auto pb-[20px] '>
+        <div className='w-full flex-1 overflow-auto pb-[20px] h-[100vh] '>
           <div className='px-[20px]  cursor-pointer  w-full h-full'>
             {
               loading ? <div className="mt-[500px]"><Skeleton /></div> : <>

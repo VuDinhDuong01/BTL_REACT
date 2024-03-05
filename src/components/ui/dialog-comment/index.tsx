@@ -10,7 +10,7 @@ import { Images } from '../../../assets/images';
 import { convertDateToHours } from '../../../helps/convert-date-to-hour';
 import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
-import { useCreateCommentMutation, useCreateRepliesCommentMutation } from '../../../apis/comment';
+import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentMutation } from '../../../apis/comment';
 import { UploadImageResponse, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
 import { ListIcons } from '../../list-icons';
@@ -32,7 +32,7 @@ interface PropsDialogComment {
 
 }
 export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, loading }, ref) => {
-
+    const [getComment] = useGetCommentMutation()
     const refPopComment = useRef<HTMLDivElement>(null)
     const [createComment] = useCreateCommentMutation()
     const [createRepliesComment] = useCreateRepliesCommentMutation()
@@ -43,7 +43,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string, username: string }
-    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
+    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, setListComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
     const showPopup = () => {
         setIsShowPopup(true)
@@ -95,6 +95,12 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 content_comment: content,
                 image_comment: file !== '' ? uploadImage[0].image : ''
             }).unwrap()
+            const res = await getComment({
+                tweet_id: tweet_id,
+                limit: 50,
+                page: 1
+            }).unwrap()
+            setListComment(res)
             SetFile('')
             setContent('')
         } catch (error: unknown) {

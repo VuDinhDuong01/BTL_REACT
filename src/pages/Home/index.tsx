@@ -28,6 +28,12 @@ export const Home = () => {
   const profile = getProfileToLS() as { user_id: string }
   const navigate = useNavigate()
   const [optionAction, setOptionAction] = useState<number>(1)
+  const { data: getListTweet, isLoading } = useGetListTweetQuery({
+    ...queryList,
+    limit: limits,
+    title_tweet: titleTweet,
+    id_user: profile.user_id as string
+  } as unknown as { limit: number, page: number, title_tweet: string, id_user: string })
 
   const handleOptionAction = (action: ActionTweet) => {
     setOptionAction(action.id)
@@ -37,16 +43,12 @@ export const Home = () => {
       search: createSearchParams({
         ...queryList,
         title_tweet: action.title_tweet,
-        user_id: profile.user_id
+        id_user: profile.user_id as string
       }).toString()
     });
   }
 
-  const { data: getListTweet, isLoading } = useGetListTweetQuery({
-    ...queryList,
-    limit: limits,
-    title_tweet: titleTweet
-  } as unknown as { limit: number, page: number })
+
 
   const handleNextPage = () => {
     setLimit(prev => {
@@ -64,11 +66,11 @@ export const Home = () => {
 
   return (
     <div className="w-full">
-      <div className="min-w-[611px] fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
+      <div className="min-w-[611px] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between fixed  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
         {actionArray.map((action) => (
           <div
-            className={cn('h-full w-full relative ', {
-              'before:content-[""] before:absolute before:-bottom-[2px] before:w-full  before:left-0 before:h-[2px]  before:rounded-[2px] before:bg-green2':
+            className={cn('h-full w-full relative z-[0] ', {
+              'before:content-[""] before:absolute before:-bottom-[2px] before:w-full z-[]  before:left-0 before:h-[2px]  before:rounded-[2px] before:bg-green2':
                 action.id === optionAction,
             })}
             key={action.id}

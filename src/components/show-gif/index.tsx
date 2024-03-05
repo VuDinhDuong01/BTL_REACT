@@ -11,7 +11,7 @@ interface GifType {
 }
 interface Pops {
     limit: number,
-    setGif: React.Dispatch<SetStateAction<string | File>>
+    setGif: React.Dispatch<SetStateAction<string>>
 }
 
 export interface handleShowPopup {

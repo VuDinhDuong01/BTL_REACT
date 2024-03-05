@@ -14,17 +14,19 @@ import { useGetMeQuery, useLogoutMutation } from "../../apis";
 import { getProfileToLS, getRefreshTokenToLS, removeLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
+import { useClickOutSide } from "../../hooks/useClickOutSide";
 
 export const SidebarLeft = () => {
   const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
+  const refFormChangePassword = useRef<HTMLFormElement>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
   const navigate = useNavigate()
-  const profile= getProfileToLS() as {user_id: string }
+  const profile = getProfileToLS() as { user_id: string }
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
   const { data: getMe } = useGetMeQuery({
-    user_id:profile?.user_id
+    user_id: profile?.user_id
   })
   const { t } = useTranslation()
   const handleLogout = async () => {
@@ -38,14 +40,22 @@ export const SidebarLeft = () => {
       console.log(error)
     }
   }
+
   const handleClickShowPopupChangePassword = () => {
     if (showChangePasswordRef.current) {
       showChangePasswordRef.current.showPopupChangePassword()
     }
   }
+
+  useClickOutSide({
+    onClickOutSide: () => {
+      showChangePasswordRef.current && showChangePasswordRef.current.hiddenPopupChangePassword()
+    }, ref: refFormChangePassword
+  })
+
   return (
     <div className="w-full  min-h-[100vh] z-[9990]" >
-      <ChangePassword ref={showChangePasswordRef} />
+      <ChangePassword ref={showChangePasswordRef} refFormChangePassword={refFormChangePassword} />
 
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>
         <Logo />
@@ -130,8 +140,8 @@ export const SidebarLeft = () => {
           </div>
         )}
       >
-        <div className="flex items-center cursor-pointer fixed bottom-[10px] z-[0]  w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
-          <img src={Boolean(getMe?.data[0].avatar) ? getMe?.data[0].avatar : Images.logo} alt="user" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
+        <div className="flex items-center cursor-pointer fixed bottom-[10px] w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
+          <img src={Boolean(getMe?.data[0].avatar) ? getMe?.data[0].avatar : Images.logo} alt="avatar" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
           <div className="ml-[10px] ">
             <h3 className="text-[14px] font-fontFamily">{getMe?.data[0].name}</h3>
             <p className="font-fontFamily text-[12px] mt-[5px]">{getMe?.data[0].username}</p>

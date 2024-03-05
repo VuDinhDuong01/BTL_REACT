@@ -2,7 +2,7 @@
 
 interface TweetProps {
     user_id: string,
-    medias?: string[],
+    medias?: string [],
     content?: string,
     hashtags?: string[],
     mentions?: string[],

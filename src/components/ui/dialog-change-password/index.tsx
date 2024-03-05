@@ -19,12 +19,13 @@ import { PAGE } from "../../../contants";
 import { removeLS } from "../../../helps";
 import { ToastMessage } from "../../../helps/toast-message";
 export interface ChangePasswordResponse {
-    showPopupChangePassword: () => void
+    showPopupChangePassword: () => void,
+    hiddenPopupChangePassword: () => void
 }
 
 const MAX_CHAR = 25
 
-export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, ref) => {
+export const ChangePassword = forwardRef<ChangePasswordResponse, any>(({ refFormChangePassword }, ref) => {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const [isShowPopupChangePassword, setIsShowPopupChangePassword] = useState<boolean>(false)
@@ -43,7 +44,8 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
         setIsShowPopupChangePassword(true)
     }
     useImperativeHandle(ref, () => ({
-        showPopupChangePassword: handleShowPopupChangePassword
+        showPopupChangePassword: handleShowPopupChangePassword,
+        hiddenPopupChangePassword: hiddenPopup
     }));
 
     const onSubmit = (handleSubmit(async (data) => {
@@ -77,9 +79,9 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>((props, re
     return (<div className="w-full relative">
         {
             isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword}>
-                <div className="w-full  "> <DialogOverlay /></div>
-                <div className='w-full h-full  flex fixed inset-0 items-center justify-center z-[9999999]'>
-                    <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
+                <div className="w-full h-full"> <DialogOverlay /></div>
+                <div className='w-full h-full  flex fixed inset-0 items-center justify-center'>
+                    <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit} ref={refFormChangePassword}>
                         <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
                         <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>
                         <div className='w-full'>

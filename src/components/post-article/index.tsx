@@ -21,6 +21,7 @@ import { Loading } from '../../assets/icons/eye';
 import { EmojiPickers, ShowEmoji } from '../common/emoji-picker';
 import { VideoPlayer } from '../video';
 import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
+import { ToastMessage } from '../../helps/toast-message';
 
 const listIcons = [
     {
@@ -45,7 +46,7 @@ const listIcons = [
     },
 ]
 
-const typeImages = ['image/png', 'image/jpg', 'image/jpeg']
+const typeImages = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
 const typeVideo = ['video/mp4', 'video/webm']
 interface permissionViews {
     id: number,
@@ -102,13 +103,13 @@ export const PostArticle = () => {
     const [audience, setAudience] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
-    const [gif, setGif] = useState<string | File>('')
+    const [gif, setGif] = useState<string>('')
     const [text, setText] = useState('');
     const contentEditableRef = useRef<any>(null);
     const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
     const hashtags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
 
-    const [files, setFiles] = useState<File[]>([])
+    const [files, setFiles] = useState<{ link: string, file: File }[]>([])
 
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
@@ -138,7 +139,22 @@ export const PostArticle = () => {
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const arrayFile = Array.from(e.target.files);
-            setFiles(arrayFile)
+
+            if (arrayFile.length > 4) {
+                ToastMessage({
+                    message: 'không được tải quá 4 file',
+                    status: 'error'
+                })
+                return;
+            }
+            // select files
+            setFiles(arrayFile.map(item => {
+                return {
+                    link: item.name,
+                    file: item
+                }
+            }))
+
         }
     }
 
@@ -186,7 +202,7 @@ export const PostArticle = () => {
         contentEditableRef.current.focus();
     };
 
-    const {user_id, avatar} = getProfileToLS() as {user_id: string , avatar: string }
+    const { user_id, avatar } = getProfileToLS() as { user_id: string, avatar: string }
 
     const onSubmit = (handleSubmit(async () => {
         let uploadImage: { image: string, type: number }[] = []
@@ -194,21 +210,21 @@ export const PostArticle = () => {
         try {
             if (files.length > 0) {
                 const formData = new FormData();
-                if (typeImages.includes(files[0].type)) {
+                if (typeImages.includes(files[0].file.type)) {
                     for (let i = 0; i < files.length; i++) {
-                        formData.append('image', files[i])
+                        formData.append('image', files[i].file)
                     }
                     uploadImage = await uploadImages(formData).unwrap()
                 } else {
-                    formData.append('video', files[0])
+                    formData.append('video', files[0].file)
                     uploadVideos = await uploadVideo(formData).unwrap()
                 }
 
             }
-            const medias = typeImages.includes(files[0].type) ? uploadImage.map(item => item.image) : [uploadVideos[0].image]
+            const medias = files.length > 0 && typeImages.includes(files[0].file?.type) ? uploadImage.map(item => item.image) : []
             const bodyRequest = {
                 content: text,
-                medias: files.length > 0 ? medias : [gif],
+                medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
                 user_id,
                 audience,
                 hashtags,
@@ -226,15 +242,13 @@ export const PostArticle = () => {
             console.log(error)
         }
     }))
-    console.log(files)
-
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
 
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full  min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
-                    <img src={avatar ? avatar :DEFAULT_IMAGE_AVATAR} className="w-[40px] h-[40px] rounded-[50%] " />
+                    <img src={avatar ? avatar : DEFAULT_IMAGE_AVATAR} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
                 <div className="flex-1">
                     <div className='w-full relative'>
@@ -264,26 +278,33 @@ export const PostArticle = () => {
                         'mb-[10px] mt-[10px]': files.length > 0
                     })}>
                         {
-                            files.length > 0 && typeImages.includes(files[0]?.type) &&
-                            ConvertSizeImagesPost({ arrayImage: files.map(file => URL.createObjectURL(file)), setFiles })
+                            files.length > 0 && typeImages.includes(files[0]?.file.type) &&
+                            ConvertSizeImagesPost({
+                                arrayImage: files.map(file => {
+                                    return {
+                                        file: URL.createObjectURL(file.file),
+                                        link: file.link
+                                    }
+                                }), setFiles
+                            })
                         }
-                        {
+                        {/* {
                             files.length > 0 && typeVideo.includes(files[0]?.type) &&
                             <div className='w-full relative'>
                                 <video controls className='w-full rounded-lg'>
-                                    <source src={URL.createObjectURL(files[0])} type={files[0].type} />
+                                    <source src={URL.createObjectURL(files[0].file />)} type={files[0].file.type} />
                                 </video>
                                 <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={() => setFiles([])}><Icons.IoMdClose /></div>
                             </div>
-                        }
+                        } */}
                         {
                             Boolean(gif) && <div className='w-full relative'>
-                                <img src={gif as string } alt='gif' className='w-full object-cover rounded-lg h-[200px]' />
+                                <img src={gif as string} alt='gif' className='w-full object-cover rounded-lg h-[200px]' />
                                 <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={handleCloseGif}><Icons.IoMdClose /></div>
                             </div>
                         }
                     </div>
-                    <div className='w-full relative cursor-pointer'>
+                    <div className='w-full  cursor-pointer'>
                         <div className=''>
                             <div className=" inline-block px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
                                 <div className='flex items-center'>
@@ -293,7 +314,7 @@ export const PostArticle = () => {
                             </div>
                         </div>
                         {
-                            showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 absolute left-[-11%] max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
+                            showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 fixed max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
                                 <div>
                                     <div className="mb-[20px] mt-[10px] px-[10px]">
                                         <h3 className="text-[17px] mb-[10px] font-fontFamily">Who can reply?</h3>
@@ -320,7 +341,7 @@ export const PostArticle = () => {
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] "></div>
                 <div className="flex-1 flex items-center justify-between h-full ">
-                    <div className="w-full flex items-center relative">
+                    <div className="w-full flex items-center">
                         {
                             listIcons.map(item => {
                                 return <div key={item.id} title={item.title} className={cn("w-[35px]   h-[35px] hover:bg-[#b9daef] text-green2 flex items-center justify-center rounded-[50%] cursor-pointer", {
@@ -334,7 +355,7 @@ export const PostArticle = () => {
                             })
                         }
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
-                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute top-[44px] z-[9]' />
+                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full fixed top-[225px]' />
                     </div>
                     <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : 'Post'}</Button>
                 </div>

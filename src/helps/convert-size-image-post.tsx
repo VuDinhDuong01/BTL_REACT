@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { type SetStateAction } from "react"
+import { Dispatch, type SetStateAction } from "react"
 
 import { cn } from "./cn"
 import { Icons } from "./icons"
@@ -14,22 +14,25 @@ import { Icons } from "./icons"
 
 
 interface DivideImageSizeProps {
-    arrayImage: string[],
-    setFiles: React.Dispatch<SetStateAction<File[]>>
+    arrayImage: { file: string, link: string }[],
+    setFiles: Dispatch<SetStateAction<{
+        link: string;
+        file: File;
+    }[]>>
 }
-interface RenderImageProps extends DivideImageSizeProps  {
+interface RenderImageProps extends DivideImageSizeProps {
     start: number;
     end: number;
-    
+
 }
 interface EventImagePost extends Omit<DivideImageSizeProps, 'arrayImage'> {
-    image: string,
-    
+    link: string,
+
 }
 
-const handleEventImagePost = ({ setFiles, image }: EventImagePost) => {
+const handleEventImagePost = ({ setFiles, link }: EventImagePost) => {
     const handleDeleteFile = () => {
-        setFiles(prev => (prev?.filter(item => URL.createObjectURL(item) !== image)))
+        setFiles(prev => (prev?.filter(item => item.link !== link)))
     }
     return (
         <>
@@ -40,7 +43,7 @@ const handleEventImagePost = ({ setFiles, image }: EventImagePost) => {
 
 const renderImage = ({ arrayImage, start, end, setFiles }: RenderImageProps) => {
 
-    let ImageCurrent: string[] = []
+    let ImageCurrent: { file: string, link: string }[] = []
     if (arrayImage.length >= 2) {
         ImageCurrent = arrayImage.slice(start, end)
     }
@@ -51,13 +54,13 @@ const renderImage = ({ arrayImage, start, end, setFiles }: RenderImageProps) => 
                 {
                     ImageCurrent.map((image, index) => {
                         return <div key={index} className="w-full relative  col-span-6">
-                            <img src={image as string} className={cn("w-full rounded-md  object-cover", {
+                            <img src={image.file as string} className={cn("w-full rounded-md  object-cover", {
                                 "h-[100px]": arrayImage.length === 2,
                                 " h-[100px]": arrayImage.length === 3,
                                 "   h-[120px]": arrayImage.length === 4,
                             })} alt="image" />
 
-                            {handleEventImagePost({ setFiles, image })}
+                            {handleEventImagePost({ setFiles, link: image.link })}
 
                         </div>
                     })
@@ -71,9 +74,9 @@ export const ConvertSizeImagesPost = ({ arrayImage, setFiles }: DivideImageSizeP
     switch (arrayImage.length) {
         case 1:
             return <div className="w-full relative">
-                <img src={arrayImage[0] as string} className={cn("w-full object-cover rounded-[10px] h-[250px]")} alt="image" />
+                <img src={arrayImage[0].file as string} className={cn("w-full object-cover rounded-[10px] h-[250px]")} alt="image" />
 
-                {handleEventImagePost({ setFiles, image: arrayImage[0] })}
+                {handleEventImagePost({ setFiles, link: arrayImage[0].link })}
 
             </div>
         case 2:
@@ -81,9 +84,9 @@ export const ConvertSizeImagesPost = ({ arrayImage, setFiles }: DivideImageSizeP
         case 3:
             return <div className='w-full '>
                 <div className="w-full relative">
-                    <img src={arrayImage[0] as string} className="h-[200px] w-full object-cover rounded-lg" alt="image" />
+                    <img src={arrayImage[0].file as string} className="h-[200px] w-full object-cover rounded-lg" alt="image" />
 
-                    {handleEventImagePost({ setFiles, image: arrayImage[0] })}
+                    {handleEventImagePost({ setFiles, link: arrayImage[0].link })}
 
                 </div>
                 <div className="min-h-[50px]">
@@ -95,7 +98,7 @@ export const ConvertSizeImagesPost = ({ arrayImage, setFiles }: DivideImageSizeP
         case 4:
             return <div className="w-full">
                 {
-                    renderImage({ arrayImage: arrayImage, start: 0, end: 2, setFiles: setFiles  })
+                    renderImage({ arrayImage: arrayImage, start: 0, end: 2, setFiles: setFiles })
                 }
                 <div className="mt-[5px]">
                     {

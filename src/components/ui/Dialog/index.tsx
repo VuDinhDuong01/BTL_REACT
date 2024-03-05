@@ -16,15 +16,15 @@ const DialogOverlay = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ ...props }, _
 ) => (
-   <div className="w-full relative ">
-     <DialogPrimitive.Overlay
+    <div className="w-full relative ">
+        <DialogPrimitive.Overlay
 
-className={(
-    "fixed inset-0  bg-[rgba(0,0,0,0.5)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
-)}
-{...props}
-/>
-   </div>
+            className={(
+                "fixed inset-0 bg-[rgba(0,0,0,0.5)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+            )}
+            {...props}
+        />
+    </div>
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
@@ -37,7 +37,7 @@ const DialogContent = React.forwardRef<
         <DialogPrimitive.Content
             ref={ref}
             className={(
-                "fixed inset-0 z-20 text-[white] data-[state=open]:animate-in data-[state=closed]:animate-data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 flex justify-center items-center  " +
+                " text-[white] z-[9999] data-[state=open]:animate-in data-[state=closed]:animate-data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 flex justify-center items-center" +
                 className
             )}
             {...props}

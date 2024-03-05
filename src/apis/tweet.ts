@@ -19,7 +19,7 @@ export const tweetAPI = baseCreateApi.injectEndpoints({
             }),
             invalidatesTags: ['getListTweet']
         }),
-        getListTweet: build.query<GenerateType<Tweet[]>, { limit: number, page: number , title_tweet?:string }>({
+        getListTweet: build.query<GenerateType<Tweet[]>, { limit: number, page: number , title_tweet?:string ,id_user: string }>({
             query: (params) => ({
                 url: CREATE_TWEET,
                 method: METHOD_API.GET,
