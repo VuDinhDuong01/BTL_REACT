@@ -8,7 +8,8 @@ import { getProfileToLS } from "../../helps"
 import { Skeleton } from "../ui/skeleton"
 import { cn } from "../../helps/cn"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
-import { Search } from "lucide-react"
+import { Search } from "../search"
+
 
 
 export const SidebarRight = () => {
@@ -45,7 +46,9 @@ export const SidebarRight = () => {
   }
   return (
     <div className="w-full min-h-[100vh]  ml-[15px] ">
-       <Search /> 
+      
+       <Search />  
+     
       <div className="w-full rounded-[16px] bg-[#f7f9f9] mt-[70px] relative">
         <h2 className="text-[#0f1419] font-[800] font-fontFamily mb-[20px] pt-[20px] px-[10px]">People you can Make friends with</h2>
         {

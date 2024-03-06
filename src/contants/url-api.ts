@@ -30,5 +30,6 @@ export const URL_API = {
     GET_FOLLOW:'get_follow',
     GET_TWEET_USER:'get_tweet_user',
     GET_CONVERSATION:'conversations',
-    TWEET_DETAIL:'tweet'
+    TWEET_DETAIL:'tweet',
+    GET_SEARCH_USER:'get_search_user'
 } as const 

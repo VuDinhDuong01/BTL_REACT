@@ -8,7 +8,7 @@ import { baseCreateApi } from './createApi'
 import { GenerateType } from '../types/generate'
 import { Tweet } from '../types/tweet'
 
-const { REGISTER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER,GET_SEARCH_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -133,7 +133,17 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
       providesTags: ['getMe', 'login','getListTweet']
     }),
-  })
+    getSearchUser: build.query<GetUserResponse, { user_search: string  }>({
+      query: (params) => ({
+        url: GET_SEARCH_USER,
+        method: METHOD_API.GET,
+        params
+
+      }),
+      // providesTags: ['getMe', 'login','getListTweet']
+    }),
+  }),
+  
 })
 
 export const { useLoginMutation,
@@ -149,6 +159,7 @@ export const { useLoginMutation,
   useUploadImageMutation,
   useChangePasswordMutation,
   useUploadVideoMutation,
-  useGetTweetUserQuery
+  useGetTweetUserQuery,
+  useGetSearchUserQuery
 }
   = authAPI
