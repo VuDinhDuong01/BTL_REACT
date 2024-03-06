@@ -1,6 +1,8 @@
 /* eslint-disable no-extra-boolean-cast */
 import { useRef, useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
+import {t} from 'i18next'
+import omit from 'lodash/omit'
 
 import { Button } from "../../../components/ui/button"
 import { Icons } from "../../../helps/icons"
@@ -20,13 +22,14 @@ import { getProfileToLS } from "../../../helps"
 import { useFollowMutation, useGetFollowQuery } from "../../../apis/follow"
 
 
-const actionTweet = [
-    { id: 1, title: 'Posts' },
-    { id: 2, title: 'Comments' },
-    { id: 3, title: 'Likes' },
-]
 
 export const Personal = () => {
+    
+const actionTweet = [
+    { id: 1, title:t('home.posts') },
+    { id: 2, title: t('home.comments')},
+    { id: 3, title: t('home.like') },
+]
     const navigate = useNavigate()
     const [follow] = useFollowMutation()
     const { data: getFollow } = useGetFollowQuery()
@@ -78,11 +81,11 @@ export const Personal = () => {
         setOptionAction(action.id)
         navigate({
             pathname: '',
-            search: createSearchParams({
+            search: createSearchParams(omit({
                 ...queryList,
                 title: action.title
-            }).toString()
-        });
+            },['id_user','for_you','title_tweet'])).toString()
+        })
     }
 
     const checkUser = () => {
@@ -94,10 +97,10 @@ export const Personal = () => {
             const nextLimit = prev + 3
             navigate({
                 pathname: '',
-                search: createSearchParams({
+                search: createSearchParams(omit({
                     ...queryList,
                     limit: String(nextLimit)
-                }).toString()
+                },['id_user','for_you','title_tweet'])).toString()
             });
             return nextLimit;
         });
@@ -113,7 +116,7 @@ export const Personal = () => {
                         </Link>
                         <div className="ml-[20px] mt-[10px] ">
                             <h2 className="text-[20px] font-fontFamily ">{getMe?.data[0].name}</h2>
-                            <p className="text-[15px] font-fontFamily text-black2">{`${getMe?.data[0].count_tweet} Posts`}</p>
+                            <p className="text-[15px] font-fontFamily text-black2">{`${getMe?.data[0].count_tweet} ${t('home.posts')}`}</p>
                         </div>
                     </div>
                     <div className="w-full relative !z-[-999] mt-[55px]">
@@ -127,12 +130,12 @@ export const Personal = () => {
                             !checkUser() && <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
                                 'bg-black hover:opacity-70 text-white': !checkUser(),
                                 '!text-black2 hover:bg-[#F7F9F9]': checkUser()
-                            })} onClick={() => navigate(`/message/${user_id}`)}>Message</Button>
+                            })} onClick={() => navigate(`/message/${user_id}`)}>{t('sidebarLeft.message')}</Button>
                         }
                         <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
                             'bg-black hover:opacity-70 text-white': !checkUser(),
                             '!text-black2 hover:bg-[#F7F9F9]': checkUser()
-                        })} onClick={handleShowPopup}>{checkUser() ? 'Edit profile' : checkStatusFollow() ? 'Following' : 'Follow'}</Button>
+                        })} onClick={handleShowPopup}>{checkUser() ? t('home.editProfile') : checkStatusFollow() ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
                     </div>
                     <div className="mt-[20px] ml-[10px]">
                         <h2 className="text-[20px] font-fontFamily ">{getMe?.data[0].name}</h2>
@@ -152,11 +155,11 @@ export const Personal = () => {
                         <div className="flex items-center mt-[15px]">
                             <div className="flex items-center">
                                 <p className="text-[15px] font-[700] font-fontFamily ml-[5px]  ">{getMe?.data[0].count_following}</p>
-                                <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3">Following</p>
+                                <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3">{t('sideBarRight.following')}</p>
                             </div>
                             <div className="flex items-center">
                                 <p className="text-[15px] font-[700] font-fontFamily ml-[5px]  ">{getMe?.data[0].count_follower}</p>
-                                <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3" >Followers</p>
+                                <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3" >{t('sideBarRight.follow')}</p>
                             </div>
                         </div>
 
@@ -197,13 +200,12 @@ export const Personal = () => {
                             </ProviderContext>
                             {
                                 getTweetUser !== undefined && Number(limits) < Number(getTweetUser?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
-                                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">Loading...</Button>
+                                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{t('home.loading')}...</Button>
                                 </div>)
                             }
                         </>
                     }
-                </> : <div className="w-full items-center flex justify-center mt-[100px] text-[20px] text-black font-[600] font-fontFamily">Không có bài Post nào</div>
-
+                </> : <div className="w-full items-center flex justify-center mt-[100px] text-[20px] text-black font-[600] font-fontFamily">{t('home.notPost')}</div>
             }
         </div>
     </div>

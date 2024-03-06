@@ -45,6 +45,44 @@
         "changePasswordSuccess":"Password changed successfully",
         "professionalTools":"Professional Tools"
 
+    },
+    "sidebarLeft": {
+        "home": "Home",
+        "profile": "Profile",
+        "message": "Message",
+        "bookmark": "Bookmark",
+        "notifications": "Notifications",
+        "communities": "Communities",
+        "more": "More",
+        "post": "Post",
+        "logout":"log out"
+    },
+    "home": {
+        "forYou": "For you",
+        "following": "Following",
+        "whatIsHappening": "What is the happening?",
+        "whoCanReply": "Who can reply?",
+        "chooseUserReply": "Choose who can reply to this post. Anyone mentioned can always reply",
+        "everyone": "Everyone can reply",
+        "accountsYouFollow": "Accounts you follow",
+        "verifyAccounts": "Verify Accounts",
+        "onlyAccountsYouMention": "Only accounts you mentions",
+        "loading":"Loading",
+        "like":"Like",
+        "reply":"Replies",
+        "comment":"Comments",
+        "posts":"Posts",
+        "editProfile":"Edit profile",
+        "notPost":"There are no posts",
+        "comments":"Comments"
+
+    },
+    "sideBarRight":{
+        "search":"Search",
+        "peopleFriendsWith":"People you can Make friends with",
+        "follow":"Follow",
+        "following":"Following",
+        "searchFor":"Search for"
     }
 
 }

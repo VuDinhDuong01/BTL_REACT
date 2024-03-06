@@ -6,6 +6,7 @@ import { type ChangeEvent, useRef, useState, useEffect } from 'react'
 import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
+import { t } from "i18next";
 
 import { Icons } from "../../helps/icons"
 import { Button } from "../ui/button"
@@ -58,25 +59,25 @@ interface permissionViews {
 const permissionViews: permissionViews[] = [
     {
         id: 1,
-        title: 'Everyone can reply',
+        title: t('home.everyone'),
         icon: <Icons.AiOutlineGlobal />,
         audience: 0,
     },
     {
         id: 2,
-        title: 'Accounts you follow',
+        title: t('home.accountsYouFollow'),
         icon: <Icons.LuUserCheck />,
         audience: 1,
     },
     {
         id: 3,
-        title: 'Verified accounts',
+        title: t('home.verifyAccounts'),
         icon: <Icons.IoSettingsOutline />,
         audience: 2,
     },
     {
         id: 4,
-        title: 'Only accounts you mention',
+        title: t('home.onlyAccountsYouMention'),
         icon: <Icons.SiOnlyoffice />,
         audience: 3
     },
@@ -96,7 +97,7 @@ export const PostArticle = () => {
     })
 
     const [showPermissionView, setShowPermissionView] = useState<{ title: string, icon: JSX.Element }>({
-        title: 'Everyone can reply',
+        title: t('home.everyone'),
         icon: <Icons.AiOutlineGlobal />
     })
     const emojiRef = useRef<ShowEmoji>(null)
@@ -235,7 +236,7 @@ export const PostArticle = () => {
             setFiles([])
             setGif('')
             setShowPermissionView({
-                title: 'Everyone can reply',
+                title: t('home.everyone'),
                 icon: <Icons.AiOutlineGlobal />
             })
         } catch (error: unknown) {
@@ -270,7 +271,8 @@ export const PostArticle = () => {
                                 className="w-full absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[25px]"
                                 onClick={handlePlaceholderClick}
                             >
-                                What is happening?
+                                {t('home.whatIsHappening')}
+
                             </div>
                         )}
                     </div>
@@ -317,8 +319,8 @@ export const PostArticle = () => {
                             showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 fixed max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
                                 <div>
                                     <div className="mb-[20px] mt-[10px] px-[10px]">
-                                        <h3 className="text-[17px] mb-[10px] font-fontFamily">Who can reply?</h3>
-                                        <p className="text-[14px] font-fontFamily">Choose who can reply to this post. Anyone mentioned can always reply</p>
+                                        <h3 className="text-[17px] mb-[10px] font-fontFamily">  {t('home.whoCanReply')}</h3>
+                                        <p className="text-[14px] font-fontFamily"> {t('home.chooseUserReply')}</p>
                                     </div>
                                     <div className="w-full">
                                         {
@@ -357,7 +359,7 @@ export const PostArticle = () => {
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
                         <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full fixed top-[225px]' />
                     </div>
-                    <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : 'Post'}</Button>
+                    <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : t('sidebarLeft.post')}</Button>
                 </div>
             </div>
 

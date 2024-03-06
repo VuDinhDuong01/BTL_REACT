@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import { useNavigate} from "react-router-dom"
+import { t } from "i18next";
 
 import { useFollowMutation, useGetFollowQuery, useGetUserQuery } from "../../apis/follow"
 // import { Search } from "../search"
@@ -50,7 +51,7 @@ export const SidebarRight = () => {
        <Search />  
      
       <div className="w-full rounded-[16px] bg-[#f7f9f9] mt-[70px] relative">
-        <h2 className="text-[#0f1419] font-[800] font-fontFamily mb-[20px] pt-[20px] px-[10px]">People you can Make friends with</h2>
+        <h2 className="text-[#0f1419] font-[800] font-fontFamily mb-[20px] pt-[20px] px-[10px]">{t('sideBarRight.peopleFriendsWith')}</h2>
         {
           isLoading ? <div className="mt-[400px]"><Skeleton /></div> : <>
             {
@@ -64,7 +65,7 @@ export const SidebarRight = () => {
                     </div>
                   </div>
                   <Button className={cn("w-[150px] text-[15px] !font-[600] bg-black text-white flex items-center justify-center !cursor-pointer hover:opacity-70 ", {
-                  })}  onClick={() => handleFollowUser(user._id)}>{checkStatusFollow(user._id) ? 'Following' : 'Follow'}</Button>
+                  })}  onClick={() => handleFollowUser(user._id)}>{checkStatusFollow(user._id) ? t('sideBarRight.following'):  t('sideBarRight.follow')}</Button>
                 </div>
               })
             }

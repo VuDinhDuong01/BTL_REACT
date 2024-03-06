@@ -1,51 +1,85 @@
 {
-    "login":{
-        "enterEmail":"Nhập email của bạn",
-        "enterPassword":"Nhập mật khẩu",
-        "password":"Mật khẩu",
-        "support":"Hỗ trợ",
-        "resetPassword":"Quên mật khẩu",
-        "login":"Đăng nhập",
-        "fieldNotEmpty":"Trường này không được để trống",
-        "wrongFormat":"bạn nhập sai định dạng",
-        "maximumNumberCharaters":"Số ký tự tối đa cho phép là 25 ký tự",
-        "minximumNumberCharaters":"Bạn phải nhập ít nhất 6 ký tự",
-        "continue":"Tiếp tục"
-        
+    "login": {
+        "enterEmail": "Nhập email của bạn",
+        "enterPassword": "Nhập mật khẩu",
+        "password": "Mật khẩu",
+        "support": "Hỗ trợ",
+        "resetPassword": "Quên mật khẩu",
+        "login": "Đăng nhập",
+        "fieldNotEmpty": "Trường này không được để trống",
+        "wrongFormat": "bạn nhập sai định dạng",
+        "maximumNumberCharaters": "Số ký tự tối đa cho phép là 25 ký tự",
+        "minximumNumberCharaters": "Bạn phải nhập ít nhất 6 ký tự",
+        "continue": "Tiếp tục"
     },
-    "register":{
-        "username":"Họ và tên",
-        "enterUsername":"Nhập họ tên",
-        "register":"Đăng ký",
-        "enterCode":"Nhập mã code",
-        "verifyCode1":"Mã xác thực đã giửi về Email của bạn",
-        "verifyCode2":"Vui lòng nhập chính xác mã vào ô bên dưới",
-        "verify":"Xác thực",
-        "returnPage":"Quay về trang"
+    "register": {
+        "username": "Họ và tên",
+        "enterUsername": "Nhập họ tên",
+        "register": "Đăng ký",
+        "enterCode": "Nhập mã code",
+        "verifyCode1": "Mã xác thực đã giửi về Email của bạn",
+        "verifyCode2": "Vui lòng nhập chính xác mã vào ô bên dưới",
+        "verify": "Xác thực",
+        "returnPage": "Quay về trang"
     },
-    "updateMe":{
-        "worngFormatFile":"Tải File sai định dạng",
-        "wrongMaxSizeFile":"Tải File quá lớn",
-        "errorUploadFile":"Tải File bị lỗi",
-        "name":"Tên gọi khác",
-        "username":"Họ và tên",
-        "updateMeSuccess":"Cập nhật thông tin thành công"
+    "updateMe": {
+        "worngFormatFile": "Tải File sai định dạng",
+        "wrongMaxSizeFile": "Tải File quá lớn",
+        "errorUploadFile": "Tải File bị lỗi",
+        "name": "Tên gọi khác",
+        "username": "Họ và tên",
+        "updateMeSuccess": "Cập nhật thông tin thành công"
     },
-    "logout":{
-        "logoutSuccess":"Bạn đã đăng xuất thành công"
+    "logout": {
+        "logoutSuccess": "Bạn đã đăng xuất thành công"
     },
-    "changePassword":{
-        "oldPassword":"Mật khẩu cũ",
-        "password":"Mật khẩu",
-        "newPassword":"Mật khẩu mới",
-        "confirm":"Xác nhận",
-        "notEmpty":"Không được bỏ trống",
-        "newPasswordNotCorrect":"Mật khẩu nhập lại không đúng",
-        "change_password":"Thay đổi mật khẩu",
-        "confirmPassword":"Xác nhận lại mật khẩu",
-        "changePasswordSuccess":"Thay đổi mật khẩu thành công",
-        "professionalTools":"Công cụ chuyên nghiệp"
-        
+    "changePassword": {
+        "oldPassword": "Mật khẩu cũ",
+        "password": "Mật khẩu",
+        "newPassword": "Mật khẩu mới",
+        "confirm": "Xác nhận",
+        "notEmpty": "Không được bỏ trống",
+        "newPasswordNotCorrect": "Mật khẩu nhập lại không đúng",
+        "change_password": "Thay đổi mật khẩu",
+        "confirmPassword": "Xác nhận lại mật khẩu",
+        "changePasswordSuccess": "Thay đổi mật khẩu thành công",
+        "professionalTools": "Công cụ chuyên nghiệp"
+    },
+    "sidebarLeft": {
+        "home": "Trang chủ",
+        "profile": "Hồ sơ",
+        "message": "Tin nhắn",
+        "bookmark": "Đánh dấu",
+        "notifications": "Thông báo",
+        "communities": "Kết nối",
+        "more": "Khác",
+        "post": "Đăng",
+        "logout":"Đăng xuất"
+    },
+    "home": {
+        "forYou": "Dành cho bạn",
+        "following": "Người bạn theo dõi",
+        "whatIsHappening": "Chuyện gì đang xảy ra vậy?",
+        "whoCanReply": "Ai có thể trả lời?",
+        "chooseUserReply": "Chọn người có thể trả lời bài đăng này. Bất cứ ai được đề cập luôn có thể trả lời",
+        "everyone": "Mọi người đều có thể trả lời",
+        "accountsYouFollow": "Tài khoản bạn theo dõi",
+        "verifyAccounts": "Tài khoản đã được xác minh",
+        "onlyAccountsYouMention": "Chỉ những tài khoản bạn đề cập",
+        "loading":"Đang tải",
+        "like":"Thích",
+        "reply":"Phản hồi",
+        "comment":"Viết bình luận...",
+        "posts":"Bài đăng",
+        "editProfile":"Cập nhật",
+        "notPost":"Không có bài Post nào !",
+        "comments":"Bình luận"
+    },
+    "sideBarRight":{
+        "search":"Tìm kiếm",
+        "peopleFriendsWith":"Những người bạn có thể kết bạn",
+        "follow":"Kết bạn",
+        "following":"Bạn bè",
+        "searchFor":"Tìm kiếm cho"
     }
-   
 }

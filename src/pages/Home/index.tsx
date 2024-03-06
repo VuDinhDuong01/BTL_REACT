@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
+import { t } from "i18next";
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -10,6 +11,8 @@ import { ProviderContext, queryList } from "../../hooks"
 import { Button } from "../../components/ui/button"
 import { Skeleton } from "../../components/ui/skeleton"
 import { getProfileToLS } from "../../helps"
+import { GenerateType } from "../../types/generate";
+import { Tweet } from "../../types/tweet";
 
 interface ActionTweet {
   id: number,
@@ -17,12 +20,13 @@ interface ActionTweet {
   title_tweet: string
 }
 
-const actionArray: ActionTweet[] = [
-  { id: 1, title: 'For you', title_tweet: 'for_you' },
-  { id: 2, title: 'Following', title_tweet: 'following' }
-]
+
 
 export const Home = () => {
+  const actionArray: ActionTweet[] = [
+    { id: 1, title: t('home.forYou'), title_tweet: 'for_you' },
+    { id: 2, title: t('home.following'), title_tweet: 'following' }
+  ]
   const [limits, setLimit] = useState<number>(Number(queryList.limit))
   const [titleTweet, setTitleTweet] = useState<string>(String(queryList.title_tweet))
   const profile = getProfileToLS() as { user_id: string }
@@ -89,26 +93,31 @@ export const Home = () => {
       </div>
 
       {
-        isLoading ? <div className="w-full h-full flex items-center justify-center mt-[200px]"><Skeleton /></div> : <>
-          <ProviderContext>
+        isLoading ? <div className="w-full h-full flex items-center justify-center mt-[200px]"><Skeleton /></div> :
+          <>
             {
-              getListTweet?.data?.map((tweet, index) => {
-                return <div key={index}>
+              (getListTweet as GenerateType<Tweet[]>)?.data?.length > 0 ? <>
+                <ProviderContext>
+                  {
+                    getListTweet?.data?.map((tweet, index) => {
+                      return <div key={index}>
 
-                  <Post
-                    tweet={tweet}
-                  />
+                        <Post
+                          tweet={tweet}
+                        />
 
-                </div>
-              })
+                      </div>
+                    })
+                  }
+                </ProviderContext>
+                {
+                  getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
+                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{t('home.loading')}...</Button>
+                  </div>)
+                }
+              </> : <div className="w-full items-center flex justify-center font-fontFamily font-[600] text-[20px] mt-[100px]">{t('home.notPost')}</div>
             }
-          </ProviderContext>
-          {
-            getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
-              <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">Loading...</Button>
-            </div>)
-          }
-        </>
+          </>
       }
 
 

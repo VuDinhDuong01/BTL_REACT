@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { t } from "i18next";
 
 import { Icons } from "../../helps/icons"
 import { useSearch } from '../../hooks/useSearch'
@@ -50,7 +51,7 @@ export const Search = () => {
                     <form className="w-full fixed top-[0px] py-[5px] bg-[white]" onSubmit={onSubmit}>
                         <input
                             className="w-[370px] focus:outline-none relative  focus:border-[1px] focus:border-solid focus:border-green2 !rounded-[50px] pl-[40px] font-fontFamily !pr-[45px] text-[16px] h-[45px] bg-[#EFF3F4] outline-none border-none"
-                            placeholder="Search"
+                            placeholder={t('sideBarRight.search')}
                             {...register('search', {
                                 onChange: (e) => {
 
@@ -72,7 +73,7 @@ export const Search = () => {
                 {
                     (textSearch as string) ? <>
                         <div className=" top-[56px] fixed  z-[0]  mr-[320px] items-center justify-center w-[370px] bg-white" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
-                            <div className="text-[15px] font-fontFamily overflow-hidden whitespace-nowrap line-clamp-1 w-[350px] flex border-solid border-[1px]  border-b-[#EFF3F4] border-l-transparent border-r-transparent border-t-transparent h-[45px] items-center pl-[10px]">Search for {textSearch}</div>
+                            <div className="text-[15px] font-fontFamily overflow-hidden whitespace-nowrap line-clamp-1 w-[350px] flex border-solid border-[1px]  border-b-[#EFF3F4] border-l-transparent border-r-transparent border-t-transparent h-[45px] items-center pl-[10px]">{t('sideBarRight.searchFor')} {textSearch}</div>
                             {
                                 isLoading ? <div><Skeleton /></div> :
                                     (getSearchUser?.data as User[])?.length > 0 && <div className='w-full max-h-[400px] overflow-y-scroll '>
@@ -84,7 +85,7 @@ export const Search = () => {
                                                     </div>
                                                     <div>
                                                         <h2 className="text-[18px] font-fontFamily">{item.username}</h2>
-                                                        <p className="text-[16px] font-fontFamily ">{item.name}</p>
+                                                        <p className="text-[16px] font-fontFamily ">@{item.name}</p>
                                                     </div>
                                                 </div>
                                             })

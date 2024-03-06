@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
 import { useImperativeHandle, forwardRef, useState, useRef, useContext } from 'react'
+import { t } from "i18next";
 
 import { Dialog, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
@@ -216,7 +217,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                             isHovered === comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>
                                                                         }
                                                                     </div>
-                                                                    <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>Phản hồi</p>
+                                                                    <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>{t('home.reply')}</p>
                                                                 </div>
                                                                 {comment.like_comments.length > 0 &&
                                                                     <div className=' bg-white flex items-center px-[8px] py-[3px] rounded-2xl' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>

@@ -6,6 +6,7 @@ import { MdGifBox } from "react-icons/md";
 import { FaRegSmileBeam } from "react-icons/fa";
 import { EmojiClickData } from "emoji-picker-react";
 import { IoSend } from "react-icons/io5";
+import { t } from "i18next";
 
 import { ShowGIF, handleShowPopup } from "../../show-gif";
 import { EmojiPickers, ShowEmoji } from "../emoji-picker";
@@ -85,7 +86,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
     return <div className='w-full min-h-[100px]  flex'>
         <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
         <div className='w-full relative'>
-            <textarea className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]' placeholder='Viết bình luận...' value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>
+            <textarea className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]' placeholder={t('home.comment')} value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>
             <ShowGIF ref={refGif} limit={50} setGif={setFile} />
             <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute  top-[-460px] right-[50px] z-[9]' />
             <div className="w-full flex items-center absolute bottom-[5px] left-[10px]">
