@@ -46,7 +46,7 @@ export const Search = () => {
 
     return (
         <div className=''>
-            <div className='w-full relative  z-[99]'>
+            <div className='w-full'>
                 <div>
                     <form className="w-full fixed top-[0px] py-[5px] bg-[white]" onSubmit={onSubmit}>
                         <input

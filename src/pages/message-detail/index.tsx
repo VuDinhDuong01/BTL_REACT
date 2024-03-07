@@ -2,7 +2,8 @@
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { ChatContainer, MessageList, MessageInput, ConversationHeader, Avatar, TypingIndicator, Message } from '@chatscope/chat-ui-kit-react';
 import { useEffect, useState, useRef, useContext } from 'react';
-//  import { checkConnectSocket } from '../../helps/socket';
+import {t} from 'i18next'
+
 import { EmojiPickers, ShowEmoji } from '../../components/common/emoji-picker';
 import { EmojiClickData } from 'emoji-picker-react';
 import { getProfileToLS } from '../../helps';
@@ -20,7 +21,6 @@ interface Message {
 }
 
 export const MessageDetail = () => {
-  // const socket = checkConnectSocket() as Socket
   const {socket }= useContext(ContextAPI)
   const { receiver_id } = useParams()
   const [focus, setFocus] = useState<string>('no_enter')
@@ -155,16 +155,17 @@ export const MessageDetail = () => {
                     message: messages.content,
                     position: 'single',
                   }}
+                  
                 >
                   {
                     profile.user_id !== messages.sender_id &&
                     <Avatar src={getMe?.data[0].avatar ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR} />
                   }
                 </Message>
-              }) : <div className='w-full flex items-center justify-center font-[600] font-fontFamily text-[20px] mt-[100px]'>Các bạn là người dùng ứng dụng xã hội</div>
+              }) : <div className='w-full flex items-center justify-center font-[600] font-fontFamily text-[20px] mt-[100px]'>{t('home.youAreUseSocialApplication')}</div>
           }
         </MessageList>
-        <MessageInput placeholder="Nhập tin nhắn..." onSend={handleSendMessage} onChange={handleChangeValue} value={message.content} onBlur={handleFocus} autoFocus onAttachClick={handleIcons} />
+        <MessageInput placeholder={t('home.comment')} onSend={handleSendMessage} onChange={handleChangeValue} value={message.content} onBlur={handleFocus} autoFocus onAttachClick={handleIcons} />
       </ChatContainer>
     </div>
 

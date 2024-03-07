@@ -50,7 +50,7 @@ export const SidebarRight = () => {
       
        <Search />  
      
-      <div className="w-full rounded-[16px] bg-[#f7f9f9] mt-[70px] relative">
+      <div className="w-full rounded-[16px] bg-[#f7f9f9] mt-[70px] ">
         <h2 className="text-[#0f1419] font-[800] font-fontFamily mb-[20px] pt-[20px] px-[10px]">{t('sideBarRight.peopleFriendsWith')}</h2>
         {
           isLoading ? <div className="mt-[400px]"><Skeleton /></div> : <>

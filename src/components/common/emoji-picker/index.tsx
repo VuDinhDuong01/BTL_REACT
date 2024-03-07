@@ -27,7 +27,7 @@ export const EmojiPickers = forwardRef<ShowEmoji, Props>(({ handleShowEmojiPicke
 
     useClickOutSide({ onClickOutSide: () => setIsShowEmoji(false), ref: emojiRef })
 
-    return isShowEmoji && <div className={className} ref={emojiRef}><EmojiPicker onEmojiClick={handleShowEmojiPicker} autoFocusSearch /></div>
+    return isShowEmoji && <div className={className} ref={emojiRef}><EmojiPicker onEmojiClick={handleShowEmojiPicker}  autoFocusSearch  /></div>
 
 });
 

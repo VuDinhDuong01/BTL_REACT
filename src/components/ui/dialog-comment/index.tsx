@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-extra-boolean-cast */
+
 import { useImperativeHandle, forwardRef, useState, useRef, useContext } from 'react'
 import { t } from "i18next";
 
-import { Dialog, DialogOverlay } from "../dialog";
+import { Dialog, DialogContent, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
 import { Images } from '../../../assets/images';
 
@@ -14,7 +12,7 @@ import { useClickOutSide } from '../../../hooks/useClickOutSide';
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentMutation } from '../../../apis/comment';
 import { UploadImageResponse, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
-import { ListIcons } from '../../list-icons';
+import { ListIcons, ShowPopupIcons } from '../../list-icons';
 import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
 import { GetCommentResponse } from '../../post';
@@ -28,10 +26,8 @@ interface PropsDialogComment {
     loading: boolean
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
-
-
-
 }
+
 export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, loading }, ref) => {
     const [getComment] = useGetCommentMutation()
     const refPopComment = useRef<HTMLDivElement>(null)
@@ -44,6 +40,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string, username: string }
+    const refShowPopupIcons = useRef<ShowPopupIcons>(null)
+
     const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, setListComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
     const showPopup = () => {
@@ -167,13 +165,13 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     return (<div>
         {
             isShowPopup && <Dialog open={isShowPopup}>
-                <DialogOverlay />
-                <div className=' w-full cursor-default h-full flex fixed inset-0 items-center justify-center z-[999999]' >
+                <DialogOverlay className='fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overflow-y-auto py-16 grid place-items-center' />
+                <DialogContent className=' w-full cursor-default h-full flex fixed inset-0 items-center justify-center z-[99]' >
                     <div className='h-[900px] w-[700px] bg-white rounded-[20px] flex flex-col items-center relative' ref={refPopComment} style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} >
                         <div className='w-full flex  rounded-t-[20px]  cursor-pointer  !h-[70px] '>
                             <div style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} className='flex items-center   w-full  rounded-t-[20px] '>
                                 <div className=' flex items-center  ml-[10px]'><div className='mr-[15px] w-[30px] h-[30px] rounded-[50%] bg-black3 flex items-center justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div></div>
-                                <div className='w-full flex items-center justify-center text-[20px] font-fontFamily'><h2 className='text-[20px]'>{`Bài viết của ${users?.username}`}</h2></div>
+                                <div className='w-full flex items-center justify-center text-[20px] font-fontFamily'><h2 className='text-[20px] text-black'>{`Bài viết của ${users?.username}`}</h2></div>
                             </div>
                         </div>
 
@@ -188,7 +186,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                     <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                                     <div className='w-full'>
                                                         <div className='w-full'>
-                                                            <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
+                                                            <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px] text-black'>
                                                                 <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
                                                                 <p className='text-[14px] font-fontFamily'>{comment?.content_comment}</p>
                                                             </div>
@@ -209,13 +207,12 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                             'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
                                                                         })} onClick={() => {
                                                                             handleLike(comment._id)
+                                                                            refShowPopupIcons.current && refShowPopupIcons.current?.handleShowPopupIcons()
                                                                         }}
                                                                         >{
                                                                                 renderTextLike(comment.like_comments)
                                                                             }</p>
-                                                                        {
-                                                                            isHovered === comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>
-                                                                        }
+                                                                        <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} ref={refShowPopupIcons} /></div>
                                                                     </div>
                                                                     <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>{t('home.reply')}</p>
                                                                 </div>
@@ -228,7 +225,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                 </div>
                                                                             })
                                                                         }
-                                                                        <div className='font-[550] font-fontFamily ml-[5px]'>{comment.like_comments.length}</div>
+                                                                        <div className='font-[550] font-fontFamily ml-[5px] text-black'>{comment.like_comments.length}</div>
                                                                     </div>
                                                                 }
                                                             </div>
@@ -268,7 +265,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                         <div>
                                                                             <div>
                                                                                 <div className='flex items-center relative '>
-                                                                                    <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px] '>
+                                                                                    <div className='inline-block bg-[#F0F2F5]  text-black rounded-xl px-[20px] py-[10px] '>
                                                                                         <h4 className='font-[600] font-fontFamily text-[16px]'>{replies_comment?.username}</h4>
                                                                                         <p className='text-[14px] font-fontFamily'>{replies_comment?.replies_content_comment}</p>
                                                                                     </div>
@@ -296,7 +293,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                 }
                                                                                 <div className='w-[200px] mt-[5px] flex items-center'>
                                                                                     <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
-                                                                                    <div className=' relative'>
+                                                                                    <div className='w-full relative'>
                                                                                         <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
                                                                                             {
                                                                                                 'text-[#1B90DF] font-[600]': renderColorLike('👍', replies_comment.replies_like_comments),
@@ -307,9 +304,10 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                             }
                                                                                         )} onClick={() => {
                                                                                             handleLike(replies_comment._id)
+                                                                                            refShowPopupIcons.current && refShowPopupIcons.current?.handleShowPopupIcons()
                                                                                         }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
                                                                                         {
-                                                                                            isHovered === replies_comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                                                                            isHovered === replies_comment._id && <div className='absolute !top-[-1000px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                                                                         }
                                                                                     </div>
                                                                                 </div>
@@ -321,7 +319,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                         }
                                                     </div>
                                                 </div>
-                                            }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default'>Chưa có bình luận nào cho bài Post</div>
+                                            }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default text-black'>Chưa có bình luận nào cho bài Post</div>
                                         }
                                     </>
                                 }
@@ -343,7 +341,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                 {
                                     file && <img src={typeof file === 'string' ? file : URL.createObjectURL(file as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
                                 }
-                                <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => SetFile('')}>
+                                <div className=' absolute right-[0px] top-[10px] cursor-pointer text-black' onClick={() => SetFile('')}>
                                     {
                                         file && <Icons.IoMdClose size={25} />
                                     }
@@ -351,7 +349,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                             </div>
                         </div>
                     </div>
-                </div>
+                </DialogContent>
             </Dialog>
         }
     </div>

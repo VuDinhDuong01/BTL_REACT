@@ -73,7 +73,8 @@
         "posts":"Bài đăng",
         "editProfile":"Cập nhật",
         "notPost":"Không có bài Post nào !",
-        "comments":"Bình luận"
+        "comments":"Bình luận",
+        "youAreUseSocialApplication":"Các bạn là người dùng ứng dụng xã hội!"
     },
     "sideBarRight":{
         "search":"Tìm kiếm",

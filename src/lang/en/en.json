@@ -74,7 +74,8 @@
         "posts":"Posts",
         "editProfile":"Edit profile",
         "notPost":"There are no posts",
-        "comments":"Comments"
+        "comments":"Comments",
+        "youAreUseSocialApplication":"You are a social application user"
 
     },
     "sideBarRight":{

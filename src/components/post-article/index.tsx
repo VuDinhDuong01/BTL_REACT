@@ -357,7 +357,7 @@ export const PostArticle = () => {
                             })
                         }
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
-                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full fixed top-[225px]' />
+                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' fixed top-[225px]' />
                     </div>
                     <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : t('sidebarLeft.post')}</Button>
                 </div>

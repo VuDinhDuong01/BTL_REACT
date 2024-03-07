@@ -18,7 +18,7 @@ interface InputPost {
     content: string,
     setContent: Dispatch<SetStateAction<string>>,
     file: File, avatar_user: string,
-    setFile: Dispatch<SetStateAction<File | string>>,
+    setFile: Dispatch<SetStateAction< string | File>>,
     handleCreateComment: () => Promise<void>
     className?: string
     classNameIcons?: string
@@ -64,7 +64,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
         }
     }
     const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
-        console.log(emojiData.emoji)
+
         setContent(prev => (prev + emojiData.emoji))
     }
     const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
@@ -88,7 +88,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
         <div className='w-full relative'>
             <textarea className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]' placeholder={t('home.comment')} value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>
             <ShowGIF ref={refGif} limit={50} setGif={setFile} />
-            <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className='w-full absolute  top-[-460px] right-[50px] z-[9]' />
+            <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute  top-[-460px] right-[50px] z-[9]' />
             <div className="w-full flex items-center absolute bottom-[5px] left-[10px]">
                 {
                     listIcon.map((Item) => {

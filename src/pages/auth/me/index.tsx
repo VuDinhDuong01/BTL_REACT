@@ -26,9 +26,9 @@ import { useFollowMutation, useGetFollowQuery } from "../../../apis/follow"
 export const Personal = () => {
     
 const actionTweet = [
-    { id: 1, title:t('home.posts') },
-    { id: 2, title: t('home.comments')},
-    { id: 3, title: t('home.like') },
+    { id: 1, title:'Posts'},
+    { id: 2, title: 'Comments'},
+    { id: 3, title: 'Like' },
 ]
     const navigate = useNavigate()
     const [follow] = useFollowMutation()
@@ -110,7 +110,7 @@ const actionTweet = [
         <div className="w-full">
             {
                 isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
-                    <div className=" w-[611px] z-[9999] flex items-center h-[60px] fixed top-0 bg-white">
+                    <div className=" w-[611px] flex items-center h-[60px] fixed top-0 bg-white">
                         <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
                             <Icons.FaArrowLeftLong />
                         </Link>

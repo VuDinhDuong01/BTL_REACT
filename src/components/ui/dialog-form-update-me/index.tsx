@@ -17,6 +17,8 @@ import { DEFAULT_IMAGE_AVATAR, DEFAULT_IMAGE_COVER_PHOTO } from '../../../helps/
 import { GetUserResponse } from '../../../types/user';
 import { UploadImageResponse, useUpdateMeMutation, useUploadImageMutation } from '../../../apis';
 import { Loading } from '../../../assets/icons/eye';
+import { useClickOutSide } from '../../../hooks/useClickOutSide';
+import { DialogContent } from '@radix-ui/react-dialog';
 
 const MAX_CHAR = 255
 const MAX_SIZE_FILE = 300 * 1024
@@ -38,7 +40,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     const { t } = useTranslation()
     const [updateMe, { isLoading }] = useUpdateMeMutation()
     const [uploadImage] = useUploadImageMutation()
-
+    const updateMeRef = useRef<HTMLDivElement>(null)
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
     const inputRefAvatar = useRef<HTMLInputElement>(null)
 
@@ -73,8 +75,12 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     }
     useImperativeHandle(ref, () => ({
         showPopup: showPopup
-    }));
+    }))
 
+    useClickOutSide({
+        onClickOutSide: () => setIsShowPopup(false),
+        ref: updateMeRef
+    })
     const onSubmit = (handleSubmit(async () => {
         try {
             const { username, name, bio, website, location } = getValues();
@@ -167,8 +173,8 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     return (<div>
         {
             isShowPopup && <Dialog open={isShowPopup}>
-                <DialogOverlay />
-                <div className=' w-full h-full flex fixed inset-0 items-center justify-center z-[999999]'>
+                <DialogOverlay className='fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overflow-y-auto py-16 grid place-items-center' />
+                <DialogContent className=' w-full h-full flex fixed inset-0 items-center justify-center z-[999999]' >
                     <form className='h-[650px] w-[600px] bg-white rounded-[20px] flex flex-col items-center relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
                         <div className='w-full px-[10px] flex  rounded-t-[20px] items-center cursor-pointer justify-between !h-[50px] '>
                             <div className='flex items-center'>
@@ -177,7 +183,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                             </div>
                             <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{isLoading ? <Loading /> : 'Save'}</Button>
                         </div>
-                        <div className='w-full   flex-1 max-h-[650px] overflow-scroll '>
+                        <div className='w-full   flex-1 max-h-[650px] overflow-y-scroll overflow-hidden' ref={updateMeRef}>
                             <div className='w-full  '>
                                 <div className='w-[99%] relative m-auto '>
                                     {
@@ -268,7 +274,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                             </div>
                         </div>
                     </form>
-                </div>
+                </DialogContent>
             </Dialog>
         }
     </div>
