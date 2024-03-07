@@ -74,7 +74,8 @@
         "editProfile":"Cập nhật",
         "notPost":"Không có bài Post nào !",
         "comments":"Bình luận",
-        "youAreUseSocialApplication":"Các bạn là người dùng ứng dụng xã hội!"
+        "youAreUseSocialApplication":"Các bạn là người dùng ứng dụng xã hội!",
+        "notComment":"Không có bình luận nào!"
     },
     "sideBarRight":{
         "search":"Tìm kiếm",

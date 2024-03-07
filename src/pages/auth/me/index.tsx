@@ -1,7 +1,7 @@
 /* eslint-disable no-extra-boolean-cast */
 import { useRef, useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
-import {t} from 'i18next'
+import { t } from 'i18next'
 import omit from 'lodash/omit'
 
 import { Button } from "../../../components/ui/button"
@@ -24,12 +24,12 @@ import { useFollowMutation, useGetFollowQuery } from "../../../apis/follow"
 
 
 export const Personal = () => {
-    
-const actionTweet = [
-    { id: 1, title:'Posts'},
-    { id: 2, title: 'Comments'},
-    { id: 3, title: 'Like' },
-]
+
+    const actionTweet = [
+        { id: 1, title: 'Posts' },
+        { id: 2, title: 'Comments' },
+        { id: 3, title: 'Like' },
+    ]
     const navigate = useNavigate()
     const [follow] = useFollowMutation()
     const { data: getFollow } = useGetFollowQuery()
@@ -84,7 +84,7 @@ const actionTweet = [
             search: createSearchParams(omit({
                 ...queryList,
                 title: action.title
-            },['id_user','for_you','title_tweet'])).toString()
+            }, ['id_user', 'for_you', 'title_tweet'])).toString()
         })
     }
 
@@ -100,7 +100,7 @@ const actionTweet = [
                 search: createSearchParams(omit({
                     ...queryList,
                     limit: String(nextLimit)
-                },['id_user','for_you','title_tweet'])).toString()
+                }, ['id_user', 'for_you', 'title_tweet'])).toString()
             });
             return nextLimit;
         });
@@ -110,7 +110,7 @@ const actionTweet = [
         <div className="w-full">
             {
                 isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
-                    <div className=" w-[611px] flex items-center h-[60px] fixed top-0 bg-white">
+                    <div className=" w-[611px] flex items-center h-[60px] sticky top-[0px] bg-white z-10">
                         <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
                             <Icons.FaArrowLeftLong />
                         </Link>
@@ -119,7 +119,7 @@ const actionTweet = [
                             <p className="text-[15px] font-fontFamily text-black2">{`${getMe?.data[0].count_tweet} ${t('home.posts')}`}</p>
                         </div>
                     </div>
-                    <div className="w-full relative !z-[-999] mt-[55px]">
+                    <div className="w-full relative z-[-1]">
                         {
                             Boolean(getMe?.data[0].cover_photo as string) ? <img src={getMe?.data[0].cover_photo} alt="cover_photo" className="w-full h-[200px] mt-[20px] object-cover" /> : <div className="w-full h-[200px] mt-[20px] bg-[#CFD9DE] z-0 " />
                         }
@@ -166,7 +166,7 @@ const actionTweet = [
                     </div>
                 </>
             }
-            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px]">
+            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px] z-1">
                 {actionTweet.map((action) => (
                     <div
                         className={cn('h-full w-full relative ', {
@@ -208,5 +208,5 @@ const actionTweet = [
                 </> : <div className="w-full items-center flex justify-center mt-[100px] text-[20px] text-black font-[600] font-fontFamily">{t('home.notPost')}</div>
             }
         </div>
-    </div>
+    </div >
 }

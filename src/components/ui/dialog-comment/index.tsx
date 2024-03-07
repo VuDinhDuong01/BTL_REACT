@@ -197,7 +197,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                             }
                                                             <div className='w-full items-center justify-between flex'>
                                                                 <div className='w-[200px] mt-[5px] flex items-center justify-between'>
-                                                                    <p className='text-[15px] font-fontFamily'>{convertDateToHours(comment.created_at)}</p>
+                                                                    <p className='text-[15px] font-fontFamily text-black'>{convertDateToHours(comment.created_at)}</p>
                                                                     <div className='relative'>
                                                                         <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
                                                                             'text-[#1B90DF] font-[600]': renderColorLike('👍', comment.like_comments),
@@ -234,7 +234,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 {
                                                                     isShowInputRepliesComment === comment._id && (<>
                                                                         <InputPost
-
+                                                                            className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5] !h-[100px]'
                                                                             file={fileRepliesComment as File}
                                                                             setFile={setFileRepliesComment}
                                                                             avatar_user={users.avatar}
@@ -246,7 +246,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                             {
                                                                                 fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
                                                                             }
-                                                                            <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                                                            <div className=' absolute right-[0px]  cursor-pointer' onClick={() => setFileRepliesComment('')}>
                                                                                 {
                                                                                     fileRepliesComment && <Icons.IoMdClose size={25} />
                                                                                 }
@@ -292,7 +292,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                     </div>
                                                                                 }
                                                                                 <div className='w-[200px] mt-[5px] flex items-center'>
-                                                                                    <p className='text-[15px] font-fontFamily pr-[20px]'>{convertDateToHours(replies_comment.created_at)}</p>
+                                                                                    <p className='text-[15px] font-fontFamily w-[150px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
                                                                                     <div className='w-full relative'>
                                                                                         <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
                                                                                             {
@@ -307,7 +307,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                             refShowPopupIcons.current && refShowPopupIcons.current?.handleShowPopupIcons()
                                                                                         }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
                                                                                         {
-                                                                                            isHovered === replies_comment._id && <div className='absolute !top-[-1000px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                                                                            isHovered === replies_comment._id && <div className=''><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                                                                         }
                                                                                     </div>
                                                                                 </div>
@@ -327,8 +327,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                         </div>
                         <div className='w-full min-h-[120px] p-[10px] ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
                             <InputPost
-                                className='w-full min-h-[100px]  flex'
-                                classNameIcons="w-full flex items-center absolute bottom-[5px] left-[10px]"
+                                className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]'
+
                                 file={file as File}
                                 setFile={SetFile}
                                 avatar_user={users.avatar}

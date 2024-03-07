@@ -18,6 +18,7 @@ import { ErrorHandle } from "../../../types/login";
 import { PAGE } from "../../../contants";
 import { removeLS } from "../../../helps";
 import { ToastMessage } from "../../../helps/toast-message";
+import { DialogContent } from "@radix-ui/react-dialog";
 export interface ChangePasswordResponse {
     showPopupChangePassword: () => void,
     hiddenPopupChangePassword: () => void
@@ -78,9 +79,9 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>(({ refForm
 
     return <div>
         {
-            isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword}>
-                <DialogOverlay className='fixed inset-0 z-[9] bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 max-h-screen grid place-items-center' />
-                <div className='w-full h-full flex fixed inset-0 items-center justify-center z-50'>
+            isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword} >
+                <DialogOverlay className='fixed inset-0 z-10 bg-black/50' />
+                <DialogContent className='w-full h-full flex fixed inset-0 items-center justify-center z-50'>
                     <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit} ref={refFormChangePassword}>
                         <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
                         <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>
@@ -139,7 +140,7 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>(({ refForm
                             <div className="w-full flex items-center justify-center "><Button className={`w-[90%] mt-[20px] cursor-pointer h-[45px] bg-green1 text-white uppercase ${disableButton ? ' cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`}> {isLoading ? <Loading /> : t('changePassword.confirm')}</Button></div>
                         </div>
                     </form>
-                </div>
+                </DialogContent>
             </Dialog>
         }
     </div>

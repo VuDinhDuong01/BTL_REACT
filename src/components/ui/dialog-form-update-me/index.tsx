@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
-import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent } from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useEffect } from 'react'
 import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
@@ -19,6 +19,7 @@ import { UploadImageResponse, useUpdateMeMutation, useUploadImageMutation } from
 import { Loading } from '../../../assets/icons/eye';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
 import { DialogContent } from '@radix-ui/react-dialog';
+import { setProfileToLS } from '../../../helps';
 
 const MAX_CHAR = 255
 const MAX_SIZE_FILE = 300 * 1024
@@ -40,7 +41,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     const { t } = useTranslation()
     const [updateMe, { isLoading }] = useUpdateMeMutation()
     const [uploadImage] = useUploadImageMutation()
-    const updateMeRef = useRef<HTMLDivElement>(null)
+    const updateMeRef = useRef<HTMLFormElement>(null)
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
     const inputRefAvatar = useRef<HTMLInputElement>(null)
 
@@ -53,12 +54,13 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         cover_photo: null,
         avatar: null
     })
+  
 
-    const { register, handleSubmit, control, formState: { errors }, getValues } = useForm<UpdateMeSchemaType>({
+    const { register, handleSubmit, control, formState: { errors }, getValues, reset } = useForm<UpdateMeSchemaType>({
         defaultValues: {
-            username: dataMe && dataMe?.data[0].username,
-            website: dataMe && dataMe?.data[0].website,
-            bio: dataMe && dataMe?.data[0].bio,
+            username: dataMe && dataMe.data[0].username,
+            website: dataMe && dataMe.data[0].website,
+            bio: dataMe && dataMe.data[0].bio,
             location: dataMe && dataMe.data[0].location,
             name: dataMe && dataMe?.data[0].name,
             cover_photo: dataMe && dataMe.data[0].cover_photo,
@@ -81,6 +83,18 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         onClickOutSide: () => setIsShowPopup(false),
         ref: updateMeRef
     })
+    useEffect(() => {
+        reset({
+            username: dataMe && dataMe.data[0].username,
+            website: dataMe && dataMe.data[0].website,
+            bio: dataMe && dataMe.data[0].bio,
+            location: dataMe && dataMe.data[0].location,
+            name: dataMe && dataMe?.data[0].name,
+            cover_photo: dataMe && dataMe.data[0].cover_photo,
+            avatar: dataMe && dataMe.data[0].avatar
+        })
+    }, [dataMe, reset])
+
     const onSubmit = (handleSubmit(async () => {
         try {
             const { username, name, bio, website, location } = getValues();
@@ -110,13 +124,14 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                 ...(fileImage.avatar !== null && { avatar: res?.[0].image })
             }
 
-            await updateMe(bodyRequest).unwrap();
+            const getMe = await updateMe(bodyRequest).unwrap();
             ToastMessage({ status: 'success', message: t('updateMe.updateMeSuccess') })
             setIsShowPopup(false)
             setFileImage({
                 cover_photo: null,
                 avatar: null
             })
+            setProfileToLS({ user_id: getMe.data[0]._id, avatar: getMe.data[0].avatar, username: getMe.data[0].name })
         } catch (error: unknown) {
             console.log(error)
         }
@@ -174,16 +189,16 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         {
             isShowPopup && <Dialog open={isShowPopup}>
                 <DialogOverlay className='fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overflow-y-auto py-16 grid place-items-center' />
-                <DialogContent className=' w-full h-full flex fixed inset-0 items-center justify-center z-[999999]' >
-                    <form className='h-[650px] w-[600px] bg-white rounded-[20px] flex flex-col items-center relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit}>
+                <DialogContent className=' w-full h-full flex fixed inset-0 items-center justify-center z-[99]' >
+                    <form className='h-[650px] w-[600px] bg-white rounded-[20px] flex flex-col items-center relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit} ref={updateMeRef}>
                         <div className='w-full px-[10px] flex  rounded-t-[20px] items-center cursor-pointer justify-between !h-[50px] '>
                             <div className='flex items-center'>
-                                <div className='mr-[15px] w-[30px] h-[30px] rounded-[50%] bg-black3 flex items-center justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div>
+                                <div className='mr-[15px] w-[30px] h-[30px] rounded-[50%] bg-black3 flex items-center justify-center hover:opacity-[50%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div>
                                 <h2 className='text-[20px] font-fontFamily'>Edit Profile</h2>
                             </div>
                             <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{isLoading ? <Loading /> : 'Save'}</Button>
                         </div>
-                        <div className='w-full   flex-1 max-h-[650px] overflow-y-scroll overflow-hidden' ref={updateMeRef}>
+                        <div className='w-full   flex-1 max-h-[650px] overflow-y-scroll overflow-hidden' >
                             <div className='w-full  '>
                                 <div className='w-[99%] relative m-auto '>
                                     {
