@@ -82,10 +82,9 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
             (textAreaRef.current as any).style.height = (textAreaRef.current as any).scrollHeight + "px";
         }
     }, [content])
-    // className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]'
-    return <div className=' min-h-[100px] flex'>
+    return <div className=' min-h-[100px] flex w-full'>
         <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
-        <div className='flex-1 relative'>
+        <div className='flex-1 relative w-full'>
             <textarea className={className} placeholder={t('home.comment')} value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>
             <ShowGIF ref={refGif} limit={50} setGif={setFile} />
             <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute  top-[-460px] right-[50px] z-[9]' />
@@ -102,9 +101,9 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
                 }
                 <input type="file" style={{ display: 'none' }} ref={inputRef} onChange={handleFile} />
             </div>
-            <div className="absolute bottom-[5px] right-0">
+            <div className="absolute bottom-[5px] right-[10px]">
                 <Button disabled={
-                    !Boolean(content)} className={cn("w-[]    border-none outline-none ", {
+                    !Boolean(content)} className={cn("border-none outline-none ", {
                         '!text-[#3C87DA] cursor-pointer': Boolean(content),
                         'text-[#686a6f] !cursor-not-allowed': !Boolean(content)
                     })} onClick={handleCreateComment}><div><IoSend /></div></Button>

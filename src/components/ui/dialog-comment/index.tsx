@@ -12,7 +12,7 @@ import { useClickOutSide } from '../../../hooks/useClickOutSide';
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentMutation } from '../../../apis/comment';
 import { UploadImageResponse, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
-import { ListIcons, ShowPopupIcons } from '../../list-icons';
+import { ListIcons } from '../../list-icons';
 import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
 import { GetCommentResponse } from '../../post';
@@ -40,7 +40,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string, username: string }
-    const refShowPopupIcons = useRef<ShowPopupIcons>(null)
 
     const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, setListComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
@@ -175,7 +174,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                             </div>
                         </div>
 
-
                         <div className='w-full flex-1 overflow-auto pb-[20px] '>
                             <div className='px-[20px]  cursor-pointer  w-full h-full'>
                                 {
@@ -207,12 +205,11 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                             'text-[#FFE15B]   font-[600]': renderColorLike('😢', comment.like_comments)
                                                                         })} onClick={() => {
                                                                             handleLike(comment._id)
-                                                                            refShowPopupIcons.current && refShowPopupIcons.current?.handleShowPopupIcons()
                                                                         }}
                                                                         >{
                                                                                 renderTextLike(comment.like_comments)
                                                                             }</p>
-                                                                        <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} ref={refShowPopupIcons} /></div>
+                                                                      {isHovered ===  comment._id &&  <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIcon} /></div>} 
                                                                     </div>
                                                                     <p className='text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline' onClick={() => handleRepliesComment(comment._id)}>{t('home.reply')}</p>
                                                                 </div>
@@ -234,7 +231,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 {
                                                                     isShowInputRepliesComment === comment._id && (<>
                                                                         <InputPost
-                                                                            className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5] !h-[100px]'
+                                                                            className='p-[5px]  text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5] !h-[100px]'
                                                                             file={fileRepliesComment as File}
                                                                             setFile={setFileRepliesComment}
                                                                             avatar_user={users.avatar}
@@ -242,11 +239,11 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                             setContent={setRepliesContent}
                                                                             handleCreateComment={handleCreateRepliesComment}
                                                                         />
-                                                                        <div className='relative'>
+                                                                        <div className='relative '>
                                                                             {
                                                                                 fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
                                                                             }
-                                                                            <div className=' absolute right-[0px]  cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                                                            <div className=' absolute right-[0px] top-0  cursor-pointer text-black ' onClick={() => setFileRepliesComment('')}>
                                                                                 {
                                                                                     fileRepliesComment && <Icons.IoMdClose size={25} />
                                                                                 }
@@ -304,7 +301,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                             }
                                                                                         )} onClick={() => {
                                                                                             handleLike(replies_comment._id)
-                                                                                            refShowPopupIcons.current && refShowPopupIcons.current?.handleShowPopupIcons()
+                                                                                            // refShowPopupIcons.current && refShowPopupIcons.current?.handleShowPopupIcons()
                                                                                         }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
                                                                                         {
                                                                                             isHovered === replies_comment._id && <div className=''><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>

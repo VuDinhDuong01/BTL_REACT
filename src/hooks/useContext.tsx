@@ -26,7 +26,8 @@ interface ContextProp {
     listComment: GetCommentResponse,
     setListComment: Dispatch<SetStateAction<GetCommentResponse>>
     socket :null | Socket,
-    setSocket: Dispatch<SetStateAction<Socket<any , any> | null>>
+    setSocket: Dispatch<SetStateAction<Socket<any , any> | null>>,
+    setIsHovered: Dispatch<SetStateAction<string>>
 }
 
 interface AuthType {
@@ -47,7 +48,8 @@ const init = {
     handleSelectIconRepliesComment: async (icon: string) => { },
     setListComment: () => null,
     socket:null, 
-    setSocket:()=>null
+    setSocket:()=>null,
+    setIsHovered:()=>null
 
 }
 
@@ -87,6 +89,6 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
             console.log(error)
         }
     }
-    return <ContextAPI.Provider value={{ setListComment,socket, setSocket, auth, setAuth, reset, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment }}>{children}</ContextAPI.Provider>
+    return <ContextAPI.Provider value={{setIsHovered, setListComment,socket, setSocket, auth, setAuth, reset, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment }}>{children}</ContextAPI.Provider>
 }
 

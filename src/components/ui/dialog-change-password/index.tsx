@@ -77,11 +77,11 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>(({ refForm
         })
     }, [watch])
 
-    return <div>
+    return <div className="w-full relative z-[9999]">
         {
             isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword} >
                 <DialogOverlay className='fixed inset-0 z-10 bg-black/50' />
-                <DialogContent className='w-full h-full flex fixed inset-0 items-center justify-center z-50'>
+                <DialogContent className='w-full h-full flex fixed inset-0 items-center justify-center z-[999]'>
                     <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit} ref={refFormChangePassword}>
                         <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
                         <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>

@@ -195,7 +195,7 @@ export const TweetDetail = () => {
 
   return (
     <div className="w-full h-[100vh] flex overflow-hidden ">
-      <div className="!min-w-[1500px] bg-black ">
+      <div className="flex-1 bg-black ">
         <div className="w-full flex items-center ">
           <div className="w-full fixed flex items-center  top-[30px] left-[30px] text-white cursor-pointer" onClick={() => navigate(PAGE.HOME)}>
             <Icons.IoMdClose size={30} />
@@ -227,7 +227,7 @@ export const TweetDetail = () => {
           </div>
         </div >
       </div>
-      <div className="flex-1 ">
+      <div className="w-[420px]">
         {
           isLoading ? <div className="my-[50px]"><Skeleton /></div> : <div className="flex items-center ml-[20px]">
             <div className="w-[80px] h-full">
@@ -269,7 +269,7 @@ export const TweetDetail = () => {
           }
         </div>
 
-        <div className='w-full flex-1 pb-[20px]'>
+        <div className='w-full flex-1 pb-[20px] overflow-y-scroll max-h-[600px]'>
           <div className='px-[20px]  cursor-pointer  w-full h-full'>
             {
               loading ? <div className="mt-[500px]"><Skeleton /></div> : <>
@@ -328,7 +328,7 @@ export const TweetDetail = () => {
                             {
                               isShowInputRepliesComment === comment._id && (<>
                                 <InputPost
-                                  className="p-[5px] text-[17px] font-fontFamily  active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]"
+                                  className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
                                   file={fileRepliesComment as File}
                                   setFile={setFileRepliesComment}
                                   avatar_user={tweetDetail?.data[0].users.avatar as string}
@@ -400,7 +400,7 @@ export const TweetDetail = () => {
                                           handleLike(replies_comment._id)
                                         }}>{renderTextLike(replies_comment.replies_like_comments)}</p>
                                         {
-                                          isHovered === replies_comment._id && <div className='absolute top-[-50px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                          isHovered === replies_comment._id && <div className='absolute top-[-45px] right-[-191px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                         }
                                       </div>
                                     </div>
@@ -418,9 +418,9 @@ export const TweetDetail = () => {
             }
           </div>
         </div>
-        <div className="py-[10px] px-[10px] fixed bottom-0 w-full" style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+        <div className="py-[10px] px-[10px] fixed bottom-0 w-[420px] " style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
           <InputPost
-            className="p-[5px] text-[17px] font-fontFamily w-full  active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]"
+            className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
             file={file as File}
             setFile={SetFile}
             avatar_user={tweetDetail?.data[0].users.avatar as string}
@@ -429,18 +429,17 @@ export const TweetDetail = () => {
             setContent={setContent}
           />
 
-          <div className='relative'>
+          <div className='w-full flex justify-between'>
             {
               file && <img src={typeof file === 'string' ? file : URL.createObjectURL(file as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
             }
-            <div className='absolute right-[0px] top-[10px] cursor-pointer' onClick={() => SetFile('')}>
+            <div className=' cursor-pointer' onClick={() => SetFile('')}>
               {
                 file && <Icons.IoMdClose size={25} />
               }
             </div>
           </div>
         </div>
-
       </div>
     </div>
   )

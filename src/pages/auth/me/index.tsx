@@ -110,7 +110,7 @@ export const Personal = () => {
         <div className="w-full">
             {
                 isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
-                    <div className=" w-[611px] flex items-center h-[60px] sticky top-[0px] bg-white z-10">
+                    <div className=" w-[611px] flex items-center h-[60px] fixed top-[0px] bg-white z-[99]">
                         <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
                             <Icons.FaArrowLeftLong />
                         </Link>
@@ -166,7 +166,7 @@ export const Personal = () => {
                     </div>
                 </>
             }
-            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px] z-1">
+            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px]  ">
                 {actionTweet.map((action) => (
                     <div
                         className={cn('h-full w-full relative ', {

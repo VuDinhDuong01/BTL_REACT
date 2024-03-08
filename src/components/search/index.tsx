@@ -11,7 +11,6 @@ import { User } from '../../types/comment'
 import { Skeleton } from '../ui/skeleton'
 import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default'
 
-
 export const Search = () => {
     const navigate = useNavigate()
     const [countCharSearch, setCountCharSearch] = useState<number>(0)
