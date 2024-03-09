@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from 'react-router-dom'
 import { yupResolver } from "@hookform/resolvers/yup"
 import omit from 'lodash/omit'
+import { createPortal } from 'react-dom'
 
 import { Dialog, DialogOverlay } from "../dialog"
 import ControllerInput from "../../controller-form/controller-input"
@@ -79,69 +80,73 @@ export const ChangePassword = forwardRef<ChangePasswordResponse, any>(({ refForm
 
     return <div className="w-full relative z-[9999]">
         {
-            isShowPopupChangePassword && <Dialog open={isShowPopupChangePassword} >
-                <DialogOverlay className='fixed inset-0 z-10 bg-black/50' />
-                <DialogContent className='w-full h-full flex fixed inset-0 items-center justify-center z-[999]'>
-                    <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit} ref={refFormChangePassword}>
-                        <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
-                        <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>
-                        <div className='w-full'>
-                            <div className=" mt-[20px] w-[90%] h-[100px]  flex-col  flex  justify-center  m-auto  ">
-                                <ControllerInput
-                                    {...register('password', {
-                                        onChange: (e) => setCountPassword(e.target.value.length)
-                                    })
-                                    }
-                                    name="password"
-                                    type="password"
-                                    label={t('changePassword.oldPassword')}
-                                    required
-                                    control={control as unknown as Control<FieldValues>}
-                                    className=" flex flex-col justify-center  !h-[45px]"
-                                    placeholder={t('changePassword.password')}
-                                    maxLength={MAX_CHAR}
-                                />
-                                <CountChar error={t(errors?.password?.message as string)} maxChar={MAX_CHAR} countChar={countPassword} />
+            isShowPopupChangePassword && createPortal(
+                <Dialog open={isShowPopupChangePassword} >
+                    <DialogOverlay className='fixed inset-0 z-10 bg-black/50' />
+                    <DialogContent className='w-full h-full flex fixed inset-0 items-center justify-center z-[999]'>
+                        <form className='min-h-[480px] min-w-[450px] ]  bg-white rounded-[20px] flex flex-col items-center ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} onSubmit={onSubmit} ref={refFormChangePassword}>
+                            <div className="w-full mt-[10px] ml-[10px] cursor-pointer" onClick={hiddenPopup}><Icons.IoMdClose size={25} /></div>
+                            <h2 className='text-[25px] font-fontFamily'>{t('changePassword.change_password')}</h2>
+                            <div className='w-full'>
+                                <div className=" mt-[20px] w-[90%] h-[100px]  flex-col  flex  justify-center  m-auto  ">
+                                    <ControllerInput
+                                        {...register('password', {
+                                            onChange: (e) => setCountPassword(e.target.value.length)
+                                        })
+                                        }
+                                        name="password"
+                                        type="password"
+                                        label={t('changePassword.oldPassword')}
+                                        required
+                                        control={control as unknown as Control<FieldValues>}
+                                        className=" flex flex-col justify-center  !h-[45px]"
+                                        placeholder={t('changePassword.password')}
+                                        maxLength={MAX_CHAR}
+                                    />
+                                    <CountChar error={t(errors?.password?.message as string)} maxChar={MAX_CHAR} countChar={countPassword} />
+                                </div>
+                                <div className="h-[100px] w-[90%] flex-col flex justify-center  m-auto  ">
+                                    <ControllerInput
+                                        {...register('new_password', {
+                                            onChange: (e) => setCountNewPassword(e.target.value.length)
+                                        })
+                                        }
+                                        type="password"
+                                        name="new_password"
+                                        required
+                                        label={t('changePassword.newPassword')}
+                                        control={control as unknown as Control<FieldValues>}
+                                        className=" flex flex-col justify-center  !h-[45px]"
+                                        placeholder={t('changePassword.newPassword')}
+                                        maxLength={MAX_CHAR}
+                                    />
+                                    <CountChar error={t(errors?.new_password?.message as string)} maxChar={MAX_CHAR} countChar={countNewPassword} />
+                                </div>
+                                <div className="h-[100px] w-[90%]  flex-col  flex  justify-center m-auto">
+                                    <ControllerInput
+                                        {...register('confirm_password', {
+                                            onChange: (e) => setCountConfirmPassword(e.target.value.length)
+                                        })
+                                        }
+                                        type="password"
+                                        name="confirm_password"
+                                        required
+                                        label={t('changePassword.confirmPassword')}
+                                        control={control as unknown as Control<FieldValues>}
+                                        className="flex flex-col justify-center  !h-[45px]"
+                                        placeholder={t('changePassword.password')}
+                                        maxLength={MAX_CHAR}
+                                    />
+                                    <CountChar error={t(errors?.confirm_password?.message as string)} maxChar={MAX_CHAR} countChar={countConfirmPassword} />
+                                </div>
+                                <div className="w-full flex items-center justify-center "><Button className={`w-[90%] mt-[20px] cursor-pointer h-[45px] bg-green1 text-white uppercase ${disableButton ? ' cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`}> {isLoading ? <Loading /> : t('changePassword.confirm')}</Button></div>
                             </div>
-                            <div className="h-[100px] w-[90%] flex-col flex justify-center  m-auto  ">
-                                <ControllerInput
-                                    {...register('new_password', {
-                                        onChange: (e) => setCountNewPassword(e.target.value.length)
-                                    })
-                                    }
-                                    type="password"
-                                    name="new_password"
-                                    required
-                                    label={t('changePassword.newPassword')}
-                                    control={control as unknown as Control<FieldValues>}
-                                    className=" flex flex-col justify-center  !h-[45px]"
-                                    placeholder={t('changePassword.newPassword')}
-                                    maxLength={MAX_CHAR}
-                                />
-                                <CountChar error={t(errors?.new_password?.message as string)} maxChar={MAX_CHAR} countChar={countNewPassword} />
-                            </div>
-                            <div className="h-[100px] w-[90%]  flex-col  flex  justify-center m-auto">
-                                <ControllerInput
-                                    {...register('confirm_password', {
-                                        onChange: (e) => setCountConfirmPassword(e.target.value.length)
-                                    })
-                                    }
-                                    type="password"
-                                    name="confirm_password"
-                                    required
-                                    label={t('changePassword.confirmPassword')}
-                                    control={control as unknown as Control<FieldValues>}
-                                    className="flex flex-col justify-center  !h-[45px]"
-                                    placeholder={t('changePassword.password')}
-                                    maxLength={MAX_CHAR}
-                                />
-                                <CountChar error={t(errors?.confirm_password?.message as string)} maxChar={MAX_CHAR} countChar={countConfirmPassword} />
-                            </div>
-                            <div className="w-full flex items-center justify-center "><Button className={`w-[90%] mt-[20px] cursor-pointer h-[45px] bg-green1 text-white uppercase ${disableButton ? ' cursor-pointer' : '!cursor-not-allowed  opacity-[0.3]'}`}> {isLoading ? <Loading /> : t('changePassword.confirm')}</Button></div>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
+                        </form>
+                    </DialogContent>
+                </Dialog>,
+                document.body
+            )
+
         }
     </div>
 

@@ -25,7 +25,7 @@ export const Login = () => {
   const [isDisable, setIsDisable] = useState<boolean>(false)
   const navigate = useNavigate()
   const [Login, { isLoading }] = useLoginMutation()
-  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'username' | 'confirm_password' | 'forgot_password_token'>>({
+  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'name' | 'confirm_password' | 'forgot_password_token'>>({
     defaultValues: {
       email: '',
       password: '',

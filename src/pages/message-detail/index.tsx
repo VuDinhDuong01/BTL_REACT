@@ -121,7 +121,7 @@ export const MessageDetail = () => {
 
   return (
     <div className=' h-[100vh] max-w-[610px] relative  '>
-      <EmojiPickers ref={refEmojiPicker} handleShowEmojiPicker={handleShowEmojiPicker} className=' bottom-[70px] fixed  z-50 ' />
+      <EmojiPickers ref={refEmojiPicker} handleShowEmojiPicker={handleShowEmojiPicker} className=' bottom-[50px] fixed  z-50 ' />
       <ChatContainer
         style={{
           height: '100%',

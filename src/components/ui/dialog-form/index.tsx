@@ -17,10 +17,11 @@ interface FormDiaLogProp {
     title1?: string,
     title2?: string
     titleButton?: string
+    user_id: string 
 
 }
 
-export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton }, ref) => {
+export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton , user_id}, ref) => {
 
     const [openDiaLog, setOpenDiaLog] = useState<boolean>(false)
     const [disableButton, setDisableButton] = useState<boolean>(false)
@@ -43,7 +44,10 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
     const [verifyEmail, { isLoading: loadingVerifyEmail }] = useVerifyEmailMutation()
     const handleSendCode = handleSubmit(async (data) => {
         try {
-            await verifyEmail(data).unwrap()
+            await verifyEmail({
+                ...data,
+                user_id:user_id
+            }).unwrap()
             navigate(PAGE.LOGIN)
         } catch (error: any) {
             setError('code', { message: error.data.error.email_verify_token })

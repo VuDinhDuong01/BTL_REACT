@@ -110,7 +110,7 @@ export const Personal = () => {
         <div className="w-full">
             {
                 isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
-                    <div className=" w-[611px] flex items-center h-[60px] fixed top-[0px] bg-white z-[99]">
+                    <div className=" w-[611px] flex items-center h-[60px] fixed top-[0px] bg-white ">
                         <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
                             <Icons.FaArrowLeftLong />
                         </Link>

@@ -3,7 +3,7 @@ import { useForm, Control, type FieldValues } from 'react-hook-form'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next";
 import { type ChangeEvent, useState, useEffect, useRef } from 'react';
-
+import { createPortal } from 'react-dom'
 
 import { Button } from "../../../components/ui/button"
 import AuthSchema, { type AuthSchemaType } from "../../../components/schema/login"
@@ -24,11 +24,12 @@ import { PAGE } from '../../../contants';
 
 export const Register = () => {
   const handleDiaLogEl = useRef<HandleDiaLog>(null);
-
+  const registerAuthSchema = AuthSchema.omit({ forgot_password_token: true, confirm_password: true })
   const { t } = useTranslation();
   const [register, { isLoading }] = useRegisterMutation()
   const [isDisabled, setIsDisabled] = useState<boolean>(false)
-  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<AuthSchemaType>({
+  const [userId, setUserId]= useState<string>('')
+  const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'forgot_password_token' | 'confirm_password'>>({
     defaultValues: {
       email: '',
       password: '',
@@ -36,12 +37,13 @@ export const Register = () => {
     },
     mode: 'onSubmit',
     reValidateMode: 'onSubmit',
-    resolver: zodResolver(AuthSchema),
+    resolver: zodResolver(registerAuthSchema),
   })
 
   const onSubmit = handleSubmit(async (data) => {
     try {
       const res = await register(data).unwrap()
+      setUserId(res.data._id as string )
       setAccessTokenToLS(res.data.access_token)
       setRefreshTokenToLS(res.data.refresh_token)
       handleDiaLogEl.current?.openDiaLog()
@@ -53,7 +55,7 @@ export const Register = () => {
     }
   })
 
-  const handleChangleLanguage = (lng: string) => {
+  const handleChangeLanguage = (lng: string) => {
     setLanguageToLS(lng)
     i18n.changeLanguage(lng);
   }
@@ -77,11 +79,11 @@ export const Register = () => {
       style={{
         backgroundImage: `url(${Images.background})`,
       }}>
-
-      <FormDiaLog ref={handleDiaLogEl} placeholder={t('register.enterCode')} titleButton={t("register.verify")} title1={t('register.verifyCode1')} title2={t('register.verifyCode2')} />
-
+      {
+        createPortal(<FormDiaLog ref={handleDiaLogEl} placeholder={t('register.enterCode')} titleButton={t("register.verify")} title1={t('register.verifyCode1')} title2={t('register.verifyCode2')} user_id={userId} />, document.body)
+      }
       <div className=" absolute top-[20px] right-[30px]">
-        <Select onValueChange={handleChangleLanguage}>
+        <Select onValueChange={handleChangeLanguage}>
           <SelectTrigger className="!w-[180px] cursor-pointer">
             <SelectValue placeholder={localStorage.getItem(keyLocalStorage.lng) === LANGUAGE.VI ? OPTION_LANGUAGE.VI : OPTION_LANGUAGE.EN}
             />

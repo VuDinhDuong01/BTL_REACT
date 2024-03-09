@@ -43,7 +43,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data,
       }),
     }),
-    verifyEmail: build.mutation<{ message: string }, { code: string }>({
+    verifyEmail: build.mutation<{ message: string }, { code: string, user_id: string  }>({
       query: (data) => ({
         url: VERIFY_EMAIL,
         method: METHOD_API.POST,
