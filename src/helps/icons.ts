@@ -25,6 +25,7 @@ import { LuUserCheck } from "react-icons/lu";
 import { FaHeart } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import {AiFillLike} from 'react-icons/ai'
+import { PiArrowBendUpRightThin } from "react-icons/pi";
 export const  Icons={
     FaArrowLeftLong,
     FiMapPin,
@@ -51,5 +52,6 @@ export const  Icons={
     LuUserCheck,
     FaHeart,
     FaBookmark,
-    AiFillLike
+    AiFillLike,
+    PiArrowBendUpRightThin
 }
