@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { ChatContainer, MessageList, MessageInput, ConversationHeader, Avatar, TypingIndicator, Message } from '@chatscope/chat-ui-kit-react';
@@ -15,7 +16,7 @@ import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 import { Skeleton } from '../../components/ui/skeleton';
 import { ContextAPI } from '../../hooks';
 
-interface Message {
+interface MessageType {
   sender_id: string,
   content: string
 }
@@ -38,9 +39,13 @@ export const MessageDetail = () => {
     user_id: string
   }
 
-  const [listMessages, setListMessage] = useState<Message[]>([])
+  const [listMessages, setListMessage] = useState<MessageType[]>([])
+  // const [lastMessage,setLastMessage]= useState<MessageType>({
+  //   sender_id: '',
+  //   content:''
+  // })
 
-  const [message, setMessage] = useState<Message>({
+  const [message, setMessage] = useState<MessageType>({
     sender_id: '',
     content: ''
   })
@@ -71,7 +76,13 @@ export const MessageDetail = () => {
     }
   }, [getConversations, receiver_id])
 
+  // useEffect(()=>{
+  //   if(listMessages?.length > 0 ){
+  //     setLastMessage(listMessages[listMessages?.length -1])
+  //   }
+  // },[listMessages])
 
+// console.log(lastMessage)
   const handleSendMessage = (textContent: string) => {
     if (socket) {
       socket.emit('message_private', {
@@ -81,7 +92,7 @@ export const MessageDetail = () => {
       })
     }
 
-    setListMessage((prev: Message[]) => ([...prev, {
+    setListMessage((prev: MessageType[]) => ([...prev, {
       sender_id: profile.user_id,
       content: message.content
     }]))

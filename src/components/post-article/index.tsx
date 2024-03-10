@@ -87,6 +87,7 @@ export const PostArticle = () => {
     const [uploadImages] = useUploadImageMutation()
     const [uploadVideo] = useUploadVideoMutation()
     const [createTweet, { isLoading }] = useCreateTweetMutation()
+    const [isDisable, setIsDisable] = useState<boolean>(false)
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -243,6 +244,11 @@ export const PostArticle = () => {
             console.log(error)
         }
     }))
+
+    useEffect(() => {
+        gif.length > 0 || text !== '' || files.length > 0 ? setIsDisable(true) : setIsDisable(false)
+
+    }, [gif, text, files])
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
 
@@ -359,10 +365,9 @@ export const PostArticle = () => {
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
                         <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' fixed top-[225px]' />
                     </div>
-                    <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} cursor-pointer !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`}>{isLoading ? <Loading /> : t('sidebarLeft.post')}</Button>
+                    <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} ${!isDisable ? '!cursor-not-allowed opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`} disabled={!isDisable}>{isLoading ? <Loading /> : t('sidebarLeft.post')}</Button>
                 </div>
             </div>
-
         </form>
     )
 }
