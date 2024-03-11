@@ -16,7 +16,6 @@ import { getProfileToLS } from "../../helps"
 import { useGetCommentMutation } from "../../apis/comment"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
-// import { VideoPlayer } from "../video"
 import { ContextAPI } from "../../hooks"
 
 interface Props {
@@ -24,14 +23,16 @@ interface Props {
 }
 export type GetCommentResponse = GenerateType<Comment[]>
 export interface NotificationType {
-    tweet_id: string, to: string
+    tweet_id?: string,
+    to: string
     username: string
-    avatar: string 
-    status: string 
+    avatar: string
+    status: string,
+    from?: string
 }
 export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
-    const { user_id, username , avatar} = getProfileToLS() as { user_id: string, username: string , avatar: string }
+    const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
     const [likeTweet] = useLikeMutation()
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
@@ -88,8 +89,8 @@ export const Post = ({ tweet }: Props) => {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
                         username: username,
-                        avatar:avatar,
-                        status:'like'
+                        avatar: avatar,
+                        status: 'like'
                     })
                 }
 
@@ -100,6 +101,15 @@ export const Post = ({ tweet }: Props) => {
                 }
             }],
             ['Bookmark', async () => {
+                if (socket) {
+                    socket.emit("send_notification_bookmark", {
+                        tweet_id: tweet._id,
+                        to: tweet.user_id,
+                        username: username,
+                        avatar: avatar,
+                        status: 'bookmark'
+                    })
+                }
                 if (checkBookmark(tweet.bookmarks as Like[])) {
                     await unBookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 } else {
@@ -146,7 +156,7 @@ export const Post = ({ tweet }: Props) => {
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
-            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} loading={isLoading} />
+            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} id_user={tweet.user_id} users={tweet?.users} loading={isLoading} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>

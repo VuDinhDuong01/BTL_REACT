@@ -26,9 +26,10 @@ interface PropsDialogComment {
     loading: boolean
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
+    id_user: string
 }
 
-export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, loading }, ref) => {
+export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, loading, id_user }, ref) => {
     const [getComment] = useGetCommentMutation()
     const refPopComment = useRef<HTMLDivElement>(null)
     const [createComment] = useCreateCommentMutation()
@@ -40,9 +41,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [openReplyComment, setOpenReplyComment] = useState<boolean>(false)
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
-    const { user_id } = getProfileToLS() as { user_id: string, username: string }
-
-    const { handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, setListComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
+    const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
+    const { socket, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, setListComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
     const showPopup = () => {
         setIsShowPopup(true)
@@ -77,6 +77,13 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     }
     const handleCreateComment = async () => {
         try {
+            socket?.emit('send_notification_comment', {
+                tweet_id: tweet_id,
+                to: id_user,
+                username: username,
+                avatar: avatar,
+                status: 'comment'
+            })
             let uploadImage: UploadImageResponse[] = [];
             if (file !== '') {
                 const formData = new FormData()
