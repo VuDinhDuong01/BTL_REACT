@@ -1,6 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 import { NavLink, useNavigate } from "react-router-dom"
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
@@ -15,11 +15,14 @@ import { getProfileToLS, getRefreshTokenToLS, removeLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
 import { useClickOutSide } from "../../hooks/useClickOutSide";
+import { ContextAPI } from "../../hooks";
+
 
 export const SidebarLeft = () => {
   const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
   const refFormChangePassword = useRef<HTMLFormElement>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
+
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
   const navigate = useNavigate()
   const profile = getProfileToLS() as { user_id: string }
@@ -28,6 +31,7 @@ export const SidebarLeft = () => {
   const { data: getMe } = useGetMeQuery({
     user_id: profile?.user_id
   })
+  const { listNotification } = useContext(ContextAPI)
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -85,11 +89,18 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">{t('sidebarLeft.bookmark')}</p>
         </NavLink>
-        <NavLink to={PAGE.NOTIFICATIONS} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
-          <div className="ml-[10px]">
-            <BellIcon className="text-black" />
-          </div>
-          <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">{t('sidebarLeft.notifications')}</p>
+        <NavLink to={PAGE.NOTIFICATIONS} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%]  hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+          <>
+            <div className="ml-[10px] relative">
+              <BellIcon className="text-black" />
+              {
+                listNotification.length > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
+              ">{listNotification.length}</div>
+              }
+            </div>
+            <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">{t('sidebarLeft.notifications')}</p>
+          </>
+
         </NavLink>
         <NavLink to={PAGE.COMMUNITIES} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">

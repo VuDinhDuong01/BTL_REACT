@@ -18,20 +18,26 @@ import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
 // import { VideoPlayer } from "../video"
 import { ContextAPI } from "../../hooks"
+
 interface Props {
     tweet: Tweet,
 }
 export type GetCommentResponse = GenerateType<Comment[]>
-
+export interface NotificationType {
+    tweet_id: string, to: string
+    username: string
+    avatar: string 
+    status: string 
+}
 export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
-    const { user_id } = getProfileToLS() as { user_id: string, username: string }
+    const { user_id, username , avatar} = getProfileToLS() as { user_id: string, username: string , avatar: string }
     const [likeTweet] = useLikeMutation()
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
     const [getComment, { isLoading }] = useGetCommentMutation()
-    const { setListComment } = useContext(ContextAPI)
+    const { setListComment, socket } = useContext(ContextAPI)
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
@@ -70,22 +76,34 @@ export const Post = ({ tweet }: Props) => {
     const checkLike = (Likes: Like[]) => {
         return Likes?.some(item => item.user_id === user_id)
     }
+
+
     const navigate = useNavigate()
     const handleIcons = async (title: string) => {
 
         const map = new Map([
             ['Like', async () => {
+                if (socket) {
+                    socket.emit("send_notification_like", {
+                        tweet_id: tweet._id,
+                        to: tweet.user_id,
+                        username: username,
+                        avatar:avatar,
+                        status:'like'
+                    })
+                }
+
                 if (checkLike(tweet.likes as Like[])) {
-                    await unLikeTweet({ tweet_id: tweet._id })
+                    await unLikeTweet({ tweet_id: tweet._id }).unwrap()
                 } else {
-                    await likeTweet({ tweet_id: tweet._id })
+                    await likeTweet({ tweet_id: tweet._id }).unwrap()
                 }
             }],
             ['Bookmark', async () => {
                 if (checkBookmark(tweet.bookmarks as Like[])) {
-                    await unBookmarkTweet({ tweet_id: tweet._id, user_id })
+                    await unBookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 } else {
-                    await bookmarkTweet({ tweet_id: tweet._id, user_id })
+                    await bookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 }
             }],
             [
@@ -115,7 +133,6 @@ export const Post = ({ tweet }: Props) => {
                 limit: 50,
                 page: 1
             }).unwrap()
-            // setListComment(response)
             navigate(`/tweet/${tweet_id}`, {
                 state: {
                     data: response,
@@ -129,7 +146,7 @@ export const Post = ({ tweet }: Props) => {
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
-            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} loading={isLoading}   />
+            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} users={tweet?.users} loading={isLoading} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
@@ -157,7 +174,12 @@ export const Post = ({ tweet }: Props) => {
                 <div className="w-full py-[10px]  flex justify-between items-center">
                     {
                         listIcons.map(item => {
-                            return <div key={item.id} onClick={() => handleIcons(item.title)} className={cn("flex items-center", {
+                            return <div key={item.id} onClick={() => {
+                                handleIcons(item.title)
+
+                            }
+
+                            } className={cn("flex items-center", {
                                 "hover:text-green2 ": item.title === 'Bookmark',
                                 "text-green2 ": checkBookmark(tweet.bookmarks as Like[]) && item.title === 'Bookmark',
                                 "hover:text-[#1D9BF0] ": item.title === 'Reply',

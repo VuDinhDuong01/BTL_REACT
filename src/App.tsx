@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import './App.css'
 import { useEffect, useContext } from 'react'
 import { route } from './hooks/useRoutes'
@@ -11,6 +10,7 @@ import { io } from 'socket.io-client'
 
 function App() {
   const { reset, setSocket } = useContext(ContextAPI)
+  const accessToken = getAccessTokenToLS()
   useEffect(() => {
     localStorage.getItem(keyLocalStorage.lng) === null && localStorage.setItem(keyLocalStorage.lng, LANGUAGE.VI)
   }, [])
@@ -18,7 +18,6 @@ function App() {
     LocalStorageEventTarget.addEventListener('clearLS', reset)
     return () => LocalStorageEventTarget.removeEventListener('clearLS', reset)
   }, [reset])
-  const accessToken = getAccessTokenToLS()
   useEffect(() => {
     if (accessToken && checkToken(accessToken as string)) {
       setSocket(io("http://localhost:3000", {
@@ -27,8 +26,7 @@ function App() {
         }
       }))
     }
-  },[accessToken])
-
+  }, [accessToken])
   return (
     <div>
       {route()}

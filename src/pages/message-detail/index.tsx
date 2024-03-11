@@ -7,7 +7,7 @@ import {t} from 'i18next'
 
 import { EmojiPickers, ShowEmoji } from '../../components/common/emoji-picker';
 import { EmojiClickData } from 'emoji-picker-react';
-import { getProfileToLS } from '../../helps';
+import {  getProfileToLS } from '../../helps';
 import { useParams } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetConversationsQuery } from '../../apis/conversation';
@@ -22,12 +22,14 @@ interface MessageType {
 }
 
 export const MessageDetail = () => {
-  const {socket }= useContext(ContextAPI)
+   const {socket }= useContext(ContextAPI)
+
+
   const { receiver_id } = useParams()
   const [focus, setFocus] = useState<string>('no_enter')
   const { data: getConversations, isLoading } = useGetConversationsQuery(receiver_id ? {
     receiver_id: receiver_id as string,
-    limit: 100,
+    limit: 500,
     page: 1
   } : skipToken)
 
@@ -51,8 +53,9 @@ export const MessageDetail = () => {
   })
 
   useEffect(() => {
+  
     socket?.on('send_message', (data) => {
-      console.log(data)
+      
       setListMessage(prev => ([...prev, {
         sender_id: data.from,
         content: data.content

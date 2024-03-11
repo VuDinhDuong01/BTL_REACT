@@ -7,7 +7,7 @@ import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
-import { ProviderContext, queryList } from "../../hooks"
+import {  queryList } from "../../hooks"
 import { Button } from "../../components/ui/button"
 import { Skeleton } from "../../components/ui/skeleton"
 import { getProfileToLS } from "../../helps"
@@ -52,8 +52,6 @@ export const Home = () => {
     });
   }
 
-
-
   const handleNextPage = () => {
     setLimit(prev => {
       const nextLimit = prev + 3
@@ -97,11 +95,9 @@ export const Home = () => {
           <>
             {
               (getListTweet as GenerateType<Tweet[]>)?.data?.length > 0 ? <>
-                <ProviderContext>
                   {
                     getListTweet?.data?.map((tweet, index) => {
                       return <div key={index}>
-
                         <Post
                           tweet={tweet}
                         />
@@ -109,7 +105,6 @@ export const Home = () => {
                       </div>
                     })
                   }
-                </ProviderContext>
                 {
                   getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
                     <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{t('home.loading')}...</Button>

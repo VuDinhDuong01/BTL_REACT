@@ -17,7 +17,7 @@ import Bookmark from "../pages/bookmark";
 import { Message } from "../pages/message";
 import { MessageDetail } from "../pages/message-detail";
 import { TweetDetail } from "../pages/tweet-detail";
-import { Notifications } from "../pages/notifications";
+import Notifications from "../pages/notifications"; 
 import { Communities } from "../pages/communities";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
