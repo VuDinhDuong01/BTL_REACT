@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { baseCreateApi } from "."
 import { GenerateType } from "../types/generate"
-import { URL_API } from "../contants"
+import { URL_API } from "../constants"
 import { METHOD_API } from "../helps"
 
 
@@ -28,7 +28,7 @@ export const conversationsAPI = baseCreateApi.injectEndpoints({
 })
 
 export const {
-    
+
     useGetConversationsQuery,
 }
     = conversationsAPI

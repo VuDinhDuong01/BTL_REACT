@@ -2,13 +2,13 @@
 
 import { AuthRequestProp, AuthResponseType } from '../types/login'
 import { GetLogoutResponse, GetUserResponse, UpdateMe, changePasswordProps } from '../types/user'
-import { URL_API } from '../contants/url-api'
+import { URL_API } from '../constants/url-api'
 import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 import { GenerateType } from '../types/generate'
 import { Tweet } from '../types/tweet'
 
-const { REGISTER,GET_SEARCH_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER, GET_SEARCH_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -43,7 +43,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data,
       }),
     }),
-    verifyEmail: build.mutation<{ message: string }, { code: string, user_id: string  }>({
+    verifyEmail: build.mutation<{ message: string }, { code: string, user_id: string }>({
       query: (data) => ({
         url: VERIFY_EMAIL,
         method: METHOD_API.POST,
@@ -131,9 +131,9 @@ export const authAPI = baseCreateApi.injectEndpoints({
         params: { limit, page, title }
 
       }),
-      providesTags: ['getMe', 'login','getListTweet']
+      providesTags: ['getMe', 'login', 'getListTweet']
     }),
-    getSearchUser: build.query<GetUserResponse, { user_search: string  }>({
+    getSearchUser: build.query<GetUserResponse, { user_search: string }>({
       query: (params) => ({
         url: GET_SEARCH_USER,
         method: METHOD_API.GET,
@@ -143,7 +143,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
       // providesTags: ['getMe', 'login','getListTweet']
     }),
   }),
-  
+
 })
 
 export const { useLoginMutation,

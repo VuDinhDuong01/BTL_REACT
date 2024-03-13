@@ -2,7 +2,7 @@
 import { baseCreateApi } from "."
 
 
-import { URL_API } from "../contants"
+import { URL_API } from "../constants"
 import { METHOD_API } from "../helps"
 import { GenerateType } from "../types/generate"
 import { Tweet } from "../types/tweet"
@@ -25,7 +25,7 @@ export const bookmarkAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data,
             }),
-            invalidatesTags: ['getListBookmark','getListTweet']
+            invalidatesTags: ['getListBookmark', 'getListTweet']
         }),
 
         unBookmark: build.mutation<GenerateType<{}>, BookmarkProps>({
@@ -34,7 +34,7 @@ export const bookmarkAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.DELETE,
                 data
             }),
-            invalidatesTags: ['getListBookmark','getListTweet']
+            invalidatesTags: ['getListBookmark', 'getListTweet']
         }),
 
     })

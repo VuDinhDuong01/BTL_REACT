@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { baseCreateApi } from "."
 
-import { URL_API } from "../contants"
+import { URL_API } from "../constants"
 import { METHOD_API } from "../helps"
 import { GenerateType } from "../types/generate"
 
@@ -31,7 +31,7 @@ export const bookmarkAPI = baseCreateApi.injectEndpoints({
                 url: GET_FOLLOW,
                 method: METHOD_API.GET,
             }),
-            providesTags:['getFollow']
+            providesTags: ['getFollow']
         }),
         follow: build.mutation<GenerateType<{}>, { follower_id: string, following_id: string }>({
             query: (data) => ({
@@ -39,7 +39,7 @@ export const bookmarkAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data,
             }),
-            invalidatesTags:['getFollow']
+            invalidatesTags: ['getFollow']
         }),
 
         // unFollow: build.mutation<GenerateType<{}>, { follower_id: string, following_id: string }>({

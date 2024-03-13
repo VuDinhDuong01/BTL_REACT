@@ -11,7 +11,7 @@ import ControllerInput from "../../../components/controller-form/controller-inpu
 import { useResetPasswordMutation } from '../../../apis';
 import { ErrorHandle } from '../../../types/login';
 import { Loading } from '../../../assets/icons/eye';
-import { PAGE } from '../../../contants';
+import { PAGE } from '../../../constants';
 import { Label } from '../../../components/ui/lable';
 
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { baseCreateApi } from "."
 import { GenerateType } from "../types/generate"
-import { URL_API } from "../contants"
+import { URL_API } from "../constants"
 import { METHOD_API } from "../helps"
 import { Comment } from "../types/comment"
 
@@ -15,7 +15,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data
             }),
-            invalidatesTags: ['getListTweet', 'getComment','getListBookmark']
+            invalidatesTags: ['getListTweet', 'getComment', 'getListBookmark']
         }),
         likeComment: build.mutation<GenerateType<{ data: {} }>, { comment_id: string, user_id: string, icon?: string }>({
             query: (data) => ({
@@ -31,7 +31,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data
             }),
-            invalidatesTags: ['getComment', 'getListTweet','getListBookmark']
+            invalidatesTags: ['getComment', 'getListTweet', 'getListBookmark']
         }),
         createRepliesComment: build.mutation<GenerateType<{ data: {} }>, { replies_comment_id: string, user_id: string, replies_content_comment: string, replies_image_comment?: string }>({
             query: (data) => ({

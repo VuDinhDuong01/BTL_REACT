@@ -76,7 +76,9 @@
         "notPost":"There are no posts",
         "comments":"Comments",
         "youAreUseSocialApplication":"You are a social application user",
-        "notComment":"There are not comments!"
+        "notComment":"There are not comments!",
+        "notNotification":"There are not notifications!",
+        "notifications":"Notifications"
 
     },
     "sideBarRight":{

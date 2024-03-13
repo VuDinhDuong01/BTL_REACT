@@ -84,35 +84,31 @@ export const Post = ({ tweet }: Props) => {
 
         const map = new Map([
             ['Like', async () => {
-                if (socket) {
-                    socket.emit("send_notification_like", {
+                if (checkLike(tweet.likes as Like[])) {
+                    await unLikeTweet({ tweet_id: tweet._id }).unwrap()
+                } else {
+                    tweet.user_id !== user_id && socket?.emit("send_notification_like", {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
                         username: username,
                         avatar: avatar,
                         status: 'like'
                     })
-                }
 
-                if (checkLike(tweet.likes as Like[])) {
-                    await unLikeTweet({ tweet_id: tweet._id }).unwrap()
-                } else {
                     await likeTweet({ tweet_id: tweet._id }).unwrap()
                 }
             }],
             ['Bookmark', async () => {
-                if (socket) {
-                    socket.emit("send_notification_bookmark", {
+                if (checkBookmark(tweet.bookmarks as Like[])) {
+                    await unBookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
+                } else {
+                    tweet.user_id !== user_id && socket?.emit("send_notification_bookmark", {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
                         username: username,
                         avatar: avatar,
                         status: 'bookmark'
                     })
-                }
-                if (checkBookmark(tweet.bookmarks as Like[])) {
-                    await unBookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
-                } else {
                     await bookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 }
             }],

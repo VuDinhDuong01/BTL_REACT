@@ -16,7 +16,7 @@ import changePasswordSchema, { ChangePasswordSchemaType } from "../../schema/cha
 import { Loading } from "../../../assets/icons/eye";
 import { useChangePasswordMutation } from "../../../apis";
 import { ErrorHandle } from "../../../types/login";
-import { PAGE } from "../../../contants";
+import { PAGE } from "../../../constants";
 import { removeLS } from "../../../helps";
 import { ToastMessage } from "../../../helps/toast-message";
 import { DialogContent } from "@radix-ui/react-dialog";

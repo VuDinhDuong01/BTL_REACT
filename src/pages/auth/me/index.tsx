@@ -7,7 +7,7 @@ import omit from 'lodash/omit'
 import { Button } from "../../../components/ui/button"
 import { Icons } from "../../../helps/icons"
 import { Link, useParams } from "react-router-dom"
-import { PAGE } from "../../../contants"
+import { PAGE } from "../../../constants"
 import { PopupUpdateMe, ShowPopupHandle } from "../../../components/ui/dialog-form-update-me"
 import { useGetMeQuery, useGetTweetUserQuery } from "../../../apis"
 import { DEFAULT_IMAGE_AVATAR } from "../../../helps/image-user-default"

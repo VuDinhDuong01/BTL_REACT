@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom"
 import { t } from "i18next";
 
 import { useFollowMutation, useGetFollowQuery, useGetUserQuery } from "../../apis/follow"
-// import { Search } from "../search"
 import { Button } from "../ui/button"
 import { getProfileToLS } from "../../helps"
 import { Skeleton } from "../ui/skeleton"
@@ -17,9 +16,8 @@ export const SidebarRight = () => {
   const { data: getUser, isLoading } = useGetUserQuery()
   const { data: getFollow } = useGetFollowQuery()
   const [follow] = useFollowMutation()
-  const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
   const { socket } = useContext(ContextAPI)
-  const profile = getProfileToLS() as { user_id?: string }
+  const profile = getProfileToLS() as { user_id?: string, username?: string, avatar?: string }
   const getListUser = useMemo(() => {
     return getUser?.data.filter(user => user._id !== profile?.user_id)
   }, [getUser?.data, profile?.user_id])
@@ -38,16 +36,15 @@ export const SidebarRight = () => {
     try {
       socket?.emit("follow_user", {
         to: following_id,
-        from: user_id,
+        from: profile?.user_id,
         status: 'follow',
-        username: username,
-        avatar: avatar,
+        username: profile?.username,
+        avatar: profile?.avatar,
       })
       await follow({
         following_id,
         follower_id: profile.user_id as string
       }).unwrap()
-
     } catch (error: unknown) {
       console.log(error)
     }

@@ -2,7 +2,7 @@
 import { ROLE } from "./roles"
 import { Outlet, Navigate } from "react-router-dom"
 import { Missing } from "../pages/missing/Missing"
-import { PAGE } from "../contants"
+import { PAGE } from "../constants"
 import { getAccessTokenToLS } from "."
 
 export const RequestRole = ({ allowRoles }: { allowRoles: string[] }) => {

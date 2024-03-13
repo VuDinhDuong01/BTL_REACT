@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Routes, Route } from "react-router-dom";
 
-import { PAGE } from '../contants/path'
+import { PAGE } from '../constants/path'
 import { Register } from '../pages/auth/register'
 
 import { Login } from '../pages/auth/login'
@@ -17,7 +17,7 @@ import Bookmark from "../pages/bookmark";
 import { Message } from "../pages/message";
 import { MessageDetail } from "../pages/message-detail";
 import { TweetDetail } from "../pages/tweet-detail";
-import Notifications from "../pages/notifications"; 
+import Notifications from "../pages/notifications";
 import { Communities } from "../pages/communities";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
@@ -50,7 +50,7 @@ export const route = () => {
                     <Route path={PAGE.NOTIFICATIONS} element={<Notifications />} />
                     <Route path={PAGE.COMMUNITIES} element={<Communities />} />
                 </Route>
-                
+
             </Route>
             <Route path={PAGE.TWEET_DETAIL} element={<TweetDetail />} />
         </Routes>

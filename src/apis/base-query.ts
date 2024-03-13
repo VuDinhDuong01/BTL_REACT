@@ -2,7 +2,7 @@
 import axios, { AxiosError } from 'axios';
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../helps';
-import { URL_API } from '../contants';
+import { URL_API } from '../constants';
 import { ToastMessage } from '../helps/toast-message';
 import { checkToken } from '../helps/check-token';
 
@@ -38,7 +38,7 @@ instance.interceptors.request.use(function (config) {
     const access_token = getAccessTokenToLS();
     if (access_token) {
         config.headers.Authorization = `Bearer ${access_token}`
-        
+
     }
     return config;
 }, function (error) {
@@ -51,7 +51,7 @@ instance.interceptors.response.use(function (response) {
         refreshToken = response.data.data.refresh_token
         setAccessTokenToLS(accessToken)
         setRefreshTokenToLS(refreshToken)
-        setProfileToLS({ username: response?.data.data.user.username, user_id: response?.data.data.user._id as string , avatar: response?.data.data.user.avatar})
+        setProfileToLS({ username: response?.data.data.user.username, user_id: response?.data.data.user._id as string, avatar: response?.data.data.user.avatar })
     } else if (response.config.url === URL_API.LOGOUT_OUT) {
         accessToken = ''
         refreshToken = ''

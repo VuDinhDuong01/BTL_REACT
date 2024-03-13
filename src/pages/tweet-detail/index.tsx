@@ -7,7 +7,7 @@ import { t } from 'i18next'
 
 import { Icons } from "../../helps/icons"
 import { Images } from "../../assets/images"
-import { PAGE } from "../../contants"
+import { PAGE } from "../../constants"
 import { useGetTweetDetailQuery } from "../../apis/tweet";
 import { Skeleton, Skeleton2 } from "../../components/ui/skeleton";
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default";

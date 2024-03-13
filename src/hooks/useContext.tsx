@@ -7,8 +7,6 @@ import { GetCommentResponse, NotificationType } from '../components/post'
 import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from '../apis/comment'
 import { Socket } from 'socket.io-client'
 
-
-
 const initComment = {
     message: '',
     data: []
@@ -93,7 +91,6 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
                 }
                 return prev;
             });
-
         })
     }, [socket])
 
@@ -125,7 +122,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
         socket?.on('notification_comment', (data: NotificationType) => {
             setListNotification(prev => ([...prev, data]));
         })
-    },[socket])
+    }, [socket])
 
     const reset = () => {
         setAuth(null)

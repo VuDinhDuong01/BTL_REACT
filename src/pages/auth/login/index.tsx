@@ -12,7 +12,7 @@ import { useLoginMutation } from '../../../apis';
 import { ContextAPI } from '../../../hooks';
 import { ErrorHandle } from '../../../types/login';
 import { Loading } from '../../../assets/icons/eye';
-import { PAGE } from '../../../contants';
+import { PAGE } from '../../../constants';
 
 
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 import { NavLink, useNavigate } from "react-router-dom"
-import { useState, useRef, useContext } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
@@ -9,14 +9,15 @@ import { BookMarkIcon, CommunicationIcon, HomeIcon, Logo, MessageIcon, MoreIcon 
 import { BellIcon, UserIcon } from "lucide-react"
 import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
-import { PAGE } from "../../contants"
+import { PAGE } from "../../constants"
 import { useGetMeQuery, useLogoutMutation } from "../../apis";
 import { getProfileToLS, getRefreshTokenToLS, removeLS } from "../../helps";
 import { ToastMessage } from "../../helps/toast-message";
 import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-password";
 import { useClickOutSide } from "../../hooks/useClickOutSide";
 import { ContextAPI } from "../../hooks";
-
+import { skipToken } from "@reduxjs/toolkit/query";
+import { NotificationType } from "../post";
 
 export const SidebarLeft = () => {
   const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
@@ -28,11 +29,12 @@ export const SidebarLeft = () => {
   const profile = getProfileToLS() as { user_id: string }
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
-  const { data: getMe } = useGetMeQuery({
+  const { data: getMe } = useGetMeQuery(profile?.user_id ? {
     user_id: profile?.user_id
-  })
+  } : skipToken)
   const { listNotification } = useContext(ContextAPI)
   const { t } = useTranslation()
+  const [copyListNotification, setCopyListNotification] = useState<NotificationType[]>([])
   const handleLogout = async () => {
     try {
       await logout({ refresh_token }).unwrap()
@@ -50,12 +52,21 @@ export const SidebarLeft = () => {
       showChangePasswordRef.current.showPopupChangePassword()
     }
   }
+  useEffect(() => {
+    if (listNotification?.length > 0) {
+      setCopyListNotification(listNotification)
+    }
+  }, [listNotification])
 
   useClickOutSide({
     onClickOutSide: () => {
       showChangePasswordRef.current && showChangePasswordRef.current.hiddenPopupChangePassword()
     }, ref: refFormChangePassword
   })
+
+  const handleEmptyListNotification = () => {
+    setCopyListNotification([])
+  }
 
   return (
     <div className="w-full  min-h-[100vh] z-[9990]" >
@@ -89,13 +100,13 @@ export const SidebarLeft = () => {
           </div>
           <p className="text-[20px] font-fontFamily ml-[30px] !text-black">{t('sidebarLeft.bookmark')}</p>
         </NavLink>
-        <NavLink to={PAGE.NOTIFICATIONS} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%]  hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+        <NavLink to={`/notifications/${profile?.user_id}`} onClick={handleEmptyListNotification} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%]  hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <>
             <div className="ml-[10px] relative">
               <BellIcon className="text-black" />
               {
-                listNotification.length > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
-              ">{listNotification.length}</div>
+                copyListNotification.length > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
+              ">{copyListNotification.length}</div>
               }
             </div>
             <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">{t('sidebarLeft.notifications')}</p>

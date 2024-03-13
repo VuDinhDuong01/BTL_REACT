@@ -20,7 +20,7 @@ import { Loading } from '../../../assets/icons/eye';
 import { FormDiaLog } from '../../../components/ui/dialog-form';
 import { ErrorHandle, HandleDiaLog } from '../../../types/login';
 import { Link } from 'react-router-dom';
-import { PAGE } from '../../../contants';
+import { PAGE } from '../../../constants';
 
 export const Register = () => {
   const handleDiaLogEl = useRef<HandleDiaLog>(null);
@@ -28,7 +28,7 @@ export const Register = () => {
   const { t } = useTranslation();
   const [register, { isLoading }] = useRegisterMutation()
   const [isDisabled, setIsDisabled] = useState<boolean>(false)
-  const [userId, setUserId]= useState<string>('')
+  const [userId, setUserId] = useState<string>('')
   const { handleSubmit, formState: { errors }, control, watch, setError } = useForm<Omit<AuthSchemaType, 'forgot_password_token' | 'confirm_password'>>({
     defaultValues: {
       email: '',
@@ -43,7 +43,7 @@ export const Register = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
       const res = await register(data).unwrap()
-      setUserId(res.data._id as string )
+      setUserId(res.data._id as string)
       setAccessTokenToLS(res.data.access_token)
       setRefreshTokenToLS(res.data.refresh_token)
       handleDiaLogEl.current?.openDiaLog()

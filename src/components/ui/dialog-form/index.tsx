@@ -10,18 +10,18 @@ import { HandleDiaLog } from '../../../types/login'
 import { regex } from '../../../helps'
 import { useVerifyEmailMutation } from '../../../apis'
 import { Loading } from '../../../assets/icons/eye'
-import { PAGE } from '../../../contants'
+import { PAGE } from '../../../constants'
 import { Delete } from 'lucide-react'
 interface FormDiaLogProp {
     placeholder?: string,
     title1?: string,
     title2?: string
     titleButton?: string
-    user_id: string 
+    user_id: string
 
 }
 
-export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton , user_id}, ref) => {
+export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton, user_id }, ref) => {
 
     const [openDiaLog, setOpenDiaLog] = useState<boolean>(false)
     const [disableButton, setDisableButton] = useState<boolean>(false)
@@ -46,7 +46,7 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
         try {
             await verifyEmail({
                 ...data,
-                user_id:user_id
+                user_id: user_id
             }).unwrap()
             navigate(PAGE.LOGIN)
         } catch (error: any) {
