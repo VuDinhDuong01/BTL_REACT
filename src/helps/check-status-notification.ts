@@ -1,5 +1,4 @@
 
-
 export const checkStatusNotification = (status: string) => {
   switch (status) {
     case 'like':
@@ -7,7 +6,7 @@ export const checkStatusNotification = (status: string) => {
     case 'follow':
       return 'đã theo dõi bạn'
     case 'comment':
-      return 'dã bình luận bài viết của bạn'
+      return 'đã bình luận bài viết của bạn'
     case 'repliesComment':
       return 'đã trả lời bình luận của bạn'
     case 'bookmark':

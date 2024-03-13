@@ -28,10 +28,12 @@ const Notifications = () => {
   const navigate = useNavigate()
 
   const handleNavigatePostDetail = (notification: NotificationType) => {
-    if (notification?.status === 'like') {
-      navigate(generatePath(PAGE.TWEET_DETAIL, { tweet_id: notification?.tweet_id as string }))
+    if (notification?.status === 'follow') {
+      navigate(generatePath(PAGE.PERSONAL, { user_id: notification?.sender_id as string }))
+      
     } else {
-      navigate(generatePath(PAGE.PERSONAL, { user_id: notification?.from as string }))
+      navigate(generatePath(PAGE.TWEET_DETAIL, { tweet_id: notification?.tweet_id as string }))
+
     }
   }
   useEffect(() => {

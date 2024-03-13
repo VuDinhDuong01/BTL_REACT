@@ -77,7 +77,9 @@
         "youAreUseSocialApplication":"Các bạn là người dùng ứng dụng xã hội!",
         "notComment":"Không có bình luận nào!",
         "notNotification":"Bạn không có thông báo nào!",
-        "notifications":"Thông báo của bạn"
+        "notifications":"Thông báo của bạn",
+        "seeMoreComments":"xem thêm bình luận"
+
     },
     "sideBarRight":{
         "search":"Tìm kiếm",

@@ -78,7 +78,8 @@
         "youAreUseSocialApplication":"You are a social application user",
         "notComment":"There are not comments!",
         "notNotification":"There are not notifications!",
-        "notifications":"Notifications"
+        "notifications":"Notifications",
+        "seeMoreComments":"See more comments"
 
     },
     "sideBarRight":{

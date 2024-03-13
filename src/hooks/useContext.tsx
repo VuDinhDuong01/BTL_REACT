@@ -3,15 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, useState, type ReactNode, type SetStateAction, type Dispatch, useEffect } from 'react'
 import { getAccessTokenToLS, getProfileToLS } from '../helps'
-import { GetCommentResponse, NotificationType } from '../components/post'
+import { NotificationType } from '../components/post'
 import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from '../apis/comment'
 import { Socket } from 'socket.io-client'
-
-const initComment = {
-    message: '',
-    data: []
-
-}
 
 interface ContextProp {
     auth: AuthType | null,
@@ -23,8 +17,6 @@ interface ContextProp {
     handleSelectIcon: (icon: string) => Promise<void>
     handleSelectIconRepliesComment: (icon: string) => Promise<void>
     setIsShowInputRepliesComment: Dispatch<SetStateAction<string>>
-    listComment: GetCommentResponse,
-    setListComment: Dispatch<SetStateAction<GetCommentResponse>>
     socket: null | Socket,
     setSocket: Dispatch<SetStateAction<Socket<any, any> | null>>
     setIsHovered: Dispatch<SetStateAction<string>>
@@ -46,9 +38,8 @@ const init = {
     isShowInputRepliesComment: '',
     handleSelectIcon: async (icon: string) => { },
     setIsShowInputRepliesComment: () => null,
-    listComment: initComment,
     handleSelectIconRepliesComment: async (icon: string) => { },
-    setListComment: () => null,
+   
     socket: null,
     setSocket: () => null,
     setIsHovered: () => null,
@@ -71,7 +62,6 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
         setIsHovered(_id_comment)
     }
     const [isShowInputRepliesComment, setIsShowInputRepliesComment] = useState<string>('')
-    const [listComment, setListComment] = useState<GetCommentResponse>(initComment)
     const handleSelectIcon = async (icon: string) => {
         try {
             await likeComment({ comment_id: isHovered as string, user_id: profile?.user_id, icon: icon }).unwrap()
@@ -87,7 +77,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
             setListNotification(prev => {
                 const existsNotification = prev.some(item => item.to === data.to && item.tweet_id === data.tweet_id);
                 if (!existsNotification) {
-                    return [...prev, data];
+                    return [data,...prev, data];
                 }
                 return prev;
             });
@@ -99,7 +89,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
             setListNotification(prev => {
                 const existFollow = prev.some(item => item.to === data.to && item.from === data.from && item.status === data.status)
                 if (!existFollow) {
-                    return ([...prev, data])
+                    return ([data,...prev])
                 }
                 return prev
             })
@@ -111,7 +101,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
             setListNotification(prev => {
                 const existsNotification = prev.some(item => item.to === data.to && item.tweet_id === data.tweet_id && item.status === data.status);
                 if (!existsNotification) {
-                    return [...prev, data];
+                    return [data,...prev];
                 }
                 return prev;
             });
@@ -120,7 +110,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         socket?.on('notification_comment', (data: NotificationType) => {
-            setListNotification(prev => ([...prev, data]));
+            setListNotification(prev => ([data,...prev]));
         })
     }, [socket])
 
@@ -138,6 +128,6 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    return <ContextAPI.Provider value={{ setIsHovered, listNotification, setListNotification, socket, setSocket, setListComment, auth, setAuth, reset, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, listComment, handleSelectIconRepliesComment }}>{children}</ContextAPI.Provider>
+    return <ContextAPI.Provider value={{ setIsHovered, listNotification, setListNotification, socket, setSocket, auth, setAuth, reset, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment }}>{children}</ContextAPI.Provider>
 }
 

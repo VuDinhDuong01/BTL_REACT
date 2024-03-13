@@ -13,7 +13,6 @@ import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
 import { PopupComment, ShowPopupComment } from "../ui/dialog-comment"
 import { Like, Tweet } from "../../types/tweet"
 import { getProfileToLS } from "../../helps"
-import { useGetCommentMutation } from "../../apis/comment"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
 import { ContextAPI } from "../../hooks"
@@ -24,6 +23,7 @@ interface Props {
 export type GetCommentResponse = GenerateType<Comment[]>
 export interface NotificationType {
     tweet_id?: string,
+    sender_id?: string
     to: string
     username: string
     avatar: string
@@ -37,8 +37,7 @@ export const Post = ({ tweet }: Props) => {
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
-    const [getComment, { isLoading }] = useGetCommentMutation()
-    const { setListComment, socket } = useContext(ContextAPI)
+    const { socket } = useContext(ContextAPI)
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
@@ -116,12 +115,6 @@ export const Post = ({ tweet }: Props) => {
                 'Reply', async () => {
                     if (refShowPopupComment.current) {
                         refShowPopupComment.current.showPopup()
-                        const response = await getComment({
-                            tweet_id: tweet._id,
-                            limit: 50,
-                            page: 1
-                        }).unwrap()
-                        setListComment(response)
                     }
                 }
             ]
@@ -132,27 +125,13 @@ export const Post = ({ tweet }: Props) => {
         }
     }
 
-    const handleNavigateDetail = async (tweet_id: string) => {
-        try {
-            const response = await getComment({
-                tweet_id: tweet._id,
-                limit: 50,
-                page: 1
-            }).unwrap()
-            navigate(`/tweet/${tweet_id}`, {
-                state: {
-                    data: response,
-                    loading: isLoading
-                }
-            })
-        } catch (error: unknown) {
-            console.log(error)
-        }
+    const handleNavigateDetail = (tweet_id: string) => {
+        navigate(`/tweet/${tweet_id}`)
     }
 
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
-            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} id_user={tweet.user_id} users={tweet?.users} loading={isLoading} />
+            <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} id_user={tweet.user_id} users={tweet?.users} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>

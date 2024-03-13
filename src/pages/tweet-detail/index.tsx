@@ -1,4 +1,4 @@
-import { useParams, useNavigate, useLocation } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
 import { skipToken } from "@reduxjs/toolkit/query";
@@ -20,15 +20,14 @@ import { useBookmarkMutation, useUnBookmarkMutation } from "../../apis/bookmark"
 import { InputPost } from "../../components/common/input-post";
 import { ContextAPI } from "../../hooks";
 import { convertDateToHours } from "../../helps/convert-date-to-hour";
-import { Comment, LikeComment } from "../../types/comment";
+import { LikeComment } from "../../types/comment";
 import { ListIcons } from "../../components/list-icons";
 import { UploadImageResponse, useUploadImageMutation } from "../../apis";
-import { useCreateCommentMutation, useCreateRepliesCommentMutation } from "../../apis/comment";
+import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from "../../apis/comment";
 import { GetCommentResponse } from "../../components/post";
 
-
-
 export const TweetDetail = () => {
+  const [limitComment, setLimitComment] = useState<number>(2)
   const [likeTweet] = useLikeMutation()
   const [unLikeTweet] = useUnLikeMutation()
   const [bookmarkTweet] = useBookmarkMutation()
@@ -38,15 +37,17 @@ export const TweetDetail = () => {
   const [createRepliesComment] = useCreateRepliesCommentMutation()
   const [uploadImages] = useUploadImageMutation()
   const [openReplyComment, setOpenReplyComment] = useState<boolean>(false)
-  const { data, loading } = useLocation().state
-  const { data: getComment } = data as GetCommentResponse
-
   const [RepliesContent, setRepliesContent] = useState<string>('')
   const [file, SetFile] = useState<File | string>('')
   const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
   const { tweet_id } = useParams()
   const { user_id } = getProfileToLS() as { user_id: string }
   const navigate = useNavigate()
+  const { data: getComment, isLoading: loading } = useGetCommentQuery(tweet_id ? {
+    tweet_id: tweet_id,
+    limit: limitComment,
+    page: 1
+  } : skipToken)
 
   const { data: tweetDetail, isLoading } = useGetTweetDetailQuery(tweet_id ? {
     tweet_id: tweet_id,
@@ -273,9 +274,9 @@ export const TweetDetail = () => {
         <div className='w-full flex-1 pb-[20px] overflow-y-scroll max-h-[600px]'>
           <div className='px-[20px]  cursor-pointer  w-full h-full'>
             {
-              loading ? <div className="mt-[500px]"><Skeleton /></div> : <>
+              loading ? <div className="mt-[200px]"><Skeleton /></div> : <>
                 {
-                  getComment.length > 0 ? (getComment as Comment[]).map(comment => {
+                  (getComment as GetCommentResponse)?.data.length > 0 ? getComment?.data.map(comment => {
                     return <div className='w-full flex mt-[15px]' key={comment._id}>
                       <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                       <div className='w-full'>
@@ -427,6 +428,7 @@ export const TweetDetail = () => {
                     </div>
                   }) : <div className='w-full h-full flex text-[20px] pt-[50px] items-center justify-center font-fontFamily font-[600] cursor-default'>{t('home.notComment')}</div>
                 }
+                 {(getComment as GetCommentResponse)?.total_records as number > limitComment && <div className='text-[#a6aab0] text-[18px] font-fontFamily py-[15px] hover:underline' onClick={() => setLimitComment(prev => prev + 2)}>{t('home.seeMoreComments')}</div>}
               </>
             }
           </div>

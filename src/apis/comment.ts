@@ -9,13 +9,13 @@ const { GET_COMMENT, LIKE_COMMENT, CREATE_COMMENT, CREATE_REPLIES_COMMENT, UPDAT
 
 export const commentAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({
-        getComment: build.mutation<GenerateType<Comment[]>, { limit: number, page: number, tweet_id: string }>({
-            query: (data) => ({
-                url: GET_COMMENT,
-                method: METHOD_API.POST,
-                data
+        getComment: build.query<GenerateType<Comment[]>, { limit: number, page: number, tweet_id: string }>({
+            query: ({limit,page, tweet_id}) => ({
+                url: `${GET_COMMENT}/${tweet_id}`,
+                method: METHOD_API.GET,
+                params:{limit, page}
             }),
-            invalidatesTags: ['getListTweet', 'getComment', 'getListBookmark']
+            providesTags: ['getListTweet', 'getComment', 'getListBookmark']
         }),
         likeComment: build.mutation<GenerateType<{ data: {} }>, { comment_id: string, user_id: string, icon?: string }>({
             query: (data) => ({
@@ -55,7 +55,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
 })
 
 export const {
-    useGetCommentMutation,
+    useGetCommentQuery,
     useLikeCommentMutation,
     useCreateCommentMutation,
     useCreateRepliesCommentMutation,

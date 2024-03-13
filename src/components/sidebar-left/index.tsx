@@ -23,6 +23,7 @@ export const SidebarLeft = () => {
   const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
   const refFormChangePassword = useRef<HTMLFormElement>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
+  const [isShow, setIsShow] = useState<boolean>(true)
 
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
   const navigate = useNavigate()
@@ -65,8 +66,12 @@ export const SidebarLeft = () => {
   })
 
   const handleEmptyListNotification = () => {
-    setCopyListNotification([])
+    setIsShow(false)
   }
+
+  useEffect(()=>{
+   localStorage.setItem('check_display_notification', JSON.stringify(true))
+  },[])
 
   return (
     <div className="w-full  min-h-[100vh] z-[9990]" >

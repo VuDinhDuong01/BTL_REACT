@@ -5,11 +5,10 @@ import { t } from "i18next";
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
 import { Images } from '../../../assets/images';
-
 import { convertDateToHours } from '../../../helps/convert-date-to-hour';
 import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
-import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentMutation } from '../../../apis/comment';
+import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from '../../../apis/comment';
 import { UploadImageResponse, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
 import { ListIcons } from '../../list-icons';
@@ -18,20 +17,20 @@ import { cn } from '../../../helps/cn';
 import { GetCommentResponse } from '../../post';
 import { Skeleton } from '../skeleton';
 import { ContextAPI } from '../../../hooks';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 export type ShowPopupComment = {
     showPopup: () => void;
 };
 interface PropsDialogComment {
-    loading: boolean
     tweet_id: string
     users: { username: string, avatar: string, bio: string }
     id_user: string
 }
 
-export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, loading, id_user }, ref) => {
-    const [getComment] = useGetCommentMutation()
+export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, id_user }, ref) => {
     const refPopComment = useRef<HTMLDivElement>(null)
+    const [limitComment, setLimitComment] = useState<number>(2)
     const [createComment] = useCreateCommentMutation()
     const [createRepliesComment] = useCreateRepliesCommentMutation()
     const [content, setContent] = useState<string>('')
@@ -42,8 +41,14 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
-    const { socket, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, setListComment, listComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
+    const { socket, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
+    const { data: getComment, isLoading } = useGetCommentQuery(tweet_id ? {
+        tweet_id: tweet_id,
+        limit: limitComment,
+        page: 1
+    } : skipToken)
+    console.log(getComment)
     const showPopup = () => {
         setIsShowPopup(true)
     }
@@ -77,13 +82,15 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     }
     const handleCreateComment = async () => {
         try {
-            socket?.emit('send_notification_comment', {
-                tweet_id: tweet_id,
-                to: id_user,
-                username: username,
-                avatar: avatar,
-                status: 'comment'
-            })
+            if (user_id !== id_user) {
+                socket?.emit('send_notification_comment', {
+                    tweet_id: tweet_id,
+                    to: id_user,
+                    username: username,
+                    avatar: avatar,
+                    status: 'comment'
+                })
+            }
             let uploadImage: UploadImageResponse[] = [];
             if (file !== '') {
                 const formData = new FormData()
@@ -101,12 +108,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 content_comment: content,
                 image_comment: file !== '' ? uploadImage[0].image : ''
             }).unwrap()
-            const res = await getComment({
-                tweet_id: tweet_id,
-                limit: 50,
-                page: 1
-            }).unwrap()
-            setListComment(res)
             SetFile('')
             setContent('')
         } catch (error: unknown) {
@@ -187,9 +188,9 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                         <div className='w-full flex-1 overflow-auto py-[20px] '>
                             <div className='px-[20px] cursor-pointer  w-full h-full'>
                                 {
-                                    loading ? <Skeleton /> : <>
+                                    isLoading ? <div className='mt-[100px]'> <Skeleton /></div> : <>
                                         {
-                                            listComment.data?.length > 0 ? (listComment as GetCommentResponse).data?.map(comment => {
+                                            (getComment as GetCommentResponse).data?.length > 0 ? (getComment as GetCommentResponse).data?.map(comment => {
                                                 return <div className='w-full flex' key={comment._id}>
                                                     <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                                     <div className='w-full'>
@@ -337,8 +338,10 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                         }
                                                     </div>
                                                 </div>
-                                            }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default text-black'>Chưa có bình luận nào cho bài Post</div>
+                                            }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default text-black'>{t('home.notComment')}</div>
+
                                         }
+                                        {(getComment as GetCommentResponse)?.total_records as number > limitComment && <div className='text-[#a6aab0] text-[18px] font-fontFamily py-[15px] hover:underline' onClick={() => setLimitComment(prev => prev + 2)}>{t('home.seeMoreComments')}</div>}
                                     </>
                                 }
                             </div>
