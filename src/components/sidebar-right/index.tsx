@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react"
+import { useContext, useEffect, useMemo, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { t } from "i18next";
 
@@ -6,16 +6,17 @@ import { useFollowMutation, useGetFollowQuery, useGetUserQuery } from "../../api
 import { Button } from "../ui/button"
 import { getProfileToLS } from "../../helps"
 import { Skeleton } from "../ui/skeleton"
-import { cn } from "../../helps/cn"
 import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { Search } from "../search"
 import { ContextAPI } from "../../hooks";
+import { Loading } from "../../assets/icons/eye";
 
 export const SidebarRight = () => {
   const navigate = useNavigate()
+  const [disable, setDisable] = useState<boolean>(false)
   const { data: getUser, isLoading } = useGetUserQuery()
   const { data: getFollow } = useGetFollowQuery()
-  const [follow] = useFollowMutation()
+  const [follow, { isLoading: loadingFollow }] = useFollowMutation()
   const { socket } = useContext(ContextAPI)
   const profile = getProfileToLS() as { user_id?: string, username?: string, avatar?: string }
   const getListUser = useMemo(() => {
@@ -31,7 +32,11 @@ export const SidebarRight = () => {
       return false
     })
   }
+  useEffect(() => {
+    loadingFollow ? setDisable(true) : setDisable(false)
+  }, [loadingFollow])
 
+  console.log(disable)
   const handleFollowUser = async (following_id: string) => {
     try {
       socket?.emit("follow_user", {
@@ -66,8 +71,8 @@ export const SidebarRight = () => {
                       <p className="text-[13px] text-[#536471] font-fontFamily">@{user.username ?? ''}</p>
                     </div>
                   </div>
-                  <Button className={cn("w-[150px] text-[15px] !font-[600] bg-black text-white flex items-center justify-center !cursor-pointer hover:opacity-70 ", {
-                  })} onClick={() => handleFollowUser(user._id)}>{checkStatusFollow(user._id) ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
+                  <Button disabled={disable} className={`w-[150px] text-[15px] !font-[600] bg-black text-white flex  items-center justify-center   hover:opacity-70 ${disable ?  'cursor-not-allowed':'cursor-pointer'} `
+                } onClick={() => handleFollowUser(user._id)}>{loadingFollow ? <Loading /> : checkStatusFollow(user._id) ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
                 </div>
               })
             }

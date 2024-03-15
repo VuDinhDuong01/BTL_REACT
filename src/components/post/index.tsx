@@ -16,6 +16,7 @@ import { getProfileToLS } from "../../helps"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
 import { ContextAPI } from "../../hooks"
+import { ViewIcon } from "../../assets/icons/eye"
 
 interface Props {
     tweet: Tweet,
@@ -64,7 +65,7 @@ export const Post = ({ tweet }: Props) => {
         {
             id: 4,
             title: 'View',
-            icon: <Icons.CiViewList size={21} />,
+            icon: <ViewIcon  />,
             numberOfTurns: tweet.user_views
         },
         {
