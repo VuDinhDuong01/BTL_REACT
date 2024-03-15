@@ -70,6 +70,9 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
     const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             setFile(e.target.files[0]);
+            if (inputRef.current) {
+                inputRef.current.value = ''
+            }
         }
     }
     const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

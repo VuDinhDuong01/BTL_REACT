@@ -110,7 +110,6 @@ export const PostArticle = () => {
     const contentEditableRef = useRef<any>(null);
     const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
     const hashtags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
-
     const [files, setFiles] = useState<{ link: string, file: File }[]>([])
 
     const handleIcon = (title: string) => () => {
@@ -156,8 +155,13 @@ export const PostArticle = () => {
                     file: item
                 }
             }))
+            if (mediaRef.current) {
+                mediaRef.current.value = ''
+            }
 
         }
+
+
     }
 
     const handleCloseGif = () => {

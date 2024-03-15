@@ -15,6 +15,7 @@ export const SidebarRight = () => {
   const navigate = useNavigate()
   const [disable, setDisable] = useState<boolean>(false)
   const { data: getUser, isLoading } = useGetUserQuery()
+  const [idUserFollow, setIdUserFollow]= useState<string>('')
   const { data: getFollow } = useGetFollowQuery()
   const [follow, { isLoading: loadingFollow }] = useFollowMutation()
   const { socket } = useContext(ContextAPI)
@@ -38,6 +39,7 @@ export const SidebarRight = () => {
 
   console.log(disable)
   const handleFollowUser = async (following_id: string) => {
+    setIdUserFollow(following_id)
     try {
       socket?.emit("follow_user", {
         to: following_id,
@@ -71,8 +73,8 @@ export const SidebarRight = () => {
                       <p className="text-[13px] text-[#536471] font-fontFamily">@{user.username ?? ''}</p>
                     </div>
                   </div>
-                  <Button disabled={disable} className={`w-[150px] text-[15px] !font-[600] bg-black text-white flex  items-center justify-center   hover:opacity-70 ${disable ?  'cursor-not-allowed':'cursor-pointer'} `
-                } onClick={() => handleFollowUser(user._id)}>{loadingFollow ? <Loading /> : checkStatusFollow(user._id) ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
+                  <Button disabled={disable &&  user._id === idUserFollow } className={`w-[150px] text-[15px] !font-[600] bg-black text-white flex  items-center justify-center   hover:opacity-70 ${disable   ?  'cursor-not-allowed':'cursor-pointer'} `
+                } onClick={() => handleFollowUser(user._id)}>{loadingFollow && user._id === idUserFollow ? <Loading /> : checkStatusFollow(user._id) ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
                 </div>
               })
             }

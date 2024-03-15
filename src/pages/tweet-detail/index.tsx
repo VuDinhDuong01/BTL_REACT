@@ -325,33 +325,6 @@ export const TweetDetail = () => {
                               </div>
                             }
                           </div>
-
-                          <div className='w-full mt-[20px]'>
-                            {
-                              isShowInputRepliesComment === comment._id && (<>
-                                <InputPost
-                                  className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
-                                  file={fileRepliesComment as File}
-                                  setFile={setFileRepliesComment}
-                                  avatar_user={tweetDetail?.data[0].users.avatar as string}
-                                  content={RepliesContent}
-                                  setContent={setRepliesContent}
-                                  handleCreateComment={handleCreateRepliesComment}
-                                />
-                                <div className='relative'>
-                                  {
-                                    fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
-                                  }
-                                  <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
-                                    {
-                                      fileRepliesComment && <Icons.IoMdClose size={25} />
-                                    }
-                                  </div>
-                                </div>
-                              </>
-                              )
-                            }
-                          </div>
                         </div>
                         {
                           (Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment)
@@ -417,6 +390,34 @@ export const TweetDetail = () => {
                             }
                           </>
 
+                        }
+                        {
+                             <div className='w-full mt-[20px]'>
+                             {
+                               isShowInputRepliesComment === comment._id && (<>
+                                 <InputPost
+                                   className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
+                                   file={fileRepliesComment as File}
+                                   setFile={setFileRepliesComment}
+                                   avatar_user={tweetDetail?.data[0].users.avatar as string}
+                                   content={RepliesContent}
+                                   setContent={setRepliesContent}
+                                   handleCreateComment={handleCreateRepliesComment}
+                                 />
+                                 <div className='relative'>
+                                   {
+                                     fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+                                   }
+                                   <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                     {
+                                       fileRepliesComment && <Icons.IoMdClose size={25} />
+                                     }
+                                   </div>
+                                 </div>
+                               </>
+                               )
+                             }
+                           </div>
                         }
                         {
                           Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment === false && <div className='flex items-center text-[15px] font-fontFamily mt-[-10px] font-[600] text-[#828484] mb-[10px]' onClick={() => setOpenReplyComment(true)}>
