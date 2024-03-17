@@ -20,7 +20,6 @@ import { useUploadImageMutation, useUploadVideoMutation } from '../../apis';
 import { useCreateTweetMutation } from '../../apis/tweet';
 import { Loading } from '../../assets/icons/eye';
 import { EmojiPickers, ShowEmoji } from '../common/emoji-picker';
-import { VideoPlayer } from '../video';
 import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 import { ToastMessage } from '../../helps/toast-message';
 
@@ -110,8 +109,7 @@ export const PostArticle = () => {
     const contentEditableRef = useRef<any>(null);
     const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
     const hashtags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
-    const [files, setFiles] = useState<{ link: string, file: File }[]>([])
-
+    const [files, setFiles] = useState<{ link: string, file: File, name?: string, type?: string }[]>([])
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
             ['Media', () => mediaRef.current && mediaRef.current.click()],
@@ -140,7 +138,6 @@ export const PostArticle = () => {
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const arrayFile = Array.from(e.target.files);
-
             if (arrayFile.length > 4) {
                 ToastMessage({
                     message: 'không được tải quá 4 file',
@@ -300,15 +297,18 @@ export const PostArticle = () => {
                                 }), setFiles
                             })
                         }
-                        {/* {
-                            files.length > 0 && typeVideo.includes(files[0]?.type) &&
-                            <div className='w-full relative'>
-                                <video controls className='w-full rounded-lg'>
-                                    <source src={URL.createObjectURL(files[0].file />)} type={files[0].file.type} />
-                                </video>
+                        {
+                            files.length > 0 && typeVideo.includes(files[0].file.type) &&
+                            <div className='w-full relative '>
+                                <video
+                                    className='w-full rounded-xl'
+                                    height="300px"
+                                    controls
+                                    src={URL.createObjectURL(files[0].file as File)}
+                                />
                                 <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={() => setFiles([])}><Icons.IoMdClose /></div>
                             </div>
-                        } */}
+                        }
                         {
                             Boolean(gif) && <div className='w-full relative'>
                                 <img src={gif as string} alt='gif' className='w-full object-cover rounded-lg h-[200px]' />

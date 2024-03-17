@@ -53,7 +53,7 @@ export const Post = ({ tweet }: Props) => {
         {
             id: 2,
             title: 'Repost',
-            icon: <Icons.BiRepost size={21} />,
+            icon: <Icons.PiShareFat size={21} />,
             numberOfTurns: 12000
         },
         {

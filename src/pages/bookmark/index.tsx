@@ -37,7 +37,7 @@ const Bookmark = () => {
     }
     return (
         <div className="w-full ">
-            <div className="min-w-[611px]  fixed z-[999] flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
+            <div className="min-w-[611px]  fixed  flex items-center  bg-white border-b-[1px] h-[55px]  justify-between  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
                 <div>
                     <div className="h-full text-[18px]  cursor-pointer font-[700] font-fontFamily hover:bg-white1 ">
                         <h3>Bookmark</h3>

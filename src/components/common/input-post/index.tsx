@@ -36,7 +36,8 @@ const listIcon = [
     }, {
         icon: <MdGifBox size={20} />,
         id: 2
-    }, {
+    }, 
+    {
         icon: <FaRegSmileBeam size={20} />,
         id: 3
     }

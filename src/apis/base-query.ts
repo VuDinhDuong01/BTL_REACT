@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
 import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../helps';
 import { URL_API } from '../constants';
-import { ToastMessage } from '../helps/toast-message';
+// import { ToastMessage } from '../helps/toast-message';
 import { checkToken } from '../helps/check-token';
 
 
@@ -82,7 +82,7 @@ instance.interceptors.response.use(function (response) {
             accessToken = ''
             refreshToken = ''
             removeLS()
-            ToastMessage({ message: "refresh_token đã hết hạn", status: 'error' })
+            // ToastMessage({ message: "refresh_token đã hết hạn", status: 'error' })
         }
     } else {
         console.log(error)
