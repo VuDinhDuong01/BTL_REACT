@@ -110,7 +110,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data
       }),
     }),
-    uploadVideo: build.mutation<UploadImageResponse[], FormData>({
+    uploadVideo: build.mutation<{message:string , path: string }, FormData>({
       query: (data) => ({
         url: UPLOAD_VIDEO,
         method: METHOD_API.POST,

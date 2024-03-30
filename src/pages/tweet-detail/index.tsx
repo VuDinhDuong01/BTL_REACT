@@ -24,7 +24,7 @@ import { LikeComment } from "../../types/comment";
 import { ListIcons } from "../../components/list-icons";
 import { UploadImageResponse, useUploadImageMutation } from "../../apis";
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from "../../apis/comment";
-import { GetCommentResponse } from "../../components/post";
+import { GetCommentResponse, typeVideo } from "../../components/post";
 
 export const TweetDetail = () => {
   const [limitComment, setLimitComment] = useState<number>(2)
@@ -206,9 +206,9 @@ export const TweetDetail = () => {
 
         </div>
         <div className="w-full  flex items-center justify-center">
-          <div className="">
+          <div>
             {
-              isLoading ? <div className=" mt-[100px]" ><Skeleton2 /> </div> : (ImagesTweet as { original: string }[])?.length > 0 ?
+              isLoading ? <div className=" mt-[100px]" ><Skeleton2 /> </div> : (ImagesTweet as { original: string }[])?.length > 0 && !typeVideo.includes(tweetDetail?.data[0].medias[0].slice(-3) as string) ?
                 <ImageGallery
                   items={ImagesTweet as { original: string }[]}
                   showThumbnails={false}
@@ -224,7 +224,7 @@ export const TweetDetail = () => {
                       />
                     </div>
                   )}
-                /> : ''
+                /> : <video src={tweetDetail?.data[0].medias[0]} controls className="h-[100vh] w-[700px] rounded-[20px]" />
             }
           </div>
         </div >
@@ -392,32 +392,32 @@ export const TweetDetail = () => {
 
                         }
                         {
-                             <div className='w-full mt-[20px]'>
-                             {
-                               isShowInputRepliesComment === comment._id && (<>
-                                 <InputPost
-                                   className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
-                                   file={fileRepliesComment as File}
-                                   setFile={setFileRepliesComment}
-                                   avatar_user={tweetDetail?.data[0].users.avatar as string}
-                                   content={RepliesContent}
-                                   setContent={setRepliesContent}
-                                   handleCreateComment={handleCreateRepliesComment}
-                                 />
-                                 <div className='relative'>
-                                   {
-                                     fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
-                                   }
-                                   <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
-                                     {
-                                       fileRepliesComment && <Icons.IoMdClose size={25} />
-                                     }
-                                   </div>
-                                 </div>
-                               </>
-                               )
-                             }
-                           </div>
+                          <div className='w-full mt-[20px]'>
+                            {
+                              isShowInputRepliesComment === comment._id && (<>
+                                <InputPost
+                                  className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
+                                  file={fileRepliesComment as File}
+                                  setFile={setFileRepliesComment}
+                                  avatar_user={tweetDetail?.data[0].users.avatar as string}
+                                  content={RepliesContent}
+                                  setContent={setRepliesContent}
+                                  handleCreateComment={handleCreateRepliesComment}
+                                />
+                                <div className='relative'>
+                                  {
+                                    fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+                                  }
+                                  <div className=' absolute right-[0px] top-[10px] cursor-pointer' onClick={() => setFileRepliesComment('')}>
+                                    {
+                                      fileRepliesComment && <Icons.IoMdClose size={25} />
+                                    }
+                                  </div>
+                                </div>
+                              </>
+                              )
+                            }
+                          </div>
                         }
                         {
                           Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment === false && <div className='flex items-center text-[15px] font-fontFamily mt-[-10px] font-[600] text-[#828484] mb-[10px]' onClick={() => setOpenReplyComment(true)}>
@@ -429,7 +429,7 @@ export const TweetDetail = () => {
                     </div>
                   }) : <div className='w-full h-full flex text-[20px] pt-[50px] items-center justify-center font-fontFamily font-[600] cursor-default'>{t('home.notComment')}</div>
                 }
-                 {(getComment as GetCommentResponse)?.total_records as number > limitComment && <div className='text-[#a6aab0] text-[18px] font-fontFamily py-[15px] hover:underline' onClick={() => setLimitComment(prev => prev + 2)}>{t('home.seeMoreComments')}</div>}
+                {(getComment as GetCommentResponse)?.total_records as number > limitComment && <div className='text-[#a6aab0] text-[18px] font-fontFamily py-[15px] hover:underline' onClick={() => setLimitComment(prev => prev + 2)}>{t('home.seeMoreComments')}</div>}
               </>
             }
           </div>

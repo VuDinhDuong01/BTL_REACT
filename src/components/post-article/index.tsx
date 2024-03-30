@@ -83,8 +83,9 @@ const permissionViews: permissionViews[] = [
 ]
 
 export const PostArticle = () => {
-    const [uploadImages] = useUploadImageMutation()
-    const [uploadVideo] = useUploadVideoMutation()
+
+    const [uploadImages, { isLoading: isLoadingUploadImage }] = useUploadImageMutation()
+    const [uploadVideo, { isLoading: isLoadingUploadVideo }] = useUploadVideoMutation()
     const [createTweet, { isLoading }] = useCreateTweetMutation()
     const [isDisable, setIsDisable] = useState<boolean>(false)
     const mediaRef = useRef<HTMLInputElement>(null)
@@ -105,10 +106,11 @@ export const PostArticle = () => {
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
     const [gif, setGif] = useState<string>('')
-    const [text, setText] = useState('');
-    const contentEditableRef = useRef<any>(null);
+    const [text, setText] = useState('')
+    const contentEditableRef = useRef<any>(null)
     const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
     const hashtags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
+
     const [files, setFiles] = useState<{ link: string, file: File, name?: string, type?: string }[]>([])
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
@@ -145,7 +147,7 @@ export const PostArticle = () => {
                 })
                 return;
             }
-            // select files
+
             setFiles(arrayFile.map(item => {
                 return {
                     link: item.name,
@@ -155,10 +157,7 @@ export const PostArticle = () => {
             if (mediaRef.current) {
                 mediaRef.current.value = ''
             }
-
         }
-
-
     }
 
     const handleCloseGif = () => {
@@ -209,7 +208,7 @@ export const PostArticle = () => {
 
     const onSubmit = (handleSubmit(async () => {
         let uploadImage: { image: string, type: number }[] = []
-        let uploadVideos: { image: string, type: number }[] = []
+        let uploadVideos: { path: string, message: string } = { path: '', message: '' }
         try {
             if (files.length > 0) {
                 const formData = new FormData();
@@ -224,7 +223,9 @@ export const PostArticle = () => {
                 }
 
             }
-            const medias = files.length > 0 && typeImages.includes(files[0].file?.type) ? uploadImage.map(item => item.image) : []
+            const medias = files.length > 0 && typeImages.includes(files[0].file?.type) ?
+                uploadImage.map(item => item.image) : files.length > 0 &&
+                    typeVideo.includes(files[0].file?.type) ? [uploadVideos.path] : []
             const bodyRequest = {
                 content: text,
                 medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
@@ -248,11 +249,10 @@ export const PostArticle = () => {
 
     useEffect(() => {
         gif.length > 0 || text !== '' || files.length > 0 ? setIsDisable(true) : setIsDisable(false)
-
     }, [gif, text, files])
+
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
-
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full  min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
@@ -352,7 +352,7 @@ export const PostArticle = () => {
             </div>
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] "></div>
-                <div className="flex-1 flex items-center justify-between h-full ">
+                <div className="flex-1 flex items-center justify-between h-full relative">
                     <div className="w-full flex items-center">
                         {
                             listIcons.map(item => {
@@ -367,9 +367,11 @@ export const PostArticle = () => {
                             })
                         }
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
-                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' fixed top-[225px]' />
+                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute top-[40px]' />
                     </div>
-                    <Button className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} ${!isDisable ? '!cursor-not-allowed opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily mr-[15px] bg-green2  px-[15px] !rounded-[50px] flex items-center justify-center`} disabled={!isDisable}>{isLoading ? <Loading /> : t('sidebarLeft.post')}</Button>
+                    <Button 
+                    className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} ${!isDisable ? '!cursor-not-allowed opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily  m-auto  bg-green2 !rounded-[50px] flex items-center justify-center `} 
+                    disabled={!isDisable}>{isLoading || isLoadingUploadImage || isLoadingUploadVideo ? <Loading /> : t('sidebarLeft.post')}</Button>
                 </div>
             </div>
         </form>

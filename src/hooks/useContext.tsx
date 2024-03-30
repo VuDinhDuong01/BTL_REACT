@@ -77,7 +77,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
             setListNotification(prev => {
                 const existsNotification = prev.some(item => item.to === data.to && item.tweet_id === data.tweet_id);
                 if (!existsNotification) {
-                    return [data,...prev, data];
+                    return [...prev, data];
                 }
                 return prev;
             });
@@ -106,7 +106,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
                 return prev;
             });
         })
-    })
+    },[socket])
 
     useEffect(() => {
         socket?.on('notification_comment', (data: NotificationType) => {

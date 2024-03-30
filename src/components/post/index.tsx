@@ -31,6 +31,8 @@ export interface NotificationType {
     status: string,
     from?: string
 }
+
+export const typeVideo = ['mp4', 'mvk']
 export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
@@ -65,7 +67,7 @@ export const Post = ({ tweet }: Props) => {
         {
             id: 4,
             title: 'View',
-            icon: <ViewIcon  />,
+            icon: <ViewIcon />,
             numberOfTurns: tweet.user_views
         },
         {
@@ -74,6 +76,7 @@ export const Post = ({ tweet }: Props) => {
             icon: checkBookmark(tweet.bookmarks as Like[]) ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
         },
     ]
+
     const checkLike = (Likes: Like[]) => {
         return Likes?.some(item => item.user_id === user_id)
     }
@@ -148,11 +151,10 @@ export const Post = ({ tweet }: Props) => {
                     <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
                     <div className="w-full mt-[20px] cursor-pointer">
                         {
-                            tweet?.medias?.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
-
-                            // <img  className="w-full" src="https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g" alt="" />
-                            //    <VideoPlayer url='https://media1.giphy.com/media/BoCGrhPGv4BHpGkPQl/200_d.gif?cid=512b868f2e9vyu08ljlvkz09vavbyg31w2xxxjb64slr19x1&ep=v1_gifs_trending&rid=200_d.gif&ct=g' /> 
-
+                            tweet?.medias?.length > 0 && !typeVideo.includes(tweet.medias[0].slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias })
+                        }
+                        {
+                            tweet?.medias?.length > 0 && typeVideo.includes(tweet.medias[0].slice(-3)) && <video src={tweet.medias[0]} className="w-full rounded-[20px]" controls />
                         }
                     </div>
                 </div>

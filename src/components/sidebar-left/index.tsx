@@ -19,12 +19,11 @@ import { ContextAPI } from "../../hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { NotificationType } from "../post";
 
+
 export const SidebarLeft = () => {
   const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
   const refFormChangePassword = useRef<HTMLFormElement>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
-  const [isShow, setIsShow] = useState<boolean>(true)
-
   const [isShowTippy, setIsShowTippy] = useState<boolean>(false)
   const navigate = useNavigate()
   const profile = getProfileToLS() as { user_id: string }
@@ -33,9 +32,13 @@ export const SidebarLeft = () => {
   const { data: getMe } = useGetMeQuery(profile?.user_id ? {
     user_id: profile?.user_id
   } : skipToken)
-  const { listNotification } = useContext(ContextAPI)
+  const { listNotification, setListNotification } = useContext(ContextAPI)
+
+  const [listNotificationCopy, setListNotificationCopy] = useState<NotificationType[]>([])
+  useEffect(() => {
+    setListNotificationCopy((listNotification as NotificationType[]) ?? [])
+  }, [listNotification])
   const { t } = useTranslation()
-  const [copyListNotification, setCopyListNotification] = useState<NotificationType[]>([])
   const handleLogout = async () => {
     try {
       await logout({ refresh_token }).unwrap()
@@ -53,11 +56,6 @@ export const SidebarLeft = () => {
       showChangePasswordRef.current.showPopupChangePassword()
     }
   }
-  useEffect(() => {
-    if (listNotification?.length > 0) {
-      setCopyListNotification(listNotification)
-    }
-  }, [listNotification])
 
   useClickOutSide({
     onClickOutSide: () => {
@@ -66,17 +64,13 @@ export const SidebarLeft = () => {
   })
 
   const handleEmptyListNotification = () => {
-    setIsShow(false)
+    setListNotificationCopy([])
+    setListNotification([])
   }
 
-  useEffect(()=>{
-   localStorage.setItem('check_display_notification', JSON.stringify(true))
-  },[])
-
   return (
-    <div className="w-full  min-h-[100vh] z-[9990]" >
+    <div className="w-full  min-h-[100vh]" >
       <ChangePassword ref={showChangePasswordRef} refFormChangePassword={refFormChangePassword} />
-
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>
         <Logo />
       </div>
@@ -110,8 +104,8 @@ export const SidebarLeft = () => {
             <div className="ml-[10px] relative">
               <BellIcon className="text-black" />
               {
-                copyListNotification.length > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
-              ">{copyListNotification.length}</div>
+                listNotificationCopy.length > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
+              ">{listNotificationCopy.length}</div>
               }
             </div>
             <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">{t('sidebarLeft.notifications')}</p>
