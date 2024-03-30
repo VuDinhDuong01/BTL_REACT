@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type ChangeEvent, useRef, useState, useEffect } from 'react'
+import { type ChangeEvent, useRef, useState, useEffect, useLayoutEffect } from 'react'
 import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
@@ -83,11 +83,11 @@ const permissionViews: permissionViews[] = [
 ]
 
 export const PostArticle = () => {
-
     const [uploadImages, { isLoading: isLoadingUploadImage }] = useUploadImageMutation()
     const [uploadVideo, { isLoading: isLoadingUploadVideo }] = useUploadVideoMutation()
     const [createTweet, { isLoading }] = useCreateTweetMutation()
     const [isDisable, setIsDisable] = useState<boolean>(false)
+    const [videoUrl, setVideoUrl] = useState('');
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -125,6 +125,7 @@ export const PostArticle = () => {
             action();
         }
     };
+
 
 
     const handleShowPermissionView = (item: permissionViews) => () => {
@@ -242,14 +243,23 @@ export const PostArticle = () => {
                 title: t('home.everyone'),
                 icon: <Icons.AiOutlineGlobal />
             })
+            isLoading || isLoadingUploadImage || isLoadingUploadVideo && setIsDisable(true) 
         } catch (error: unknown) {
             console.log(error)
         }
     }))
 
     useEffect(() => {
-        gif.length > 0 || text !== '' || files.length > 0 ? setIsDisable(true) : setIsDisable(false)
+        gif.length <= 0 && text === '' && files.length <= 0 ? setIsDisable(true) : setIsDisable(false)
     }, [gif, text, files])
+
+
+    useEffect(() => {
+        if (files.length > 0 && typeVideo.includes(files[0].file.type)) {
+            const url = URL.createObjectURL(files[0].file);
+            setVideoUrl(url);
+        }
+    }, [files])
 
     return (
         <form className="w-[611px] min-h-[155px] mt-[70px]" onSubmit={onSubmit}>
@@ -304,7 +314,7 @@ export const PostArticle = () => {
                                     className='w-full rounded-xl'
                                     height="300px"
                                     controls
-                                    src={URL.createObjectURL(files[0].file as File)}
+                                    src={videoUrl}
                                 />
                                 <div className="absolute top-[10px] right-[10px] w-[30px] h-[30px] rounded-[50%] bg-[rgb(45,21,38)] cursor-pointer text-white flex items-center justify-center" onClick={() => setFiles([])}><Icons.IoMdClose /></div>
                             </div>
@@ -369,9 +379,10 @@ export const PostArticle = () => {
                         <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
                         <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute top-[40px]' />
                     </div>
-                    <Button 
-                    className={`!text-[15px] ${isLoading ? 'cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} ${!isDisable ? '!cursor-not-allowed opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily  m-auto  bg-green2 !rounded-[50px] flex items-center justify-center `} 
-                    disabled={!isDisable}>{isLoading || isLoadingUploadImage || isLoadingUploadVideo ? <Loading /> : t('sidebarLeft.post')}</Button>
+                    <Button
+                        className={`!text-[15px] ${isLoading || isLoadingUploadImage || isLoadingUploadVideo ? '!cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} ${isDisable ? '!cursor-not-allowed opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily  m-auto  bg-green2 !rounded-[50px] flex items-center justify-center `}
+                        disabled={isDisable}>{isLoading || isLoadingUploadImage || isLoadingUploadVideo ? <Loading /> : t('sidebarLeft.post')}
+                    </Button>
                 </div>
             </div>
         </form>
