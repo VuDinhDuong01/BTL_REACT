@@ -37,11 +37,8 @@ export const Login = () => {
     try {
 
       const res = await Login(data).unwrap()
-      setAuth({
-        role: res.data.user.roles[0],
-        auth: true
-      })
-      navigate(PAGE.HOME)
+      setAuth(res.data.user.roles[0] as string)
+      navigate(res.data.user.roles[0] ==='admin' ? PAGE.ADMIN :PAGE.HOME)
     } catch (error) {
       const e = error as ErrorHandle
       for (const key in e.data.error) {

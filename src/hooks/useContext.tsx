@@ -2,14 +2,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, useState, type ReactNode, type SetStateAction, type Dispatch, useEffect } from 'react'
-import { getAccessTokenToLS, getProfileToLS } from '../helps'
+import {  getProfileToLS } from '../helps'
 import { NotificationType } from '../components/post'
 import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from '../apis/comment'
 import { Socket } from 'socket.io-client'
 
+
 interface ContextProp {
-    auth: AuthType | null,
-    setAuth: React.Dispatch<SetStateAction<AuthType | null>>
+    auth: string,
+    setAuth: React.Dispatch<string>
     reset: () => void
     handleLike: (_id_comment: string) => void
     isHovered: string
@@ -24,13 +25,8 @@ interface ContextProp {
     setListNotification: Dispatch<SetStateAction<NotificationType[]>>
 }
 
-interface AuthType {
-    role?: string,
-    auth: boolean
-}
-
 const init = {
-    auth: { role: '', auth: Boolean(getAccessTokenToLS()) },
+    auth: '',
     setAuth: () => null,
     reset: () => null,
     handleLike: (_id_comment: string) => null,
@@ -53,7 +49,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const [listNotification, setListNotification] = useState<NotificationType[]>([])
     const [likeComment] = useLikeCommentMutation()
     const [likeRepliesComment] = useCreateLikeRepliesCommentMutation()
-    const [auth, setAuth] = useState<AuthType | null>(Object)
+    const [auth, setAuth] = useState<string>('')
     const [isHovered, setIsHovered] = useState<string>('')
     const [socket, setSocket] = useState<null | Socket>(null)
 
@@ -115,7 +111,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     }, [socket])
 
     const reset = () => {
-        setAuth(null)
+        setAuth('')
     }
 
     const handleSelectIconRepliesComment = async (icon: string) => {

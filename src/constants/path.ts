@@ -12,5 +12,6 @@ export const PAGE={
     MESSAGE:'/message',
     MESSAGE_DETAIL:'/message/:receiver_id',
     TWEET_DETAIL:'/tweet/:tweet_id',
-    COMMUNITIES:'/communities/:user_id'
+    COMMUNITIES:'/communities/:user_id',
+    ADMIN:'/admin'
 } as const 

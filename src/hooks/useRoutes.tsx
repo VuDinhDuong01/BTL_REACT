@@ -19,11 +19,16 @@ import { MessageDetail } from "../pages/message-detail";
 import { TweetDetail } from "../pages/tweet-detail";
 import Notifications from "../pages/notifications";
 import { Communities } from "../pages/communities";
+import { LayoutAdmin } from "../layouts/admin";
+
+import { Admin } from "../pages/admin";
+import { ContextAPI } from "./useContext";
+import { useContext } from "react";
 // import { useContext } from "react";
 // import { ContextAPI } from ".";
 
 export const route = () => {
-    // const { auth } = useContext(ContextAPI)
+    const { auth } = useContext(ContextAPI)
     // const ProtectedRouter = () => {
     //     auth ? <Navigate to={PAGE.HOME} /> : <Navigate to={PAGE.LOGIN} replace />
     // }
@@ -40,7 +45,7 @@ export const route = () => {
             <Route path={PAGE.CONFIRM_CODE} element={<ConfirmCode />} />
             <Route path={PAGE.RESET_PASSWORD} element={<ResetPassword />} />
 
-            <Route path={PAGE.HOME} element={<MainLayout />}>
+            <Route path={PAGE.HOME} element={auth === 'admin' ? <LayoutAdmin /> : <MainLayout />}>
                 <Route element={<RequestRole allowRoles={[ROLE.USER]} />} >
                     <Route path={PAGE.HOME} element={<Home />} />
                     <Route path={PAGE.PERSONAL} element={<Personal />} />
@@ -50,8 +55,15 @@ export const route = () => {
                     <Route path={PAGE.NOTIFICATIONS} element={<Notifications />} />
                     <Route path={PAGE.COMMUNITIES} element={<Communities />} />
                 </Route>
-
+                <Route element={<RequestRole allowRoles={[ROLE.ADMIN]} />}>
+                    <Route path={PAGE.ADMIN} element={<Admin />} />
+                </Route>
             </Route>
+
+            {/* <Route path={PAGE.ADMIN} element={<LayoutAdmin />}>
+               
+            </Route> */}
+
             <Route path={PAGE.TWEET_DETAIL} element={<TweetDetail />} />
         </Routes>
     )
