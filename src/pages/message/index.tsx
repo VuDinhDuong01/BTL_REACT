@@ -1,4 +1,4 @@
-import { useMemo } from "react"
+import { useContext, useMemo } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { useGetUserQuery } from "../../apis/follow"
@@ -8,18 +8,26 @@ import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { getProfileToLS } from "../../helps"
 import { Button } from "../../components/ui/button"
 import { cn } from "../../helps/cn"
+import { ContextAPI } from "../../hooks"
 
 
 export const Message = () => {
+    const { socket } = useContext(ContextAPI)
     const navigate = useNavigate()
     const { data: getUser, isLoading } = useGetUserQuery()
     const profile = getProfileToLS() as { user_id: string }
     const getListUser = useMemo(() => {
         return getUser?.data.filter(user => user._id !== profile?.user_id)
     }, [getUser?.data, profile?.user_id])
+
     const handleChatMessage = (receiver_id: string) => {
+        socket?.emit("check_user_active", {
+            from: profile.user_id,
+            to: receiver_id
+        })
         navigate(`/message/${receiver_id}`)
     }
+
     return (
         <div className="w-full  px-[20px]">
             <h3 className="text-[20px] font-[600] font-fontFamily mt-[50px]">Messages</h3>

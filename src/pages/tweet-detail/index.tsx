@@ -25,6 +25,7 @@ import { ListIcons } from "../../components/list-icons";
 import { UploadImageResponse, useUploadImageMutation } from "../../apis";
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from "../../apis/comment";
 import { GetCommentResponse, typeVideo } from "../../components/post";
+import { ViewIcon } from "../../assets/icons/eye";
 
 export const TweetDetail = () => {
   const [limitComment, setLimitComment] = useState<number>(2)
@@ -74,7 +75,7 @@ export const TweetDetail = () => {
     {
       id: 4,
       title: 'View',
-      icon: <Icons.CiViewList size={21} />,
+      icon: <ViewIcon />,
       numberOfTurns: tweetDetail?.data[0].user_views
     },
     {
@@ -143,13 +144,11 @@ export const TweetDetail = () => {
   const handleCreateComment = async () => {
     try {
       let uploadImage: UploadImageResponse[] = [];
-      if (file !== '') {
+      if (file !== '' && file instanceof File) {
         const formData = new FormData()
-        if (typeof file === 'string') {
-          formData.append("video", file)
-        } else {
-          formData.append("image", file)
-        }
+
+        formData.append("image", file)
+
         uploadImage = await uploadImages(formData).unwrap()
       }
 
@@ -157,7 +156,7 @@ export const TweetDetail = () => {
         tweet_id: tweet_id as string,
         user_id: user_id,
         content_comment: content,
-        image_comment: file !== '' ? uploadImage[0].image : ''
+        image_comment: file !== '' && file instanceof File ? uploadImage[0].image : file
       }).unwrap()
       SetFile('')
       setContent('')
@@ -169,20 +168,16 @@ export const TweetDetail = () => {
   const handleCreateRepliesComment = async () => {
     try {
       let uploadImage: UploadImageResponse[] = [];
-      if (fileRepliesComment !== '') {
+      if (fileRepliesComment !== '' && fileRepliesComment instanceof File) {
         const formData = new FormData()
-        if (typeof fileRepliesComment === 'string') {
-          formData.append("video", fileRepliesComment)
-        } else {
-          formData.append("image", fileRepliesComment)
-        }
+        formData.append("image", fileRepliesComment)
         uploadImage = await uploadImages(formData).unwrap()
       }
       await createRepliesComment({
         user_id: user_id,
         replies_comment_id: isShowInputRepliesComment,
         replies_content_comment: RepliesContent,
-        replies_image_comment: fileRepliesComment !== '' ? uploadImage[0].image : ''
+        replies_image_comment: fileRepliesComment !== '' && fileRepliesComment instanceof File ? uploadImage[0].image : fileRepliesComment
       }).unwrap()
       setRepliesContent('')
       setFileRepliesComment('')
@@ -277,7 +272,7 @@ export const TweetDetail = () => {
               loading ? <div className="mt-[200px]"><Skeleton /></div> : <>
                 {
                   (getComment as GetCommentResponse)?.data.length > 0 ? getComment?.data.map(comment => {
-                    return <div className='w-full flex mt-[15px]' key={comment._id}>
+                    return <div className='w-full flex mt-[30px]' key={comment._id}>
                       <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                       <div className='w-full'>
                         <div className='w-full'>
@@ -291,7 +286,7 @@ export const TweetDetail = () => {
                             </div>
                           }
                           <div className='w-full items-center justify-between flex'>
-                            <div className='w-[200px] mt-[5px] flex items-center justify-between'>
+                            <div className='w-[250px] mt-[5px] flex items-center justify-between'>
                               <p className='text-[15px] font-fontFamily'>{convertDateToHours(comment.created_at)}</p>
                               <div className='relative'>
                                 <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
@@ -391,6 +386,12 @@ export const TweetDetail = () => {
                           </>
 
                         }
+                         {
+                          Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment === false && <div className='flex items-center text-[15px] font-fontFamily mt-[-10px] font-[600] text-[#828484] mb-[10px]' onClick={() => setOpenReplyComment(true)}>
+                            <Icons.PiArrowBendUpRightThin size={25} />
+                            <p className='text-[16px] ml-[10px] my-[20px]'>{`Xem ${comment.replies_comments.length === 1 ? '' : 'tất cả'} ${comment?.replies_comments?.length} phản hồi`}</p>
+                          </div>
+                        }
                         {
                           <div className='w-full mt-[20px]'>
                             {
@@ -419,12 +420,7 @@ export const TweetDetail = () => {
                             }
                           </div>
                         }
-                        {
-                          Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment === false && <div className='flex items-center text-[15px] font-fontFamily mt-[-10px] font-[600] text-[#828484] mb-[10px]' onClick={() => setOpenReplyComment(true)}>
-                            <Icons.PiArrowBendUpRightThin size={25} />
-                            <p className='text-[16px] ml-[10px]'>{`Xem ${comment.replies_comments.length === 1 ? '' : 'tất cả'} ${comment?.replies_comments?.length} phản hồi`}</p>
-                          </div>
-                        }
+                       
                       </div>
                     </div>
                   }) : <div className='w-full h-full flex text-[20px] pt-[50px] items-center justify-center font-fontFamily font-[600] cursor-default'>{t('home.notComment')}</div>

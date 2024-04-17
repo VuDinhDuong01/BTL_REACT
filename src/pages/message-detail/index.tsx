@@ -3,11 +3,11 @@
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { ChatContainer, MessageList, MessageInput, ConversationHeader, Avatar, TypingIndicator, Message } from '@chatscope/chat-ui-kit-react';
 import { useEffect, useState, useRef, useContext } from 'react';
-import {t} from 'i18next'
+import { t } from 'i18next'
 
 import { EmojiPickers, ShowEmoji } from '../../components/common/emoji-picker';
 import { EmojiClickData } from 'emoji-picker-react';
-import {  getProfileToLS } from '../../helps';
+import { getProfileToLS } from '../../helps';
 import { useParams } from 'react-router-dom';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useGetConversationsQuery } from '../../apis/conversation';
@@ -16,16 +16,18 @@ import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 import { Skeleton } from '../../components/ui/skeleton';
 import { ContextAPI } from '../../hooks';
 
+
 interface MessageType {
   sender_id: string,
   content: string
 }
 
 export const MessageDetail = () => {
-   const {socket }= useContext(ContextAPI)
-
+  const { socket } = useContext(ContextAPI)
 
   const { receiver_id } = useParams()
+
+  const [userActive, setUserActive] = useState<string[]>([])
   const [focus, setFocus] = useState<string>('no_enter')
   const { data: getConversations, isLoading } = useGetConversationsQuery(receiver_id ? {
     receiver_id: receiver_id as string,
@@ -36,26 +38,24 @@ export const MessageDetail = () => {
   const { data: getMe } = useGetMeQuery(receiver_id ? {
     user_id: receiver_id
   } : skipToken)
+
   const refEmojiPicker = useRef<ShowEmoji>(null)
   const profile = getProfileToLS() as {
     user_id: string
   }
 
+
   const [listMessages, setListMessage] = useState<MessageType[]>([])
-  // const [lastMessage,setLastMessage]= useState<MessageType>({
-  //   sender_id: '',
-  //   content:''
-  // })
 
   const [message, setMessage] = useState<MessageType>({
     sender_id: '',
     content: ''
+    
   })
 
   useEffect(() => {
-  
     socket?.on('send_message', (data) => {
-      
+
       setListMessage(prev => ([...prev, {
         sender_id: data.from,
         content: data.content
@@ -67,11 +67,16 @@ export const MessageDetail = () => {
     socket?.on('no_text_input_events', data => {
       setFocus(data)
     })
+    socket?.on('check_active', (data: string[]) => {
+      setUserActive(data)
+    })
     socket?.on("disconnect", () => {
       console.log(socket?.id);
-    });
-
+    })
   }, [socket])
+
+
+  console.log(userActive)
 
   useEffect(() => {
     if (receiver_id) {
@@ -79,13 +84,6 @@ export const MessageDetail = () => {
     }
   }, [getConversations, receiver_id])
 
-  // useEffect(()=>{
-  //   if(listMessages?.length > 0 ){
-  //     setLastMessage(listMessages[listMessages?.length -1])
-  //   }
-  // },[listMessages])
-
-// console.log(lastMessage)
   const handleSendMessage = (textContent: string) => {
     if (socket) {
       socket.emit('message_private', {
@@ -133,6 +131,12 @@ export const MessageDetail = () => {
     }
   }
 
+  useEffect(()=>{
+    socket?.on('check_active',(data)=>{
+      console.log(data)
+    })
+  },[socket])
+
   return (
     <div className=' h-[100vh] max-w-[610px] relative  '>
       <EmojiPickers ref={refEmojiPicker} handleShowEmojiPicker={handleShowEmojiPicker} className=' bottom-[50px] fixed  z-50 ' />
@@ -149,7 +153,7 @@ export const MessageDetail = () => {
             src={getMe?.data[0].avatar ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR}
           />
           <ConversationHeader.Content
-            info="Active 10 mins ago"
+            info={userActive.includes(receiver_id as string) ? <div className='flex items-center mt-[5px]'><div className='w-[10px] mr-[10px] h-[10px] rounded-[50%] bg-green1'></div><p className='text-[15px] font-fontFamily'>{t('home.active')}</p></div> : t('home.noActive')}
             userName={getMe?.data[0].name}
           />
           <ConversationHeader.Actions>
@@ -169,7 +173,7 @@ export const MessageDetail = () => {
                     message: messages.content,
                     position: 'single',
                   }}
-                  
+
                 >
                   {
                     profile.user_id !== messages.sender_id &&

@@ -36,6 +36,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [content, setContent] = useState<string>('')
     const [RepliesContent, setRepliesContent] = useState<string>('')
     const [file, SetFile] = useState<File | string>('')
+    console.log(file)
     const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
     const [openReplyComment, setOpenReplyComment] = useState<boolean>(false)
     const [uploadImages] = useUploadImageMutation()
@@ -92,13 +93,9 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 })
             }
             let uploadImage: UploadImageResponse[] = [];
-            if (file !== '') {
+            if (file !== '' && file instanceof File) {
                 const formData = new FormData()
-                if (typeof file === 'string') {
-                    formData.append("video", file)
-                } else {
-                    formData.append("image", file)
-                }
+                formData.append("image", file)
                 uploadImage = await uploadImages(formData).unwrap()
             }
 
@@ -106,7 +103,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 tweet_id: tweet_id,
                 user_id: user_id,
                 content_comment: content,
-                image_comment: file !== '' ? uploadImage[0].image : ''
+                image_comment: file !== '' && file instanceof File ? uploadImage[0].image : file
             }).unwrap()
             SetFile('')
             setContent('')
@@ -118,20 +115,16 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const handleCreateRepliesComment = async () => {
         try {
             let uploadImage: UploadImageResponse[] = [];
-            if (fileRepliesComment !== '') {
+            if (fileRepliesComment !== '' && fileRepliesComment instanceof File) {
                 const formData = new FormData()
-                if (typeof fileRepliesComment === 'string') {
-                    formData.append("video", fileRepliesComment)
-                } else {
-                    formData.append("image", fileRepliesComment)
-                }
+                formData.append("image", fileRepliesComment)
                 uploadImage = await uploadImages(formData).unwrap()
             }
             await createRepliesComment({
                 user_id: user_id,
                 replies_comment_id: isShowInputRepliesComment,
                 replies_content_comment: RepliesContent,
-                replies_image_comment: fileRepliesComment !== '' ? uploadImage[0].image : ''
+                replies_image_comment: fileRepliesComment !== '' && fileRepliesComment instanceof File ? uploadImage[0].image : fileRepliesComment
             }).unwrap()
             setRepliesContent('')
             setFileRepliesComment('')
@@ -205,7 +198,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 </div>
                                                             }
                                                             <div className='w-full items-center justify-between flex'>
-                                                                <div className='w-[200px] mt-[5px] flex items-center justify-between'>
+                                                                <div className='w-[250px] mt-[5px] flex items-center justify-between'>
                                                                     <p className='text-[15px] font-fontFamily text-black'>{convertDateToHours(comment.created_at)}</p>
                                                                     <div className='relative'>
                                                                         <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline', {
@@ -238,14 +231,14 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                 }
                                                             </div>
 
-                                                          
+
                                                         </div>
                                                         {
                                                             (Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment)
                                                             && <>
                                                                 {
                                                                     comment?.replies_comments?.map(replies_comment => {
-                                                                        return <div className=' mt-[10px]' key={replies_comment._id}>
+                                                                        return <div className=' mt-[30px]' key={replies_comment._id}>
                                                                             <div className='flex mb-[10px]'>
                                                                                 <img src={replies_comment?.avatar ? replies_comment?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                                                                                 <div>
@@ -277,7 +270,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                                 <img src={replies_comment.replies_image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
                                                                                             </div>
                                                                                         }
-                                                                                        <div className='w-[200px] mt-[5px] flex items-center'>
+                                                                                        <div className='w-[250px] mt-[5px] flex items-center'>
                                                                                             <p className='text-[15px] font-fontFamily w-[150px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
                                                                                             <div className='w-full relative'>
                                                                                                 <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
@@ -305,40 +298,41 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                             </>
 
                                                         }
-                                                        {
-                                                              <div className='w-full mt-[20px]'>
-                                                              {
-                                                                  isShowInputRepliesComment === comment._id && (<>
-                                                                      <InputPost
-                                                                          className='p-[5px]  text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5] !h-[100px]'
-                                                                          file={fileRepliesComment as File}
-                                                                          setFile={setFileRepliesComment}
-                                                                          avatar_user={users.avatar}
-                                                                          content={RepliesContent}
-                                                                          setContent={setRepliesContent}
-                                                                          handleCreateComment={handleCreateRepliesComment}
-                                                                      />
-                                                                      <div className='relative '>
-                                                                          {
-                                                                              fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
-                                                                          }
-                                                                          <div className=' absolute right-[0px] top-0  cursor-pointer text-black ' onClick={() => setFileRepliesComment('')}>
-                                                                              {
-                                                                                  fileRepliesComment && <Icons.IoMdClose size={25} />
-                                                                              }
-                                                                          </div>
-                                                                      </div>
-                                                                  </>
-                                                                  )
-                                                              }
-                                                          </div>
-                                                        }
-                                                        {
+                                                         {
                                                             Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment === false && <div className='flex items-center text-[15px] font-fontFamily mt-[-10px] font-[600] text-[#828484] mb-[10px]' onClick={() => setOpenReplyComment(true)}>
                                                                 <Icons.PiArrowBendUpRightThin size={25} />
-                                                                <p className='text-[16px] ml-[10px]'>{`Xem ${comment.replies_comments.length === 1 ? '' : 'tất cả'} ${comment?.replies_comments?.length} phản hồi`}</p>
+                                                                <p className='text-[16px] ml-[10px] my-[20px]'>{`Xem ${comment.replies_comments.length === 1 ? '' : 'tất cả'} ${comment?.replies_comments?.length} phản hồi`}</p>
                                                             </div>
                                                         }
+                                                        {
+                                                            <div className='w-full mt-[20px]'>
+                                                                {
+                                                                    isShowInputRepliesComment === comment._id && (<>
+                                                                        <InputPost
+                                                                            className='p-[5px]  text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5] !h-[100px]'
+                                                                            file={fileRepliesComment as File}
+                                                                            setFile={setFileRepliesComment}
+                                                                            avatar_user={users.avatar}
+                                                                            content={RepliesContent}
+                                                                            setContent={setRepliesContent}
+                                                                            handleCreateComment={handleCreateRepliesComment}
+                                                                        />
+                                                                        <div className='relative '>
+                                                                            {
+                                                                                fileRepliesComment && <img src={typeof fileRepliesComment === 'string' ? fileRepliesComment : URL.createObjectURL(fileRepliesComment as File)} alt='flag-image' className='w-[100px] h-[50px] object-cover  rounded-[10px] ml-[50px] my-[5px]' />
+                                                                            }
+                                                                            <div className=' absolute right-[0px] top-0  cursor-pointer text-black ' onClick={() => setFileRepliesComment('')}>
+                                                                                {
+                                                                                    fileRepliesComment && <Icons.IoMdClose size={25} />
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                    </>
+                                                                    )
+                                                                }
+                                                            </div>
+                                                        }
+                                                       
                                                     </div>
                                                 </div>
                                             }) : <div className='w-full h-full flex text-[20px] items-center justify-center font-fontFamily font-[600] cursor-default text-black'>{t('home.notComment')}</div>

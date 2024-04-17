@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type ChangeEvent, useRef, useState, useEffect, useLayoutEffect } from 'react'
+import { type ChangeEvent, useRef, useState, useEffect } from 'react'
 import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
@@ -243,7 +243,7 @@ export const PostArticle = () => {
                 title: t('home.everyone'),
                 icon: <Icons.AiOutlineGlobal />
             })
-            isLoading || isLoadingUploadImage || isLoadingUploadVideo && setIsDisable(true) 
+            isLoading || isLoadingUploadImage || isLoadingUploadVideo && setIsDisable(true)
         } catch (error: unknown) {
             console.log(error)
         }

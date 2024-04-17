@@ -73,19 +73,21 @@
         "comment":"Comments",
         "posts":"Posts",
         "editProfile":"Edit profile",
-        "notPost":"There are no posts",
         "comments":"Comments",
         "youAreUseSocialApplication":"You are a social application user",
         "notComment":"There are not comments!",
         "notNotification":"There are not notifications!",
+        "notPost":"There are no posts",
         "notifications":"Notifications",
-        "seeMoreComments":"See more comments"
+        "seeMoreComments":"See more comments",
+        "active":"Active",
+        "noActive":"No Active"
 
     },
     "sideBarRight":{
         "search":"Search",
-        "peopleFriendsWith":"People you can Make friends with",
         "follow":"Follow",
+        "peopleFriendsWith":"People you can Make friends with",
         "following":"Following",
         "searchFor":"Search for"
     }

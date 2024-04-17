@@ -5,7 +5,7 @@ import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
 
-import { BookMarkIcon, CommunicationIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
+import { BookMarkIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
 import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
@@ -112,12 +112,12 @@ export const SidebarLeft = () => {
           </>
 
         </NavLink>
-        <NavLink to={PAGE.COMMUNITIES} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
+        {/* <NavLink to={PAGE.COMMUNITIES} className={({ isActive }) => isActive ? "flex items-center no-underline hover:w-[80%] hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "hover:w-[80%] flex items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}>
           <div className="ml-[10px]">
             <CommunicationIcon />
           </div>
           <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">{t('sidebarLeft.communities')}</p>
-        </NavLink>
+        </NavLink> */}
         <Tippy
           hideOnClick={isShowTippy}
           trigger='click'

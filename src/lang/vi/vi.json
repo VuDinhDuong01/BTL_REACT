@@ -78,7 +78,9 @@
         "notComment":"Không có bình luận nào!",
         "notNotification":"Bạn không có thông báo nào!",
         "notifications":"Thông báo của bạn",
-        "seeMoreComments":"xem thêm bình luận"
+        "seeMoreComments":"xem thêm bình luận",
+        "active":"Đang hoạt động",
+        "noActive":"Không hoạt động"
 
     },
     "sideBarRight":{

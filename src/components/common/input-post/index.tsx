@@ -90,7 +90,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
         <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
         <div className='flex-1 relative w-full'>
             <textarea className={className} placeholder={t('home.comment')} value={content} onChange={handleChange} rows={5} ref={textAreaRef}></textarea>
-            <ShowGIF ref={refGif} limit={50} setGif={setFile} />
+            <ShowGIF ref={refGif} limit={50} setGif={setFile as any} />
             <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute  top-[-460px] right-[50px] z-[9]' />
             <div className="w-full flex items-center absolute bottom-[5px] left-[10px]">
                 {
@@ -103,7 +103,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
                             }</div>
                     })
                 }
-                <input type="file" style={{ display: 'none' }} ref={inputRef} onChange={handleFile} />
+                <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none' }} ref={inputRef} onChange={handleFile} />
             </div>
             <div className="absolute bottom-[5px] right-[10px]">
                 <Button disabled={
