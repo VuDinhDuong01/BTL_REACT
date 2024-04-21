@@ -1,20 +1,18 @@
 
-import { HeaderAdmin } from '../../components/header-admin'
-import { SideBarAdmin } from '../../components/sidebar-admin'
+import { ReactNode } from 'react'
 import { Outlet } from 'react-router-dom'
 
-export const LayoutAdmin = () => {
-    return (
-        <div>
-            <HeaderAdmin />
-            <div className='w-full h-[100vh] flex items-center'>
-                <div className='w-[300px]'>
-                    <SideBarAdmin />
-                </div>
-                <div className='flex-1'>
-                    <Outlet />
-                </div>
-            </div>
-        </div>
-    )
+import { SideBarAdmin } from '../../components/sidebar-admin' 
+
+const LayoutAdmin = ({ children }: { children?: ReactNode }) => {
+  return (
+    <div className='w-full flex '>
+      <div className='2xl:w-[260px] md:w-[180px] w-[100px]'><SideBarAdmin /></div>
+      <div className='flex-1 md:flex-1  bg-[#F0F6FF] w-full '>
+        {children}
+        <Outlet />
+      </div>
+    </div>
+  )
 }
+export default LayoutAdmin

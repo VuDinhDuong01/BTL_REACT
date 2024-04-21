@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { createContext, useState, type ReactNode, type SetStateAction, type Dispatch, useEffect } from 'react'
-import {  getProfileToLS } from '../helps'
+import {  getAdminToLS, getProfileToLS } from '../helps'
 import { NotificationType } from '../components/post'
 import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from '../apis/comment'
 import { Socket } from 'socket.io-client'
@@ -26,7 +26,7 @@ interface ContextProp {
 }
 
 const init = {
-    auth: '',
+    auth: getAdminToLS() ?? ''  ,
     setAuth: () => null,
     reset: () => null,
     handleLike: (_id_comment: string) => null,
@@ -49,11 +49,12 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const [listNotification, setListNotification] = useState<NotificationType[]>([])
     const [likeComment] = useLikeCommentMutation()
     const [likeRepliesComment] = useCreateLikeRepliesCommentMutation()
-    const [auth, setAuth] = useState<string>('')
+    const [auth, setAuth] = useState<string>(getAdminToLS() ??'')
     const [isHovered, setIsHovered] = useState<string>('')
     const [socket, setSocket] = useState<null | Socket>(null)
 
     const profile = getProfileToLS() as { user_id: string }
+     
     const handleLike = (_id_comment: string) => {
         setIsHovered(_id_comment)
     }

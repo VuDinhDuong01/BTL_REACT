@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from 'axios';
 import { BaseQueryFn } from '@reduxjs/toolkit/query/react';
-import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setProfileToLS, setRefreshTokenToLS } from '../helps';
+import { getAccessTokenToLS, getRefreshTokenToLS, removeLS, setAccessTokenToLS, setAdminToLS, setProfileToLS, setRefreshTokenToLS } from '../helps';
 import { URL_API } from '../constants';
 // import { ToastMessage } from '../helps/toast-message';
 import { checkToken } from '../helps/check-token';
@@ -51,6 +51,7 @@ instance.interceptors.response.use(function (response) {
         refreshToken = response.data.data.refresh_token
         setAccessTokenToLS(accessToken)
         setRefreshTokenToLS(refreshToken)
+        setAdminToLS(response.data.data.user.roles[0])
         setProfileToLS({ username: response?.data.data.user.username, user_id: response?.data.data.user._id as string, avatar: response?.data.data.user.avatar })
     } else if (response.config.url === URL_API.LOGOUT_OUT) {
         accessToken = ''

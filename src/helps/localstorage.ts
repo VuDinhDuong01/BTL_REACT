@@ -7,8 +7,7 @@ export const keyLocalStorage = {
     refresh_token: 'refresh_token',
     profile: 'profile',
     lng: 'lng',
-    like: 'like',
-    bookmark: 'bookmark'
+    checkAdmin: 'admin'
 }
 export const setLanguageToLS = (lng: string) => {
     return lng ? localStorage.setItem(keyLocalStorage.lng, lng) : localStorage.setItem(keyLocalStorage.lng, 'vi')
@@ -30,8 +29,8 @@ export const getRefreshTokenToLS = () => {
     return localStorage.getItem(keyLocalStorage.refresh_token)
 }
 
-export const setProfileToLS = ({ user_id, username, avatar }: { user_id: string, username?: string , avatar?:string}) => {
-    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify({ user_id, username , avatar}))
+export const setProfileToLS = ({ user_id, username, avatar }: { user_id: string, username?: string, avatar?: string }) => {
+    return user_id && localStorage.setItem(keyLocalStorage.profile, JSON.stringify({ user_id, username, avatar }))
 }
 
 export const getProfileToLS = () => {
@@ -42,15 +41,18 @@ export const removeLS = () => {
     localStorage.removeItem(keyLocalStorage.profile)
     localStorage.removeItem(keyLocalStorage.access_token)
     localStorage.removeItem(keyLocalStorage.refresh_token)
-
+    localStorage.removeItem(keyLocalStorage.checkAdmin)
     const clearLSEvent = new Event('clearLS')
     LocalStorageEventTarget.dispatchEvent(clearLSEvent)
 
 }
 
-export const setLikeLS = (like: boolean) => {
-    return like && localStorage.setItem(keyLocalStorage.like, JSON.stringify(like))
+export const setAdminToLS = (value: string) => {
+    return value && localStorage.setItem(keyLocalStorage.checkAdmin, value)
 }
-export const getLikeLS = () => {
-    return Boolean(JSON.parse(localStorage.getItem(keyLocalStorage.like) as string))
+
+export const getAdminToLS = () => {
+    return localStorage.getItem(keyLocalStorage.checkAdmin)
 }
+
+

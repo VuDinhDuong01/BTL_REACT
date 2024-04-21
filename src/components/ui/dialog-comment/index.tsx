@@ -49,7 +49,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
         limit: limitComment,
         page: 1
     } : skipToken)
-    console.log(getComment)
     const showPopup = () => {
         setIsShowPopup(true)
     }

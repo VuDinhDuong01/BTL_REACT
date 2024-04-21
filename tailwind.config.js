@@ -25,6 +25,21 @@ export default {
       backgroundImage:{
         'background-image':"url('./src/assets/images/bg.jpg')"
       },
+      keyframes: {
+        slideBottom: {
+          "0%" :{
+            "-webkit-transform": "translateY(0)",
+              transform: "translateY(0)",
+          },
+          "100%":{
+            "-webkit-transform": "translateY(5px)",
+            transform: "translateY(5px)"
+          }
+        }
+      },
+      animation: {
+        slideBottom: 'slideBottom 1s ease-in-out',
+      },
       ringWidth: ['focus-visible'],
       ringColor: ['focus-visible'],
       borderColor: ['focus-visible'],

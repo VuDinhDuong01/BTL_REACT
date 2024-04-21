@@ -8,7 +8,9 @@ import { baseCreateApi } from './createApi'
 import { GenerateType } from '../types/generate'
 import { Tweet } from '../types/tweet'
 
-const { REGISTER, GET_SEARCH_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE } = URL_API
+const { REGISTER, GET_SEARCH_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE, ALL_USER,
+  DELETE_USER,
+  DELETE_MANY_USER } = URL_API
 interface ConfirmCodeMutation {
   forgot_password_token: string
   user_id: string
@@ -110,7 +112,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         data
       }),
     }),
-    uploadVideo: build.mutation<{message:string , path: string }, FormData>({
+    uploadVideo: build.mutation<{ message: string, path: string }, FormData>({
       query: (data) => ({
         url: UPLOAD_VIDEO,
         method: METHOD_API.POST,
@@ -142,11 +144,37 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
       // providesTags: ['getMe', 'login','getListTweet']
     }),
+    getAllUser: build.query<any, { limit?: string, page?: string, username?: string, sort_by?: string, order?: string }>({
+      query: (params) => ({
+        url: ALL_USER,
+        method: METHOD_API.GET,
+        params
+      }),
+    }),
+    deleteUser: build.mutation<any, { user_id: string }>({
+      query: (params) => ({
+        url: DELETE_USER,
+        method: METHOD_API.DELETE,
+        params
+      }),
+    }),
+    deleteManyUser: build.mutation<any, { manyId: string[] }>({
+      query: (data) => ({
+        url: DELETE_MANY_USER,
+        method: METHOD_API.DELETE,
+        data
+      }),
+    }),
   }),
+
 
 })
 
-export const { useLoginMutation,
+export const {
+  useGetAllUserQuery,
+  useDeleteManyUserMutation,
+  useDeleteUserMutation,
+  useLoginMutation,
   useRegisterMutation,
   useVerifyEmailMutation,
   useConfirmEmailMutation,

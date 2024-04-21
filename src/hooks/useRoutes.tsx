@@ -19,24 +19,17 @@ import { MessageDetail } from "../pages/message-detail";
 import { TweetDetail } from "../pages/tweet-detail";
 import Notifications from "../pages/notifications";
 import { Communities } from "../pages/communities";
-import { LayoutAdmin } from "../layouts/admin";
+import  LayoutAdmin  from "../layouts/admin";
 
 import { Admin } from "../pages/admin";
 import { ContextAPI } from "./useContext";
 import { useContext } from "react";
-// import { useContext } from "react";
-// import { ContextAPI } from ".";
+import AdminUser from "../pages/admin/admin-user";
+
 
 export const route = () => {
     const { auth } = useContext(ContextAPI)
-    // const ProtectedRouter = () => {
-    //     auth ? <Navigate to={PAGE.HOME} /> : <Navigate to={PAGE.LOGIN} replace />
-    // }
-
-    // const UnProtected = () => {
-    //     !auth ? <Navigate to={PAGE.LOGIN} replace /> : <Navigate to={PAGE.HOME} />
-    // }
-
+ 
     return (
         <Routes>
             <Route path={PAGE.REGISTER} element={<Register />} />
@@ -57,12 +50,9 @@ export const route = () => {
                 </Route>
                 <Route element={<RequestRole allowRoles={[ROLE.ADMIN]} />}>
                     <Route path={PAGE.ADMIN} element={<Admin />} />
+                    <Route path={PAGE.USER} element={<AdminUser />} />
                 </Route>
             </Route>
-
-            {/* <Route path={PAGE.ADMIN} element={<LayoutAdmin />}>
-               
-            </Route> */}
 
             <Route path={PAGE.TWEET_DETAIL} element={<TweetDetail />} />
         </Routes>

@@ -32,5 +32,8 @@ export const URL_API = {
     GET_CONVERSATION:'conversations',
     TWEET_DETAIL:'tweet',
     GET_SEARCH_USER:'get_search_user',
-    GET_NOTIFICATION:'notification'
+    GET_NOTIFICATION:'notification',
+    ALL_USER:'all_user',
+    DELETE_USER:'user',
+    DELETE_MANY_USER:'user'
 } as const 

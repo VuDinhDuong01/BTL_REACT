@@ -13,5 +13,14 @@ export const PAGE={
     MESSAGE_DETAIL:'/message/:receiver_id',
     TWEET_DETAIL:'/tweet/:tweet_id',
     COMMUNITIES:'/communities/:user_id',
-    ADMIN:'/admin'
+    ADMIN:'/admin',
+    USER:'/user',
+    post: "/",
+    addpost: '/addpost',
+    addauthor: '/addauthor',
+    addtag: '/addtag',
+    addtopic: '/addtopic',
+    topic: '/topic',
+    author: '/author',
+    tag: '/tag',
 } as const 

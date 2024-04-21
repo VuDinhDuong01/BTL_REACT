@@ -1,0 +1,19 @@
+FROM node:14-alpine AS builder
+
+ENV NODE_ENV=development
+
+WORKDIR /App
+
+
+COPY package*.json .
+COPY tsconfig.json .
+
+RUN npm ci 
+
+COPY . .
+
+RUN npm run build 
+
+EXPOSE 4000 
+
+CMD ["npm","run","dev"]

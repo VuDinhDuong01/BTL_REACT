@@ -13,13 +13,14 @@ import { ContextAPI } from '../../../hooks';
 import { ErrorHandle } from '../../../types/login';
 import { Loading } from '../../../assets/icons/eye';
 import { PAGE } from '../../../constants';
+import { getAdminToLS } from '../../../helps';
 
 
 
 
 export const Login = () => {
 
-  const { setAuth } = useContext(ContextAPI)
+  const {  setAuth } = useContext(ContextAPI)
   const { t } = useTranslation();
   const loginSchema = AuthSchema.omit({ name: true, confirm_password: true, forgot_password_token: true })
   const [isDisable, setIsDisable] = useState<boolean>(false)
@@ -36,9 +37,9 @@ export const Login = () => {
   const onSubmit = handleSubmit(async (data) => {
     try {
 
-      const res = await Login(data).unwrap()
+     const res =  await Login(data).unwrap()
       setAuth(res.data.user.roles[0] as string)
-      navigate(res.data.user.roles[0] ==='admin' ? PAGE.ADMIN :PAGE.HOME)
+      navigate(getAdminToLS() === 'admin' ? PAGE.ADMIN :PAGE.HOME)
     } catch (error) {
       const e = error as ErrorHandle
       for (const key in e.data.error) {
