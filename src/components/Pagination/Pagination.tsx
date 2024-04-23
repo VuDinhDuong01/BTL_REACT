@@ -1,24 +1,23 @@
 import range from 'lodash/range'
 import clsx from 'clsx'
 import { useNavigate, createSearchParams } from 'react-router-dom'
-import Swal from 'sweetalert2';
-import 'sweetalert2/dist/sweetalert2.css';
 
-import { useQueryString } from '~/hook/useQuery'
-import { Button } from '../Button/Button'
-import { Images } from '~/utils/Image'
+import { queryList } from '../../hooks';
+import { Button } from '../ui/button';
+import { Images } from '../../assets/images';
+import { confirmAlert } from 'react-confirm-alert';
+import { useDeleteManyUserMutation } from '../../apis';
 
 interface PaginationType {
   total_page: number
   currentPage: number,
   path: string,
   checkBox: string[]
-  handleDeleteMany: () => void
 }
 
 const RANGE = 2
-export const Pagination = ({ total_page, currentPage, path, handleDeleteMany, checkBox }: PaginationType) => {
-  const query = useQueryString()
+export const Pagination = ({ total_page, currentPage, path, checkBox }: PaginationType) => {
+  const [deleteAllUser] = useDeleteManyUserMutation()
   const navigate = useNavigate()
   let showDotBefore = true
   let showDotAfter = true
@@ -40,9 +39,9 @@ export const Pagination = ({ total_page, currentPage, path, handleDeleteMany, ch
 
   const handlePageChange = (indexPage: number) => {
     navigate({
-      pathname: path,
+      pathname:path,
       search: createSearchParams({
-        ...query,
+        ...queryList,
         page: indexPage.toString()
 
       }).toString()
@@ -52,20 +51,20 @@ export const Pagination = ({ total_page, currentPage, path, handleDeleteMany, ch
   const handlePrevPage = () => {
     if (currentPage === 1) return
     navigate({
-      pathname: '',
+      pathname:path,
       search: createSearchParams({
-        ...query,
+        ...queryList,
         page: (currentPage - 1).toString()
       }).toString()
     })
   }
 
   const handleNextPage = () => {
-    if (currentPage === total_page) return
+    if (Number(currentPage) === Number(total_page)) return
     navigate({
-      pathname: '',
+      pathname:path,
       search: createSearchParams({
-        ...query,
+        ...queryList,
         page: (currentPage + 1).toString()
       }).toString()
     })
@@ -86,7 +85,7 @@ export const Pagination = ({ total_page, currentPage, path, handleDeleteMany, ch
         return <div key={index}>{dotAfter()}</div>
       }
       return <Button key={index} className={clsx({
-        ['w-[24px] h-[24px] border text-[14px] border-[#D5D8DD] font-Roboto']: true,
+        ['w-[24px] h-[24px] border text-[14px] border-[#D5D8DD] font-fontFamily']: true,
         ['text-white bg-[#186E25]']: currentPage === indexPage,
         ['bg-white text-[#000]']: currentPage
           !== indexPage
@@ -94,22 +93,29 @@ export const Pagination = ({ total_page, currentPage, path, handleDeleteMany, ch
     })
   }
 
-  const handleDelete = () => {
-   if(checkBox.length > 0){
-    Swal.fire({
-      title: 'Xác nhận xóa',
-      text: 'Bạn có chắc chắn muốn xóa mục này?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleDeleteMany()
-        Swal.fire('Đã xóa!', 'Mục đã được xóa.', 'success');
+
+  const handleAllDelete = async() => {
+    if (checkBox.length > 0) {
+      try {
+        confirmAlert({
+          message: 'Bạn có chắc chắn xóa các user này không?',
+          buttons: [
+            {
+              label: 'Yes',
+              onClick: async () => await deleteAllUser({
+                manyId: checkBox!
+              })
+            },
+            {
+              label: 'No',
+            }
+          ]
+        });
+
+      } catch (error: unknown) {
+        console.log(error)
       }
-    });
-   }
+    }
   }
   return (
     <div className="bg-[#E3E5E8] h-[45px] flex items-center justify-between px-[10px]">
@@ -120,19 +126,19 @@ export const Pagination = ({ total_page, currentPage, path, handleDeleteMany, ch
         </div>
 
         <button className={clsx({
-          ['px-[8px] py-[6px] flex items-center justify-center mb-[2px]  text-[16px] font-Roboto text-white font-[500]']: true,
+          ['px-[8px] py-[6px] flex items-center justify-center mb-[2px]  text-[16px] font-fontFamily text-white font-[500]']: true,
           ['cursor-not-allowed bg-[#db5f5f]']: checkBox.length === 0,
           ['cursor-pointer bg-[red]']: checkBox.length > 0
-        })} onClick={handleDelete}>Xóa</button>
+        })} onClick={handleAllDelete}>Xóa</button>
       </div>
       <div className="flex items-center">
         <button className={clsx({
-          ['w-[24px] h-[24px] ]  text-[14px] font-Roboto   bg-white flex items-center justify-center']: true,
+          ['w-[24px] h-[24px] ]  text-[14px] font-fontFamily   bg-white flex items-center justify-center']: true,
           ['cursor-not-allowed']: currentPage === 1
-        })} onClick={handlePrevPage}><img src={Images.Left} alt="" className='w-[15px] h-[15px] object-cover' /></button>
+        })} onClick={handlePrevPage}><img src={Images.Left} alt="" className='w-[15px] h-[15px] object-cover cursor-pointer' /></button>
         {Pagination()}
         <button className={clsx({
-          ['w-[24px] h-[24px]  text- text-[14px] font-Roboto flex items-center justify-center bg-white']: true,
+          ['w-[24px] h-[24px]  text- text-[14px] font-fontFamily flex items-center justify-center bg-white']: true,
           ['cursor-not-allowed']: currentPage === total_page
         })} onClick={handleNextPage}><img src={Images.Right} alt="" className='w-[15px] h-[15px] object-cover' /></button>
       </div>

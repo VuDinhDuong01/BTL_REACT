@@ -1,12 +1,11 @@
-import { useNavigate, Link } from 'react-router-dom'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useNavigate } from 'react-router-dom'
 
 import { useState } from 'react'
 
 import { Pagination } from '../../../components/Pagination/Pagination' 
 import { PAGE } from '../../../constants' 
-// import { QueryType, useQueryString, Theme } from '~/hook/index'
-import { OverNight } from '../../../components/OverNight/OverNight' 
-// import { GeneralType, PostType } from '~/types/index.types'
 import {  customHandle } from '../../../hooks/handleFn'
 import { Button } from '../../../components/ui/button' 
 import { NotItem } from '../../../components/NotItem/NotItem' 
@@ -15,34 +14,22 @@ import { Input } from '../../../components/Input'
 import { TippyFilter } from '../../../components/TippyFilter/TippyFilter' 
 import { TablePost } from '../../../components/TablePost/TablePost' 
 import { LoadingSkeleton } from '../../../components/LoadingSkeleton' 
-import { HelmetAsync } from '../../../components/Helmet/Helmet' 
 import { Images } from '../../../assets/images'
+import { queryList, queryStringSearch } from '../../../hooks'
+import { useGetAllUserQuery } from '../../../apis'
 
 const AdminUser = () => {
   const [checkBox, setCheckBox] = useState<string[]>([])
   const [nameSearch, setNameSearch] = useState<string>('')
   const navigate = useNavigate()
 
-  const query: QueryType = useQueryString()
-  // const { toggle, setToggle } = useContext(Theme)
+  const query: any = queryStringSearch()
 
-  // const { data: dataPost, isLoading } = useQuery({
-  //   queryKey: ['getAllPost', query],
-  //   queryFn: () => postApi.getAllPost(query)
-  // })
-
-  // const deletePostMutation = useMutation({
-  //   mutationFn: (post_id: string) => postApi.deletePost(post_id)
-  // })
-
-  const handleDeletePost = (user_id: string) => {
-    // deletePostMutation.mutate(post_id, {
-    //   onSuccess: () => {
-    //     // setToggle(false)
-    //     queryClient.invalidateQueries(['getAllPost'])
-    //   }
-    // })
-  }
+  const { data: dataPost,isLoading } = useGetAllUserQuery( {
+    
+    limit:Number(queryList.limit),
+    page:Number(queryList.page)
+  } )
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -67,31 +54,12 @@ const AdminUser = () => {
     customFilter()
   }
 
-  // const { mutate } = useMutation({
-  //   mutationFn: (body: string[]) => postApi.deleteManyPost(body)
-  // })
-
-  const handleDeleteManyPost = () => {
-    // mutate(checkBox, {
-    //   onSuccess: () => {
-    //     queryClient.invalidateQueries(['getAllPost'])
-    //     setCheckBox([])
-    //   }
-    // })
-  }
 
   return (
     <div className='h-screen 2xl:px-[15px] md:px-[5px] w-full mt-[26px] min-h-screen overflow-scroll'>
-      <HelmetAsync title='Bài viết' />
       <div className='flex  items-center justify-between mb-[18px] '>
-        <h2 className='text-black font-Roboto text-[24px] font-[600] leading-[20px]'>Danh mục bài viết</h2>
-        <Link to={PAGE.addtopic}>
-          {' '}
-          <Button className='px-[8px] py-[10px] h-[32px] gap-[6px] bg-green rounded-[3px] flex items-center '>
-            <img src={Images.Add} alt='' className='w-[20px] h-[20px] object-cover' />
-            <p className='text-white font-Roboto text-[16px] font-[400]'>Bài viết mới</p>
-          </Button>
-        </Link>
+        <h2 className='text-black font-fontFamily text-[24px] font-[600] leading-[20px] mt-[20px]'>Danh mục người dùng</h2>
+   
       </div>
       <div className='flex  items-center justify-between '>
         <div className='flex items-center'>
@@ -106,7 +74,6 @@ const AdminUser = () => {
               <img src={Images.Search} alt='' className='w-[18px] h-[18px] object-cover' />
             </Button>
           </form>
-          <TippyFilter handleFilter={handleFilter} ObjectFilter={ObjectFilterTopic} />
         </div>
         <TippySort handleSort={handleSort} sort_by='post' title='bài viết' />
       </div>
@@ -116,24 +83,22 @@ const AdminUser = () => {
         <>
           <TablePost
             setCheckBox={setCheckBox}
-            // handleUpdatePost={handleUpdatePost}
-            dataPost={(dataPost as GeneralType<PostType[]>)?.data}
+            dataPost={(dataPost as any)?.data}
             checkBox={checkBox}
           />
-          {(dataPost as GeneralType<PostType[]>)?.data.length > 0 ? (
+          {(dataPost as any)?.data.length > 0 ? (
             <Pagination
               total_page={dataPost?.total_page as number}
-              currentPage={Number(query.page)}
-              path={PAGE.post}
+              currentPage={Number(queryList.page)}
+              path={PAGE.ADMIN}
               checkBox={checkBox}
-              handleDeleteMany={handleDeleteManyPost}
+            
             />
           ) : (
-            <NotItem path={PATH.post} />
+            <NotItem path={PAGE.ADMIN} />
           )}
         </>
       )}
-      {toggle && <OverNight handleDelete={handleDeletePost} />}
     </div>
   )
 }

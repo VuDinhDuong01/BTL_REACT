@@ -144,19 +144,21 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
       // providesTags: ['getMe', 'login','getListTweet']
     }),
-    getAllUser: build.query<any, { limit?: string, page?: string, username?: string, sort_by?: string, order?: string }>({
+    getAllUser: build.query<any, { limit?: number, page?: number, username?: string, sort_by?: string, order?: string }>({
       query: (params) => ({
         url: ALL_USER,
         method: METHOD_API.GET,
         params
       }),
+      providesTags: ['getListUser']
     }),
     deleteUser: build.mutation<any, { user_id: string }>({
-      query: (params) => ({
+      query: (data) => ({
         url: DELETE_USER,
         method: METHOD_API.DELETE,
-        params
+        data
       }),
+      invalidatesTags:['getListUser']
     }),
     deleteManyUser: build.mutation<any, { manyId: string[] }>({
       query: (data) => ({
@@ -164,6 +166,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
         method: METHOD_API.DELETE,
         data
       }),
+      invalidatesTags:['getListUser']
     }),
   }),
 
@@ -188,6 +191,7 @@ export const {
   useChangePasswordMutation,
   useUploadVideoMutation,
   useGetTweetUserQuery,
-  useGetSearchUserQuery
+  useGetSearchUserQuery,
+  
 }
   = authAPI

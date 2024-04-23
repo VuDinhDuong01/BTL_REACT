@@ -35,5 +35,5 @@ export const URL_API = {
     GET_NOTIFICATION:'notification',
     ALL_USER:'all_user',
     DELETE_USER:'user',
-    DELETE_MANY_USER:'user'
+    DELETE_MANY_USER:'many_user'
 } as const 

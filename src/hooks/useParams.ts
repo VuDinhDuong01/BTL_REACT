@@ -5,7 +5,7 @@ import isUndefined from "lodash/isUndefined"
 const queryString = queryStringSearch()
 
 export const queryList = omitBy({
-    limit: queryString?.limit ?? "3",
+    limit: queryString?.limit ?? "1",
     page: queryString?.page ?? "1",
     title: queryString?.title ?? 'Posts',
     title_tweet: queryString?.title_tweet ?? 'for_you',

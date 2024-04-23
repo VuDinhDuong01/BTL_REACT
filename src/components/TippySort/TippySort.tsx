@@ -1,5 +1,5 @@
-import { HeadlessTippy } from '../Tippy/Typpy'
-import { Images } from '~/utils'
+import { HeadlessTippy } from '../Tippy/Typpy'; 
+import { Images } from '../../assets/images'; 
 
 
 interface TippySort {

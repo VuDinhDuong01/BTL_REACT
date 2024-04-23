@@ -14,9 +14,18 @@
 
 @layer components {
   .borderTailwindcss {
-    @apply border-[5px] border-[red];
+    @apply border-[5px] border-[red]
   }
-  
+   .custom-class-table-td-post {
+    @apply border flex items-center 2xl:pl-[12px]  md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[25px] py-[12px]
+    
+  }
+  .custom-class-table-th-post{
+    @apply flex border  items-center justify-center text-[#fff] font-fontFamily text-[16px] font-[700] leading-[20px]
+  }
+  .custom-class-option{
+    @apply text-[#000] 2xl:font-fontFamily 2xl:text-[16px] 2xl:font-[500] 2xl:leading-[35px] 
+  }
 }
 ::-webkit-scrollbar {
   width: 8px;

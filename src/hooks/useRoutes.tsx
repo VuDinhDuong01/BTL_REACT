@@ -49,7 +49,7 @@ export const route = () => {
                     <Route path={PAGE.COMMUNITIES} element={<Communities />} />
                 </Route>
                 <Route element={<RequestRole allowRoles={[ROLE.ADMIN]} />}>
-                    <Route path={PAGE.ADMIN} element={<Admin />} />
+                    <Route path={PAGE.ADMIN} element={<AdminUser />} />
                     <Route path={PAGE.USER} element={<AdminUser />} />
                 </Route>
             </Route>
