@@ -25,6 +25,9 @@ import { Admin } from "../pages/admin";
 import { ContextAPI } from "./useContext";
 import { useContext } from "react";
 import AdminUser from "../pages/admin/admin-user";
+import { AdminPost } from "../pages/admin/admin-post";
+import { AdminComment } from "../pages/admin/admin-comment";
+import { AdminLike } from "../pages/admin/admin-like";
 
 
 export const route = () => {
@@ -49,8 +52,11 @@ export const route = () => {
                     <Route path={PAGE.COMMUNITIES} element={<Communities />} />
                 </Route>
                 <Route element={<RequestRole allowRoles={[ROLE.ADMIN]} />}>
-                    <Route path={PAGE.ADMIN} element={<AdminUser />} />
+                    <Route path={PAGE.ADMIN} element={<Admin />} />
                     <Route path={PAGE.USER} element={<AdminUser />} />
+                    <Route path={PAGE.POST} element={<AdminPost />} />
+                    <Route path={PAGE.COMMENT} element={<AdminComment />} />
+                    <Route path={PAGE.LIKE} element={<AdminLike />} />
                 </Route>
             </Route>
 

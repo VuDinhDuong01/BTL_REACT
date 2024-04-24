@@ -14,18 +14,18 @@ import { Input } from '../../../components/Input'
 import { LoadingSkeleton } from '../../../components/LoadingSkeleton'
 import { Images } from '../../../assets/images'
 import { queryStringSearch } from '../../../hooks'
-import { useDeleteManyTweetMutation, useGetAllTweetQuery } from '../../../apis/tweet'
-import { TablePost } from '../../../components/table-post'
+import { useDeleteManyLikeMutation, useGetAllLikeQuery } from '../../../apis/like'
+import { TableLike } from '../../../components/table-like'
 
-export const AdminPost = () => {
+export const AdminLike = () => {
   const [checkBox, setCheckBox] = useState<string[]>([])
   const [nameSearch, setNameSearch] = useState<string>('')
   const navigate = useNavigate()
 
   const query: any = queryStringSearch()
 
-  const { data: dataPost, isLoading } = useGetAllTweetQuery({
-    limit: isNaN(Number(query.limit)) ? 3 : Number(query.limit),
+  const { data: dataPost, isLoading } = useGetAllLikeQuery({
+    limit: isNaN(Number(query.limit)) ? 10 : Number(query.limit),
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,
@@ -48,7 +48,7 @@ export const AdminPost = () => {
     })
     customSort()
   }
-  const [deleteAll] = useDeleteManyTweetMutation()
+  const [deleteAll] = useDeleteManyLikeMutation()
 
 
   return (
@@ -77,7 +77,7 @@ export const AdminPost = () => {
         <LoadingSkeleton />
       ) : (
         <>
-          <TablePost
+          <TableLike
             setCheckBox={setCheckBox}
             dataPost={(dataPost as any)?.data}
             checkBox={checkBox}
@@ -86,7 +86,7 @@ export const AdminPost = () => {
             <Pagination
               total_page={dataPost?.total_page as number}
               currentPage={isNaN(Number(query.page)) ? 1 : Number(query.page)}
-              path={PAGE.USER}
+              path={PAGE.LIKE}
               checkBox={checkBox}
               deleteAll={deleteAll}
 

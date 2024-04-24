@@ -14,13 +14,9 @@ export const PAGE={
     TWEET_DETAIL:'/tweet/:tweet_id',
     COMMUNITIES:'/communities/:user_id',
     ADMIN:'/admin',
-    USER:'/user',
-    post: "/",
-    addpost: '/addpost',
-    addauthor: '/addauthor',
-    addtag: '/addtag',
-    addtopic: '/addtopic',
-    topic: '/topic',
-    author: '/author',
-    tag: '/tag',
+    USER:'/admin/all_user',
+    POST: '/admin/all_post',
+    LIKE:'/admin/all_like',
+    COMMENT:'/admin/all_comment'
+
 } as const 

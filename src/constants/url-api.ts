@@ -35,5 +35,14 @@ export const URL_API = {
     GET_NOTIFICATION:'notification',
     ALL_USER:'all_user',
     DELETE_USER:'user',
-    DELETE_MANY_USER:'many_user'
+    DELETE_MANY_USER:'many_user',
+    ALL_TWEET:'all_tweet',
+    DELETE_TWEET:'tweet',
+    DELETE_MANY_TWEET:'many_tweet',
+    ALL_COMMENT:'all_comment',
+    DELETE_COMMENT:'comment',
+    DELETE_MANY_COMMENT:'many_comment',
+    ALL_LIKE:'all_like',
+    DELETE_LIKE:'like',
+    DELETE_MANY_LIKE:'many_like'
 } as const 

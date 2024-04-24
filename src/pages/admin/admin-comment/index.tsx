@@ -14,18 +14,18 @@ import { Input } from '../../../components/Input'
 import { LoadingSkeleton } from '../../../components/LoadingSkeleton'
 import { Images } from '../../../assets/images'
 import { queryStringSearch } from '../../../hooks'
-import { useDeleteManyTweetMutation, useGetAllTweetQuery } from '../../../apis/tweet'
-import { TablePost } from '../../../components/table-post'
+import { useDeleteManyCommentMutation, useGetAllCommentQuery } from '../../../apis/comment'
+import { TableComment } from '../../../components/table-comment'
 
-export const AdminPost = () => {
+export const AdminComment = () => {
   const [checkBox, setCheckBox] = useState<string[]>([])
   const [nameSearch, setNameSearch] = useState<string>('')
   const navigate = useNavigate()
 
   const query: any = queryStringSearch()
 
-  const { data: dataPost, isLoading } = useGetAllTweetQuery({
-    limit: isNaN(Number(query.limit)) ? 3 : Number(query.limit),
+  const { data: dataComment, isLoading } = useGetAllCommentQuery({
+    limit: isNaN(Number(query.limit)) ? 10 : Number(query.limit),
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,
@@ -48,7 +48,7 @@ export const AdminPost = () => {
     })
     customSort()
   }
-  const [deleteAll] = useDeleteManyTweetMutation()
+  const [deleteAll] = useDeleteManyCommentMutation()
 
 
   return (
@@ -77,16 +77,16 @@ export const AdminPost = () => {
         <LoadingSkeleton />
       ) : (
         <>
-          <TablePost
+          <TableComment
             setCheckBox={setCheckBox}
-            dataPost={(dataPost as any)?.data}
+            dataPost={(dataComment as any)?.data}
             checkBox={checkBox}
           />
-          {(dataPost as any)?.data?.length > 0 ? (
+          {(dataComment as any)?.data?.length > 0 ? (
             <Pagination
-              total_page={dataPost?.total_page as number}
+              total_page={dataComment?.total_page as number}
               currentPage={isNaN(Number(query.page)) ? 1 : Number(query.page)}
-              path={PAGE.USER}
+              path={PAGE.COMMENT}
               checkBox={checkBox}
               deleteAll={deleteAll}
 

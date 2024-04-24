@@ -1,14 +1,13 @@
 
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
 import clsx from 'clsx'
 import { useTranslation } from "react-i18next";
 
 
-import { PAGE } from '../../constants' 
+import { PAGE } from '../../constants'
 
-import { Button } from '../ui/button' 
-import { Images } from '../../assets/images' 
+import { Button } from '../ui/button'
+import { Images } from '../../assets/images'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { useGetMeQuery, useLogoutMutation } from '../../apis'
 import { getProfileToLS, getRefreshTokenToLS, removeLS } from '../../helps'
@@ -16,18 +15,15 @@ import { ToastMessage } from '../../helps/toast-message'
 
 export const SideBarAdmin = () => {
 
-   const navigate = useNavigate()
+  const navigate = useNavigate()
   const profile = getProfileToLS() as { user_id: string }
-  const [toggle, setToggle] = useState<boolean>(true)
+
   const { data: getMe } = useGetMeQuery(profile?.user_id ? {
     user_id: profile?.user_id
   } : skipToken)
   const { t } = useTranslation()
   const location = useLocation()
-  const handleToggle = () => {
-    setToggle((prev) => !prev)
-  }
-  localStorage.setItem('toggle', JSON.stringify(toggle))
+
   const refresh_token = getRefreshTokenToLS() as string
   const [logout] = useLogoutMutation()
   const handleLogout = async () => {
@@ -40,9 +36,9 @@ export const SideBarAdmin = () => {
     } catch (error: unknown) {
       console.log(error)
     }
-  
- }
-  
+
+  }
+
   const toggleStorage = JSON.parse(localStorage.getItem('toggle') as string)
   return (
     <div className='2xl:w-[260px] md:w-[180px]  bg-[#2A3444] fixed top-0 lef-0 bottom-0'>
@@ -55,72 +51,59 @@ export const SideBarAdmin = () => {
           />
         </div>
         <div className='px-[25px]'>
-          <div className='flex items-center justify-between  cursor-pointer py-[15px]' onClick={handleToggle}>
-            <div className='flex items-center'>
-              <img
-                src={Images.Notepad}
-                alt='img_notepad'
-                className='w-[24px] h-[24px] shrink-0 object-cover mr-[10px]'
-              />
-              <p className='text-white font-fontFamily text-[20px] font-[600]'>Viết bài</p>
-            </div>
-            {toggleStorage ? (
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='1.5'
-                stroke='currentColor'
-                className='w-3 h-3 font-bold text-white'
-              >
-                <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
-              </svg>
-            ) : (
-              <img src={Images.Check} alt='img_check' />
-            )}
-          </div>
+
           {toggleStorage && (
             <ul className='text-[white] list-none  font-fontFamily text-[18px] mb-[20px] animate-slideBottom '>
               <li
-                className={clsx({ 
-                  ['py-[10px]  rounded-[5px] ']: true,
-                  ['bg-[#3F4D63]']: location.pathname === PAGE.post || location.pathname === PAGE.addtopic
+                className={clsx({
+                  ['py-[15px]  rounded-[5px] ']: true,
+                  ['bg-[#3F4D63]']: location.pathname === PAGE.ADMIN || location.pathname === PAGE.ADMIN
                 })}
               >
-                <Link to={PAGE.post} className='pl-[30px] text-white no-underline'>
-                  Bài viết
+                <Link to={PAGE.ADMIN} className='pl-[30px] text-white no-underline'>
+                  DASHBOARD
                 </Link>
               </li>
               <li
                 className={clsx({
-                  ['py-[10px]  rounded-[5px] ']: true,
-                  ['bg-[#3F4D63]']: location.pathname === PAGE.topic || location.pathname === PAGE.addpost
+                  ['py-[15px]  rounded-[5px] ']: true,
+                  ['bg-[#3F4D63]']: location.pathname === PAGE.USER || location.pathname === PAGE.USER
                 })}
               >
-                <Link to={PAGE.topic} className='pl-[30px] text-white no-underline'>
-                  Chủ đề
+                <Link to={PAGE.USER} className='pl-[30px] text-white no-underline'>
+                  NGƯỜI DÙNG
                 </Link>
               </li>
               <li
                 className={clsx({
-                  ['py-[10px]  rounded-[5px] ']: true,
-                  ['bg-[#3F4D63]']: location.pathname === PAGE.author || location.pathname === PAGE.addauthor
+                  ['py-[15px]  rounded-[5px] ']: true,
+                  ['bg-[#3F4D63]']: location.pathname === PAGE.POST || location.pathname === PAGE.POST
                 })}
               >
-                <Link to={PAGE.author} className='pl-[30px] text-white no-underline'>
-                  Tác giả
+                <Link to={PAGE.POST} className='pl-[30px] text-white no-underline'>
+                  BÀI VIẾT
                 </Link>
               </li>
               <li
                 className={clsx({
-                  ['py-[10px]  rounded-[5px] ']: true,
-                  ['bg-[#3F4D63]']: location.pathname === PAGE.tag || location.pathname === PAGE.addtag
+                  ['py-[15px]  rounded-[5px] ']: true,
+                  ['bg-[#3F4D63]']: location.pathname === PAGE.COMMENT || location.pathname === PAGE.COMMENT
                 })}
               >
-                <Link to={PAGE.tag} className='pl-[30px] text-white no-underline'>
-                  Tag
+                <Link to={PAGE.COMMENT} className='pl-[30px] text-white no-underline'>
+                  BÌNH LUẬN
                 </Link>
               </li>
+               <li
+                className={clsx({
+                  ['py-[15px]  rounded-[5px] ']: true,
+                  ['bg-[#3F4D63]']: location.pathname === PAGE.LIKE || location.pathname === PAGE.LIKE
+                })}
+              >
+                <Link to={PAGE.LIKE} className='pl-[30px] text-white no-underline'>
+                   YÊU THÍCH
+                </Link>
+              </li> 
             </ul>
           )}
         </div>

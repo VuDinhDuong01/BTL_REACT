@@ -110,7 +110,7 @@ export const Register = () => {
               required
               className=" flex flex-col  justify-center  hover:border-green1"
               placeholder={t("register.enterUsername")}
-              onInput={handleBlockSpace}
+              // onInput={handleBlockSpace}
             />
             {errors.name?.message && <span className="text-error w-full  j font-fontFamily text-[14px] mt-[3px]">{t(errors.name.message)}</span>}
           </div>

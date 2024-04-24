@@ -12,11 +12,12 @@ import { Button } from '../../../components/ui/button'
 import { NotItem } from '../../../components/NotItem/NotItem'
 import { TippySort } from '../../../components/TippySort/TippySort'
 import { Input } from '../../../components/Input'
-import { TablePost } from '../../../components/TablePost/TablePost'
 import { LoadingSkeleton } from '../../../components/LoadingSkeleton'
 import { Images } from '../../../assets/images'
 import { queryStringSearch } from '../../../hooks'
-import { useGetAllUserQuery } from '../../../apis'
+import { useDeleteManyUserMutation, useGetAllUserQuery } from '../../../apis'
+import { TableUser } from '../../../components/table-user'
+
 
 const AdminUser = () => {
   const [checkBox, setCheckBox] = useState<string[]>([])
@@ -30,12 +31,12 @@ const AdminUser = () => {
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,
-    name:  query.name
+    name: query.name
   })
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const customSearch = customHandle({ name: nameSearch, page: 1, navigate, pathname: PAGE.ADMIN })
+    const customSearch = customHandle({ name: nameSearch, page: 1, navigate, pathname: PAGE.USER })
     customSearch()
   }
   const handleSort = ({ order }: { order: string }) => {
@@ -43,13 +44,13 @@ const AdminUser = () => {
       order,
       sort_by: 'name',
       page: isNaN(Number(query.page)) ? 1 : Number(query.page),
-     
+
       navigate,
-      pathname: PAGE.ADMIN
+      pathname: PAGE.USER
     })
     customSort()
   }
-
+  const [deleteAll] = useDeleteManyUserMutation()
 
   return (
     <div className='h-screen 2xl:px-[15px] md:px-[5px] w-full mt-[26px] min-h-screen overflow-scroll'>
@@ -77,7 +78,7 @@ const AdminUser = () => {
         <LoadingSkeleton />
       ) : (
         <>
-          <TablePost
+          <TableUser
             setCheckBox={setCheckBox}
             dataPost={(dataPost as any)?.data}
             checkBox={checkBox}
@@ -86,12 +87,13 @@ const AdminUser = () => {
             <Pagination
               total_page={dataPost?.total_page as number}
               currentPage={isNaN(Number(query.page)) ? 1 : Number(query.page)}
-              path={PAGE.ADMIN}
+              path={PAGE.USER}
               checkBox={checkBox}
+              deleteAll={deleteAll}
 
             />
           ) : (
-            <NotItem path={PAGE.ADMIN} />
+            <NotItem path={PAGE.USER} />
           )}
         </>
       )}

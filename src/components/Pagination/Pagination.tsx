@@ -8,18 +8,18 @@ import { queryStringSearch } from '../../hooks';
 import { Button } from '../ui/button';
 import { Images } from '../../assets/images';
 import { confirmAlert } from 'react-confirm-alert';
-import { useDeleteManyUserMutation } from '../../apis';
 
 interface PaginationType {
   total_page: number
   currentPage: number,
   path: string,
-  checkBox: string[]
+  checkBox: string[],
+  deleteAll: any
 }
 
 const RANGE = 2
-export const Pagination = ({ total_page, currentPage, path, checkBox }: PaginationType) => {
-  const [deleteAllUser] = useDeleteManyUserMutation()
+export const Pagination = ({ total_page, currentPage, path, checkBox,deleteAll }: PaginationType) => {
+  // const [deleteAllUser] = useDeleteManyUserMutation()
   const query: any = queryStringSearch()
   const navigate = useNavigate()
   let showDotBefore = true
@@ -102,12 +102,12 @@ export const Pagination = ({ total_page, currentPage, path, checkBox }: Paginati
     if (checkBox.length > 0) {
       try {
         confirmAlert({
-          message: 'Bạn có chắc chắn xóa các user này không?',
+          message: 'Bạn có chắc chắn xóa không?',
           buttons: [
             {
               label: 'Yes',
               onClick: async () => {
-                await deleteAllUser({
+                await deleteAll({
                   manyId: checkBox!
                 })
                 navigate({
@@ -146,13 +146,15 @@ export const Pagination = ({ total_page, currentPage, path, checkBox }: Paginati
       </div>
       <div className="flex items-center">
         <button className={clsx({
-          ['w-[24px] h-[24px] border-none  text-[14px] font-fontFamily   bg-white flex items-center justify-center cursor-pointer']: true,
-          ['cursor-not-allowed']: currentPage === 1
+          ['w-[24px] h-[24px] border-none  text-[14px] font-fontFamily   bg-white flex items-center justify-center ']: true,
+          ['cursor-not-allowed']: currentPage === 1,
+          ['cursor-pointer']: currentPage !== 1
         })} onClick={handlePrevPage}><img src={Images.Left} alt="" className='w-[15px] h-[15px] object-cover' /></button>
         {Pagination()}
         <button className={clsx({
-          ['w-[24px] h-[24px] text-[14px] font-fontFamily flex items-center justify-center bg-white border-none cursor-pointer']: true,
-          ['cursor-not-allowed']: currentPage === total_page
+          ['w-[24px] h-[24px] text-[14px] font-fontFamily flex items-center justify-center bg-white border-none']: true,
+          ['cursor-not-allowed']: currentPage === total_page,
+          ['cursor-pointer']: currentPage !== total_page
         })} onClick={handleNextPage}><img src={Images.Right} alt="" className='w-[15px] h-[15px] object-cover' /></button>
       </div>
     </div>

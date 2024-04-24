@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-types */
 import { baseCreateApi } from "."
 import { GenerateType } from "../types/generate"
@@ -5,7 +6,7 @@ import { URL_API } from "../constants"
 import { METHOD_API } from "../helps"
 import { Comment } from "../types/comment"
 
-const { GET_COMMENT, LIKE_COMMENT, CREATE_COMMENT, CREATE_REPLIES_COMMENT, UPDATE_COMMENT } = URL_API
+const { GET_COMMENT, LIKE_COMMENT, CREATE_COMMENT, CREATE_REPLIES_COMMENT, UPDATE_COMMENT ,ALL_COMMENT,DELETE_COMMENT,DELETE_MANY_COMMENT} = URL_API
 
 export const commentAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({
@@ -42,8 +43,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
             invalidatesTags: ['getComment']
         }),
         createLikeRepliesComment: build.mutation<GenerateType<{ data: {} }>, {
-            user_id: string, icon: string, replies_comment_id: string
-        }>({
+            user_id: string, icon: string, replies_comment_id: string}>({
             query: (data) => ({
                 url: UPDATE_COMMENT,
                 method: METHOD_API.PATCH,
@@ -51,6 +51,31 @@ export const commentAPI = baseCreateApi.injectEndpoints({
             }),
             invalidatesTags: ['getComment']
         }),
+        getAllComment: build.query<any, { limit?: number, page?: number, name?: string, sort_by?: string, order?: string }>({
+            query: (params) => ({
+                url: ALL_COMMENT,
+                method: METHOD_API.GET,
+                params
+            }),
+            providesTags: ['getComment']
+        }),
+        deleteComment: build.mutation<any, { user_id: string }>({
+            query: (data) => ({
+                url: DELETE_COMMENT,
+                method: METHOD_API.DELETE,
+                data
+            }),
+            invalidatesTags: ['getComment']
+        }),
+        deleteManyComment: build.mutation<any, { manyId: string[] }>({
+            query: (data) => ({
+                url: DELETE_MANY_COMMENT,
+                method: METHOD_API.DELETE,
+                data
+            }),
+            invalidatesTags: ['getComment']
+        }),
+        
     })
 })
 
@@ -59,6 +84,9 @@ export const {
     useLikeCommentMutation,
     useCreateCommentMutation,
     useCreateRepliesCommentMutation,
-    useCreateLikeRepliesCommentMutation
+    useCreateLikeRepliesCommentMutation,
+    useDeleteCommentMutation,
+    useDeleteManyCommentMutation,
+    useGetAllCommentQuery
 }
     = commentAPI

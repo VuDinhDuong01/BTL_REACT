@@ -16,7 +16,7 @@ interface TablePostType {
   setCheckBox: React.Dispatch<React.SetStateAction<string[]>>
 }
 
-export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) => {
+export const TableUser = ({ dataPost, setCheckBox, checkBox }: TablePostType) => {
   const navigate = useNavigate()
   const query: any = queryStringSearch()
   const handleCheckAll = () => {
@@ -39,7 +39,7 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                 user_id: user_id!
               })
               navigate({
-                pathname: '/admin',
+                pathname: '/admin/all_user',
                 search: createSearchParams({
                   ...omit(query, ['title', 'title_tweet', 'id_user']),
                   page: '1'

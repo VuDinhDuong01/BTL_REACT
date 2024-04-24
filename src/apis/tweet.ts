@@ -7,7 +7,7 @@ import { METHOD_API } from '../helps/methods-api'
 import { baseCreateApi } from './createApi'
 import { Tweet, TweetProps } from '../types/tweet'
 
-const { CREATE_TWEET, TWEET_DETAIL } = URL_API
+const { CREATE_TWEET, TWEET_DETAIL, DELETE_MANY_TWEET, DELETE_TWEET, ALL_TWEET } = URL_API
 
 export const tweetAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({
@@ -34,12 +34,39 @@ export const tweetAPI = baseCreateApi.injectEndpoints({
             }),
             providesTags: ['getListTweet']
         }),
+        getAllTweet: build.query<any, { limit?: number, page?: number, name?: string, sort_by?: string, order?: string }>({
+            query: (params) => ({
+                url: ALL_TWEET,
+                method: METHOD_API.GET,
+                params
+            }),
+            providesTags: ['getListTweet']
+        }),
+        deleteTweet: build.mutation<any, { user_id: string }>({
+            query: (data) => ({
+                url: DELETE_TWEET,
+                method: METHOD_API.DELETE,
+                data
+            }),
+            invalidatesTags: ['getListTweet']
+        }),
+        deleteManyTweet: build.mutation<any, { manyId: string[] }>({
+            query: (data) => ({
+                url: DELETE_MANY_TWEET,
+                method: METHOD_API.DELETE,
+                data
+            }),
+            invalidatesTags: ['getListTweet']
+        }),
     })
 })
 
 export const {
     useCreateTweetMutation,
     useGetListTweetQuery,
-    useGetTweetDetailQuery
+    useGetTweetDetailQuery,
+    useDeleteManyTweetMutation,
+    useDeleteTweetMutation,
+    useGetAllTweetQuery
 }
     = tweetAPI

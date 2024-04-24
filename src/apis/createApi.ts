@@ -7,6 +7,6 @@ export const baseCreateApi = createApi({
   refetchOnFocus: false,
   refetchOnReconnect: true,
   baseQuery: axiosBaseQuery,
-    tagTypes:['getMe','getListTweet','login','getComment','getListBookmark','getFollow','getListUser'],
+    tagTypes:['getMe','getListTweet','login','getComment','getListBookmark','getFollow','getListUser','getAllLike'],
     endpoints: () => ({}),
   })
