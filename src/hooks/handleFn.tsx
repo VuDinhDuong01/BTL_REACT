@@ -1,22 +1,20 @@
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NavigateFunction, createSearchParams } from "react-router-dom";
-import { QueryType } from "~/hook";
-import omit from 'lodash/omit'
-import { PostType } from "~/types/post.types";
 
-export const customHandle = ({ name, page, query, navigate, pathname, order, sort_by }: { name: string, page: string, query: QueryType, navigate: NavigateFunction, pathname: string, sort_by?: string, order?: string }) => {
-
+export const customHandle = ({ name, page, query, navigate, pathname, order, sort_by }: { name?: string, page: number, query?: any, navigate: NavigateFunction, pathname: string, order?: string, sort_by?: string }) => {
   const navigateWithParams = () => {
     if (sort_by) {
       navigate({
         pathname,
-        search: createSearchParams(omit({
+        search: createSearchParams({
           ...query,
+          sort_by,
           order,
-          sort_by
-        }, [name])).toString()
+          page
+        }).toString()
       })
-    } else {
+    } 
+    if(name){
       navigate({
         pathname,
         search: createSearchParams({
@@ -30,7 +28,8 @@ export const customHandle = ({ name, page, query, navigate, pathname, order, sor
   return navigateWithParams
 }
 
-export const handleCheckAll = ({ dataPost, checkBox, setCheckBox }: { dataPost: PostType[], checkBox: string[], setCheckBox: React.Dispatch<React.SetStateAction<string[]>> }) => {
+
+export const handleCheckAll = ({ dataPost, checkBox, setCheckBox }: { dataPost: any[], checkBox: string[], setCheckBox: React.Dispatch<React.SetStateAction<string[]>> }) => {
   if (dataPost.length === checkBox.length && dataPost.length !== 0) {
     setCheckBox([])
   } else {

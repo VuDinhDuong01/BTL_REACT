@@ -3,11 +3,13 @@
 import { confirmAlert } from 'react-confirm-alert';
 import { CustomCheckAll, CustomCheckBox } from "../../hooks/useCheckBox"
 import { useMemo } from 'react';
-
+import { createSearchParams, useNavigate } from 'react-router-dom';
+import omit from 'lodash/omit'
 import { Images } from "../../assets/images"
 
 import { useDeleteUserMutation } from "../../apis";
 import { getProfileToLS } from '../../helps';
+import { queryStringSearch } from '../../hooks';
 interface TablePostType {
   dataPost: any[]
   checkBox: string[]
@@ -15,11 +17,12 @@ interface TablePostType {
 }
 
 export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) => {
-
+  const navigate = useNavigate()
+  const query: any = queryStringSearch()
   const handleCheckAll = () => {
     CustomCheckAll({ checkBox, setCheckBox, data: dataPost })
   }
-  const profile = getProfileToLS() as {user_id: string }
+  const profile = getProfileToLS() as { user_id: string }
   const handleCheckBox = (_id: string) => {
     CustomCheckBox({ _id, setCheckBox, checkBox })
   }
@@ -31,9 +34,18 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
         buttons: [
           {
             label: 'Yes',
-            onClick: async () => await deleteUser({
-              user_id: user_id!
-            })
+            onClick: async () => {
+              await deleteUser({
+                user_id: user_id!
+              })
+              navigate({
+                pathname: '/admin',
+                search: createSearchParams({
+                  ...omit(query, ['title', 'title_tweet', 'id_user']),
+                  page: '1'
+                }).toString()
+              })
+            }
           },
           {
             label: 'No',
@@ -41,14 +53,15 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
         ]
       });
 
+
     } catch (error: unknown) {
       console.log(error)
     }
   }
 
-  const listUser=useMemo(()=>{
-    return dataPost?.filter(user=>user._id !== profile.user_id)
-  },[dataPost])
+  const listUser = useMemo(() => {
+    return dataPost?.filter(user => user._id !== profile.user_id)
+  }, [dataPost])
 
 
   return (
@@ -56,7 +69,7 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
       <thead>
         <tr className="bg-green1 h-[45px] w-full flex ">
           <th className="2xl:w-[3%] md:w-[4%]  flex items-center justify-center" >
-            <input type="checkbox" checked={listUser.length === checkBox.length && checkBox.length !== 0} onChange={handleCheckAll} className="w-[15px] h-[15px] rounded-[3px] bg-[#fff] flex items-center justify-center" />
+            <input type="checkbox" checked={listUser?.length === checkBox?.length && checkBox?.length !== 0} onChange={handleCheckAll} className="w-[15px] h-[15px] rounded-[3px] bg-[#fff] flex items-center justify-center" />
           </th>
           <th className='2xl:w-[15%] md:w-[8%] custom-class-table-th-post'>ID</th>
           <th className='2xl:w-[15%] md:w-[15%] custom-class-table-th-post'>Tên người dùng</th>

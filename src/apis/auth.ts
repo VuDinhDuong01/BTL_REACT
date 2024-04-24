@@ -144,7 +144,7 @@ export const authAPI = baseCreateApi.injectEndpoints({
       }),
       // providesTags: ['getMe', 'login','getListTweet']
     }),
-    getAllUser: build.query<any, { limit?: number, page?: number, username?: string, sort_by?: string, order?: string }>({
+    getAllUser: build.query<any, { limit?: number, page?: number, name?: string, sort_by?: string, order?: string }>({
       query: (params) => ({
         url: ALL_USER,
         method: METHOD_API.GET,
