@@ -12,7 +12,9 @@ export const queryList = omitBy({
     id_user: queryString?.id_user ?? '',
     order: queryString?.order ?? 'desc',
     sort_by:queryString?.sort_by ??'name' ,
-    name: queryString?.name   ?? ''
+    name: queryString?.name   ?? '',
+    content:queryString?.name ?? '',
+    content_comment:queryString?.content_comment ?? ''
 }, isUndefined)
 
 

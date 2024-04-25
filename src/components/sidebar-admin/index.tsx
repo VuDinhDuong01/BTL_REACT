@@ -3,9 +3,12 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { useTranslation } from "react-i18next";
 
-
+import { FaUserFriends } from "react-icons/fa";
+import { SiPostman } from "react-icons/si";
+import { FaRegCommentDots } from "react-icons/fa6";
+import { BiSolidLike } from "react-icons/bi";
 import { PAGE } from '../../constants'
-
+import { IoMdHome } from "react-icons/io";
 import { Button } from '../ui/button'
 import { Images } from '../../assets/images'
 import { skipToken } from '@reduxjs/toolkit/query'
@@ -61,7 +64,7 @@ export const SideBarAdmin = () => {
                 })}
               >
                 <Link to={PAGE.ADMIN} className='pl-[30px] text-white no-underline'>
-                  DASHBOARD
+                 <IoMdHome /> DASHBOARD
                 </Link>
               </li>
               <li
@@ -70,8 +73,8 @@ export const SideBarAdmin = () => {
                   ['bg-[#3F4D63]']: location.pathname === PAGE.USER || location.pathname === PAGE.USER
                 })}
               >
-                <Link to={PAGE.USER} className='pl-[30px] text-white no-underline'>
-                  NGƯỜI DÙNG
+                <Link to={PAGE.USER} className='pl-[30px] text-white no-underline '>
+                <FaUserFriends />  NGƯỜI DÙNG
                 </Link>
               </li>
               <li
@@ -81,7 +84,7 @@ export const SideBarAdmin = () => {
                 })}
               >
                 <Link to={PAGE.POST} className='pl-[30px] text-white no-underline'>
-                  BÀI VIẾT
+                 <SiPostman /> BÀI VIẾT
                 </Link>
               </li>
               <li
@@ -91,7 +94,7 @@ export const SideBarAdmin = () => {
                 })}
               >
                 <Link to={PAGE.COMMENT} className='pl-[30px] text-white no-underline'>
-                  BÌNH LUẬN
+                <FaRegCommentDots />  BÌNH LUẬN
                 </Link>
               </li>
                <li
@@ -101,7 +104,7 @@ export const SideBarAdmin = () => {
                 })}
               >
                 <Link to={PAGE.LIKE} className='pl-[30px] text-white no-underline'>
-                   YÊU THÍCH
+                 <BiSolidLike />  YÊU THÍCH
                 </Link>
               </li> 
             </ul>

@@ -72,7 +72,7 @@ const AdminUser = () => {
             </Button>
           </form>
         </div>
-        <TippySort handleSort={handleSort} sort_by='post' title='bài viết' />
+        <TippySort handleSort={handleSort} sort_by='post' title='tên người dùng' />
       </div>
       {isLoading ? (
         <LoadingSkeleton />

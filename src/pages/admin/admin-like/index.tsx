@@ -44,7 +44,7 @@ export const AdminLike = () => {
       page: isNaN(Number(query.page)) ? 1 : Number(query.page),
 
       navigate,
-      pathname: PAGE.USER
+      pathname: PAGE.LIKE
     })
     customSort()
   }
@@ -54,7 +54,7 @@ export const AdminLike = () => {
   return (
     <div className='h-screen 2xl:px-[15px] md:px-[5px] w-full mt-[26px] min-h-screen overflow-scroll'>
       <div className='flex  items-center justify-between mb-[18px] '>
-        <h2 className='text-black font-fontFamily text-[24px] font-[600] leading-[20px] mt-[20px]'>Danh mục bài viết</h2>
+        <h2 className='text-black font-fontFamily text-[24px] font-[600] leading-[20px] mt-[20px]'>Danh mục yêu thích</h2>
 
       </div>
       <div className='flex  items-center justify-between '>
@@ -71,7 +71,6 @@ export const AdminLike = () => {
             </Button>
           </form>
         </div>
-        <TippySort handleSort={handleSort} sort_by='post' title='bài viết' />
       </div>
       {isLoading ? (
         <LoadingSkeleton />

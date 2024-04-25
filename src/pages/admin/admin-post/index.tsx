@@ -29,7 +29,7 @@ export const AdminPost = () => {
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,
-    name: query.name
+    content: query.content
   })
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,11 +40,11 @@ export const AdminPost = () => {
   const handleSort = ({ order }: { order: string }) => {
     const customSort = customHandle({
       order,
-      sort_by: 'name',
+      sort_by: 'content',
       page: isNaN(Number(query.page)) ? 1 : Number(query.page),
 
       navigate,
-      pathname: PAGE.USER
+      pathname: PAGE.POST
     })
     customSort()
   }

@@ -51,7 +51,7 @@ export const commentAPI = baseCreateApi.injectEndpoints({
             }),
             invalidatesTags: ['getComment']
         }),
-        getAllComment: build.query<any, { limit?: number, page?: number, name?: string, sort_by?: string, order?: string }>({
+        getAllComment: build.query<any, { limit?: number, page?: number, content_comment?: string, sort_by?: string, order?: string }>({
             query: (params) => ({
                 url: ALL_COMMENT,
                 method: METHOD_API.GET,

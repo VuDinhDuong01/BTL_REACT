@@ -26,6 +26,10 @@ import Left from './left.png'
 import Check_image from './check1.png'
 import Logo from './logo.png'
 import check2 from './check2.png'
+import admin1 from './admin1.jpg'
+import admin2 from './admin2.jpg'
+import admin3 from './admin3.jpg'
+import admin4 from './admin4.jpg'
 export const Images={
     bg,logo,background, img_logo_battech, check2,logo1,
     Check_image, Left,
@@ -33,5 +37,5 @@ export const Images={
       Image, Notepad, Arow, Slug_img, Upload_img,
        True, Check, img_login,
         Add, Sort, Search, Filter,
-        CopyImage, UpdateImage, deleteImage,Logo
+        CopyImage, UpdateImage, deleteImage,Logo,admin1,admin2,admin3,admin4
 }

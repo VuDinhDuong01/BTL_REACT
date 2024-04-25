@@ -29,7 +29,7 @@ export const AdminComment = () => {
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,
-    name: query.name
+    content_comment: query.content_comment
   })
 
   const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,11 +40,11 @@ export const AdminComment = () => {
   const handleSort = ({ order }: { order: string }) => {
     const customSort = customHandle({
       order,
-      sort_by: 'name',
+      sort_by: 'content_comment',
       page: isNaN(Number(query.page)) ? 1 : Number(query.page),
 
       navigate,
-      pathname: PAGE.USER
+      pathname: PAGE.COMMENT
     })
     customSort()
   }
@@ -54,7 +54,7 @@ export const AdminComment = () => {
   return (
     <div className='h-screen 2xl:px-[15px] md:px-[5px] w-full mt-[26px] min-h-screen overflow-scroll'>
       <div className='flex  items-center justify-between mb-[18px] '>
-        <h2 className='text-black font-fontFamily text-[24px] font-[600] leading-[20px] mt-[20px]'>Danh mục bài viết</h2>
+        <h2 className='text-black font-fontFamily text-[24px] font-[600] leading-[20px] mt-[20px]'>Danh mục bình luận</h2>
 
       </div>
       <div className='flex  items-center justify-between '>
@@ -71,7 +71,7 @@ export const AdminComment = () => {
             </Button>
           </form>
         </div>
-        <TippySort handleSort={handleSort} sort_by='post' title='bài viết' />
+        <TippySort handleSort={handleSort} sort_by='content_comment' title='bình luận' />
       </div>
       {isLoading ? (
         <LoadingSkeleton />
