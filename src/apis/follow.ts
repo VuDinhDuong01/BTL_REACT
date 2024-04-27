@@ -4,15 +4,10 @@ import { baseCreateApi } from "."
 import { URL_API } from "../constants"
 import { METHOD_API } from "../helps"
 import { GenerateType } from "../types/generate"
+import { User } from "../types/user"
 
 const { GET_USERS, FOLLOW, GET_FOLLOW } = URL_API
 
-interface TUser {
-    _id: string
-    name: string
-    username: string
-    avatar: string
-}
 interface TFollowResponse {
     _id: string,
     follower_id: string,
@@ -20,7 +15,7 @@ interface TFollowResponse {
 }
 export const bookmarkAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({
-        getUser: build.query<GenerateType<TUser[]>, void>({
+        getUser: build.query<GenerateType<User[]>, void>({
             query: () => ({
                 url: GET_USERS,
                 method: METHOD_API.GET,

@@ -91,7 +91,7 @@ export const PostArticle = () => {
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
-    const { register, handleSubmit } = useForm({
+    const {  handleSubmit } = useForm({
         defaultValues: {
             textPost: ''
         }

@@ -15,15 +15,22 @@ export const SidebarRight = () => {
   const navigate = useNavigate()
   const [disable, setDisable] = useState<boolean>(false)
   const { data: getUser, isLoading } = useGetUserQuery()
+  console.log(getUser)
   const [idUserFollow, setIdUserFollow]= useState<string>('')
   const { data: getFollow } = useGetFollowQuery()
   const [follow, { isLoading: loadingFollow }] = useFollowMutation()
   const { socket } = useContext(ContextAPI)
   const profile = getProfileToLS() as { user_id?: string, username?: string, avatar?: string }
   const getListUser = useMemo(() => {
-    return getUser?.data.filter(user => user._id !== profile?.user_id)
+    return getUser?.data.filter(user => {
+      if(user._id === profile?.user_id ||  user?.roles[0] === 'admin'){
+        return false
+      }
+      return true
+    })
   }, [getUser?.data, profile?.user_id])
 
+  
   // check
   const checkStatusFollow = (following_id: string) => {
     return getFollow?.data.some(item => {
@@ -37,7 +44,7 @@ export const SidebarRight = () => {
     loadingFollow ? setDisable(true) : setDisable(false)
   }, [loadingFollow])
 
-  console.log(disable)
+
   const handleFollowUser = async (following_id: string) => {
     setIdUserFollow(following_id)
     try {

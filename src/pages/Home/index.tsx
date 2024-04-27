@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
 import { t } from "i18next";
+import omit from 'lodash/omit'
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -44,13 +45,14 @@ export const Home = () => {
     setTitleTweet(action.title_tweet)
     navigate({
       pathname: '',
-      search: createSearchParams({
+      search: createSearchParams(omit({
         ...queryList,
         title_tweet: action.title_tweet,
         id_user: profile.user_id as string
-      }).toString()
+      },['order','sort_by','name','content','content_comment'])).toString()
     });
   }
+
 
   const handleNextPage = () => {
     setLimit(prev => {

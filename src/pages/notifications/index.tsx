@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate, generatePath, useParams } from "react-router-dom";
 import { CiUser } from "react-icons/ci";
 import { t } from 'i18next'
@@ -54,7 +55,7 @@ const Notifications = () => {
       <div className="mt-[55px]">
 
         {
-          isLoading ? <div className="mt-[100px]"><Skeleton /></div> : getNotifications?.data.length > 0 ? getNotifications?.data.map((notification, index) => {
+          isLoading ? <div className="mt-[100px]"><Skeleton /></div> : (getNotifications as any)?.data.length > 0 ? getNotifications?.data.map((notification, index) => {
             return <div onClick={() => handleNavigatePostDetail(notification)} className="w-full flex items-center text-black cursor-pointer hover:bg-[#efecec] py-[15px] px-[5px] border-b-[1px] border-solid border-b-[#d7cccc] border-t-transparent border-r-transparent border-l-transparent" key={index}>
               <div className="mr-[15px] text-[#1D9BF0] ">
                 <CiUser size={35} />
