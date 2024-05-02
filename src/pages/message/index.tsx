@@ -20,12 +20,9 @@ export const Message = () => {
         return getUser?.data.filter(user => user._id !== profile?.user_id)
     }, [getUser?.data, profile?.user_id])
 
-    const handleChatMessage = (receiver_id: string) => {
-        socket?.emit("check_user_active", {
-            from: profile.user_id,
-            to: receiver_id
-        })
-        navigate(`/message/${receiver_id}`)
+    const handleChatMessage = (user_id: string) => {
+        socket?.emit("check_user_active", {user_id: user_id, offTab:false})
+        navigate(`/message/${user_id}`)
     }
 
     return (
@@ -49,7 +46,7 @@ export const Message = () => {
                                     </div>
                                 </div>
                                 <Button className={cn(" !rounded-2xl text-[15px] !font-[600] bg-[#1B90DF] text-white flex items-center justify-center !cursor-pointer hover:opacity-70 ", {
-                                })} onClick={() => handleChatMessage(user._id)} >Tin nhắn</Button>
+                                })} onClick={() => handleChatMessage(user._id)}>Tin nhắn</Button>
                             </div>
                         })
                     }

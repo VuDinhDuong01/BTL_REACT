@@ -16,7 +16,6 @@ import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 import { Skeleton } from '../../components/ui/skeleton';
 import { ContextAPI } from '../../hooks';
 
-
 interface MessageType {
   sender_id: string,
   content: string
@@ -27,7 +26,7 @@ export const MessageDetail = () => {
 
   const { receiver_id } = useParams()
 
-  const [userActive, setUserActive] = useState<string[]>([])
+  const [userActive, setUserActive] = useState<boolean>(false)
   const [focus, setFocus] = useState<string>('no_enter')
   const { data: getConversations, isLoading } = useGetConversationsQuery(receiver_id ? {
     receiver_id: receiver_id as string,
@@ -67,7 +66,8 @@ export const MessageDetail = () => {
     socket?.on('no_text_input_events', data => {
       setFocus(data)
     })
-    socket?.on('check_active', (data: string[]) => {
+    socket?.on('check_user_active_client',(data:boolean)=>{
+      console.log(1)
       setUserActive(data)
     })
     socket?.on("disconnect", () => {
@@ -75,8 +75,6 @@ export const MessageDetail = () => {
     })
   }, [socket])
 
-
-  console.log(userActive)
 
   useEffect(() => {
     if (receiver_id) {
@@ -131,11 +129,10 @@ export const MessageDetail = () => {
     }
   }
 
-  useEffect(()=>{
-    socket?.on('check_active',(data)=>{
-      console.log(data)
-    })
-  },[socket])
+  // useEffect(()=>{
+  //   socket?.on('check_active',(data)=>{
+  //   })
+  // },[socket])
 
   return (
     <div className=' h-[100vh] max-w-[610px] relative  '>
@@ -153,7 +150,7 @@ export const MessageDetail = () => {
             src={getMe?.data[0].avatar ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR}
           />
           <ConversationHeader.Content
-            info={userActive.includes(receiver_id as string) ? <div className='flex items-center mt-[5px]'><div className='w-[10px] mr-[10px] h-[10px] rounded-[50%] bg-green1'></div><p className='text-[15px] font-fontFamily'>{t('home.active')}</p></div> : t('home.noActive')}
+            info={userActive ? <div className='flex items-center mt-[5px]'><div className='w-[10px] mr-[10px] h-[10px] rounded-[50%] bg-green1'></div><p className='text-[15px] font-fontFamily'>{t('home.active')}</p></div> : t('home.noActive')}
             userName={getMe?.data[0].name}
           />
           <ConversationHeader.Actions>
