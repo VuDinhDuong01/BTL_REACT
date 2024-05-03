@@ -9,7 +9,7 @@ import { convertDateToHours } from '../../../helps/convert-date-to-hour';
 import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from '../../../apis/comment';
-import { UploadImageResponse, useUploadImageMutation } from '../../../apis';
+import { UploadImageResponse, useGetMeQuery, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
 import { ListIcons } from '../../list-icons';
 import { LikeComment } from '../../../types/comment';
@@ -36,12 +36,12 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [content, setContent] = useState<string>('')
     const [RepliesContent, setRepliesContent] = useState<string>('')
     const [file, SetFile] = useState<File | string>('')
-    console.log(file)
+
     const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
     const [openReplyComment, setOpenReplyComment] = useState<boolean>(false)
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
-    const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
+    const { user_id } = getProfileToLS() as { user_id: string }
     const { socket, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
 
     const { data: getComment, isLoading } = useGetCommentQuery(tweet_id ? {
@@ -49,6 +49,9 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
         limit: limitComment,
         page: 1
     } : skipToken)
+    const { data: getMe  } = useGetMeQuery(user_id ? {
+        user_id: user_id
+      } : skipToken)
     const showPopup = () => {
         setIsShowPopup(true)
     }
@@ -86,9 +89,10 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 socket?.emit('send_notification_comment', {
                     tweet_id: tweet_id,
                     to: id_user,
-                    username: username,
-                    avatar: avatar,
-                    status: 'comment'
+                    username: getMe?.data[0].name,
+                    avatar: getMe?.data[0].avatar,
+                    status: 'comment',
+                    created_at:new Date()
                 })
             }
             let uploadImage: UploadImageResponse[] = [];
@@ -111,7 +115,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
         }
     }
 
-    const handleCreateRepliesComment = async () => {
+    const handleCreateRepliesComment = async (user_id_comment: string ) => {
         try {
             let uploadImage: UploadImageResponse[] = [];
             if (fileRepliesComment !== '' && fileRepliesComment instanceof File) {
@@ -125,6 +129,16 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                 replies_content_comment: RepliesContent,
                 replies_image_comment: fileRepliesComment !== '' && fileRepliesComment instanceof File ? uploadImage[0].image : fileRepliesComment
             }).unwrap()
+            if (user_id !== user_id_comment) {
+                socket?.emit('send_notification_reply_comment', {
+                    tweet_id: tweet_id,
+                    to: user_id_comment,
+                    username: getMe?.data[0].name,
+                    avatar: getMe?.data[0].avatar,
+                    status: 'reply_comment',
+                    created_at:new Date()
+                })
+            }
             setRepliesContent('')
             setFileRepliesComment('')
         } catch (error: unknown) {
@@ -135,7 +149,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const handleFilerIcon = (listIcon: LikeComment[]) => {
         const icons = listIcon.map(icon => icon.icon)
         return Array.from(new Set(icons))
-
     }
 
     const renderColorLike = (icon: string, like_comment: LikeComment[]) => {
@@ -188,7 +201,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                     <div className='w-full'>
                                                         <div className='w-full'>
                                                             <div className='inline-block bg-[#F0F2F5] rounded-xl px-[15px] py-[8px] text-black'>
-                                                                <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
+                                                                <h4 className='font-[600] font-fontFamily text-[15px]'>{comment?.info_user?.username}</h4>
                                                                 <p className='text-[14px] font-fontFamily mt-[4px]'>{comment?.content_comment}</p>
                                                             </div>
                                                             {
@@ -257,7 +270,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                                                 </div>
                                                                                                             })
                                                                                                         }
-                                                                                                        <div className='font-[550] font-fontFamily ml-[5px]'>{replies_comment.replies_like_comments.length}</div>
+                                                                                                        <div className='font-[550] font-fontFamily ml-[5px] text-black'>{replies_comment.replies_like_comments.length}</div>
                                                                                                     </div>
                                                                                                 }
                                                                                             </div>
@@ -314,7 +327,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                             avatar_user={users.avatar}
                                                                             content={RepliesContent}
                                                                             setContent={setRepliesContent}
-                                                                            handleCreateComment={handleCreateRepliesComment}
+                                                                            handleCreateComment={()=>handleCreateRepliesComment(comment.user_id)}
                                                                         />
                                                                         <div className='relative '>
                                                                             {

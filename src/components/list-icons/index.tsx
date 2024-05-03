@@ -27,7 +27,7 @@ export interface ShowPopupIcons {
     handleShowPopupIcons: () => void
 }
 interface TProps {
-    handleSelectIcon: (icon: string) => Promise<void>
+    handleSelectIcon: (icon: string ) => Promise<void>
 }
 export const ListIcons = ({ handleSelectIcon }:TProps) => {
     const {setIsHovered}= useContext(ContextAPI)

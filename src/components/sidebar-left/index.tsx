@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable no-extra-boolean-cast */
 import { NavLink, useNavigate } from "react-router-dom"
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef, useContext } from "react";
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
@@ -17,10 +18,11 @@ import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-pass
 import { useClickOutSide } from "../../hooks/useClickOutSide";
 import { ContextAPI } from "../../hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { NotificationType } from "../post";
+// import { NotificationType } from "../post";
 
 
 export const SidebarLeft = () => {
+
   const showChangePasswordRef = useRef<ChangePasswordResponse>(null)
   const refFormChangePassword = useRef<HTMLFormElement>(null)
   const [toggleLogout, setToggleLogout] = useState<boolean>(false)
@@ -32,12 +34,12 @@ export const SidebarLeft = () => {
   const { data: getMe } = useGetMeQuery(profile?.user_id ? {
     user_id: profile?.user_id
   } : skipToken)
-  const { listNotification, setListNotification } = useContext(ContextAPI)
+  const {  countNotification, setCountNotification} = useContext(ContextAPI)
 
-  const [listNotificationCopy, setListNotificationCopy] = useState<NotificationType[]>([])
-  useEffect(() => {
-    setListNotificationCopy((listNotification as NotificationType[]) ?? [])
-  }, [listNotification])
+  // const [listNotificationCopy, setListNotificationCopy] = useState<any[]>([])
+  // useEffect(() => {
+  //   setListNotificationCopy(([...listNotification] as any[]) ?? [])
+  // }, [listNotification])
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -64,8 +66,9 @@ export const SidebarLeft = () => {
   })
 
   const handleEmptyListNotification = () => {
-    setListNotificationCopy([])
-    setListNotification([])
+    // setListNotificationCopy([])
+    setCountNotification(0)
+    // setListNotification([])
   }
 
   return (
@@ -104,8 +107,8 @@ export const SidebarLeft = () => {
             <div className="ml-[10px] relative">
               <BellIcon className="text-black" />
               {
-                listNotificationCopy.length > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
-              ">{listNotificationCopy.length}</div>
+                countNotification > 0 && <div className="px-[8px] py-[3px] bg-[red] text-white rounded-[50%] text-[14px] font-[600] font-fontFamily absolute  bottom-[20px] right-[-10px]
+              ">{countNotification}</div>
               }
             </div>
             <p className="text-[20px] font-fontFamily  ml-[30px] !text-black">{t('sidebarLeft.notifications')}</p>

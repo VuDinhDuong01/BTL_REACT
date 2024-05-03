@@ -10,27 +10,28 @@ import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default"
 import { Search } from "../search"
 import { ContextAPI } from "../../hooks";
 import { Loading } from "../../assets/icons/eye";
+import { useGetMeQuery } from "../../apis";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 export const SidebarRight = () => {
   const navigate = useNavigate()
   const [disable, setDisable] = useState<boolean>(false)
   const { data: getUser, isLoading } = useGetUserQuery()
-  console.log(getUser)
-  const [idUserFollow, setIdUserFollow]= useState<string>('')
+  const [idUserFollow, setIdUserFollow] = useState<string>('')
   const { data: getFollow } = useGetFollowQuery()
   const [follow, { isLoading: loadingFollow }] = useFollowMutation()
   const { socket } = useContext(ContextAPI)
   const profile = getProfileToLS() as { user_id?: string, username?: string, avatar?: string }
   const getListUser = useMemo(() => {
     return getUser?.data.filter(user => {
-      if(user._id === profile?.user_id ||  user?.roles[0] === 'admin'){
+      if (user._id === profile?.user_id || user?.roles[0] === 'admin') {
         return false
       }
       return true
     })
   }, [getUser?.data, profile?.user_id])
 
-  
+
   // check
   const checkStatusFollow = (following_id: string) => {
     return getFollow?.data.some(item => {
@@ -43,7 +44,9 @@ export const SidebarRight = () => {
   useEffect(() => {
     loadingFollow ? setDisable(true) : setDisable(false)
   }, [loadingFollow])
-
+  const { data: getMe } = useGetMeQuery(profile.user_id ? {
+    user_id: profile.user_id
+  } : skipToken)
 
   const handleFollowUser = async (following_id: string) => {
     setIdUserFollow(following_id)
@@ -52,8 +55,9 @@ export const SidebarRight = () => {
         to: following_id,
         from: profile?.user_id,
         status: 'follow',
-        username: profile?.username,
-        avatar: profile?.avatar,
+        username: getMe?.data[0].name,
+        avatar: getMe?.data[0].avatar,
+        created_at: new Date()
       })
       await follow({
         following_id,
@@ -80,8 +84,8 @@ export const SidebarRight = () => {
                       <p className="text-[13px] text-[#536471] font-fontFamily">@{user.username ?? ''}</p>
                     </div>
                   </div>
-                  <Button disabled={disable &&  user._id === idUserFollow } className={`w-[150px] text-[15px] !font-[600] bg-black text-white flex  items-center justify-center   hover:opacity-70 ${disable   ?  'cursor-not-allowed':'cursor-pointer'} `
-                } onClick={() => handleFollowUser(user._id)}>{loadingFollow && user._id === idUserFollow ? <Loading /> : checkStatusFollow(user._id) ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
+                  <Button disabled={disable && user._id === idUserFollow} className={`w-[150px] text-[15px] !font-[600] bg-black text-white flex  items-center justify-center   hover:opacity-70 ${disable ? 'cursor-not-allowed' : 'cursor-pointer'} `
+                  } onClick={() => handleFollowUser(user._id)}>{loadingFollow && user._id === idUserFollow ? <Loading /> : checkStatusFollow(user._id) ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
                 </div>
               })
             }

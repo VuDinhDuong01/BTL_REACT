@@ -17,6 +17,8 @@ import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
 import { ContextAPI } from "../../hooks"
 import { ViewIcon } from "../../assets/icons/eye"
+import { useGetMeQuery } from "../../apis"
+import { skipToken } from "@reduxjs/toolkit/query"
 
 interface Props {
     tweet: Tweet,
@@ -35,7 +37,7 @@ export interface NotificationType {
 export const typeVideo = ['mp4', 'mvk']
 export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
-    const { user_id, username, avatar } = getProfileToLS() as { user_id: string, username: string, avatar: string }
+    const { user_id } = getProfileToLS() as { user_id: string, username: string, avatar: string }
     const [likeTweet] = useLikeMutation()
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
@@ -44,6 +46,9 @@ export const Post = ({ tweet }: Props) => {
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
+    const { data: getMe } = useGetMeQuery(user_id ? {
+        user_id: user_id
+      } : skipToken)
 
     const listIcons = [
         {
@@ -93,9 +98,10 @@ export const Post = ({ tweet }: Props) => {
                     tweet.user_id !== user_id && socket?.emit("send_notification_like", {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
-                        username: username,
-                        avatar: avatar,
-                        status: 'like'
+                        username: getMe?.data[0].name,
+                        avatar: getMe?.data[0].avatar,
+                        status: 'like',
+                        created_at:new Date()
                     })
 
                     await likeTweet({ tweet_id: tweet._id }).unwrap()
@@ -108,9 +114,10 @@ export const Post = ({ tweet }: Props) => {
                     tweet.user_id !== user_id && socket?.emit("send_notification_bookmark", {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
-                        username: username,
-                        avatar: avatar,
-                        status: 'bookmark'
+                        username: getMe?.data[0].name,
+                        avatar: getMe?.data[0].avatar,
+                        status: 'bookmark',
+                        created_at:new Date()
                     })
                     await bookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 }

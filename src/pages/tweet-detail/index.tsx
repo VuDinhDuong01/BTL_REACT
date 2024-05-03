@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useParams, useNavigate } from "react-router-dom"
 import ImageGallery from 'react-image-gallery';
 import 'react-image-gallery/styles/css/image-gallery.css';
@@ -22,7 +23,7 @@ import { ContextAPI } from "../../hooks";
 import { convertDateToHours } from "../../helps/convert-date-to-hour";
 import { LikeComment } from "../../types/comment";
 import { ListIcons } from "../../components/list-icons";
-import { UploadImageResponse, useUploadImageMutation } from "../../apis";
+import { UploadImageResponse, useGetMeQuery, useUploadImageMutation } from "../../apis";
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from "../../apis/comment";
 import { GetCommentResponse, typeVideo } from "../../components/post";
 import { ViewIcon } from "../../assets/icons/eye";
@@ -30,6 +31,7 @@ import { ViewIcon } from "../../assets/icons/eye";
 export const TweetDetail = () => {
   const [limitComment, setLimitComment] = useState<number>(2)
   const [likeTweet] = useLikeMutation()
+  const { socket } = useContext(ContextAPI)
   const [unLikeTweet] = useUnLikeMutation()
   const [bookmarkTweet] = useBookmarkMutation()
   const [unBookmarkTweet] = useUnBookmarkMutation()
@@ -42,7 +44,7 @@ export const TweetDetail = () => {
   const [file, SetFile] = useState<File | string>('')
   const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
   const { tweet_id } = useParams()
-  const { user_id } = getProfileToLS() as { user_id: string }
+  const { user_id} = getProfileToLS() as { user_id: string, username: string, avatar: string }
   const navigate = useNavigate()
   const { data: getComment, isLoading: loading } = useGetCommentQuery(tweet_id ? {
     tweet_id: tweet_id,
@@ -52,6 +54,9 @@ export const TweetDetail = () => {
 
   const { data: tweetDetail, isLoading } = useGetTweetDetailQuery(tweet_id ? {
     tweet_id: tweet_id,
+  } : skipToken)
+  const { data: getMe } = useGetMeQuery(user_id ? {
+    user_id: user_id
   } : skipToken)
 
   const ImagesTweet = useMemo(() => {
@@ -119,6 +124,14 @@ export const TweetDetail = () => {
         if (checkLike(tweetDetail?.data[0].likes as Like[])) {
           await unLikeTweet({ tweet_id: tweetDetail?.data[0]._id })
         } else {
+          (tweetDetail as any)?.data[0].user_id !== user_id && socket?.emit("send_notification_like", {
+            tweet_id: tweet_id,
+            to: (tweetDetail as any)?.data[0].user_id,
+            username: getMe?.data[0].name,
+            avatar: getMe?.data[0].avatar,
+            status: 'like',
+            created_at: new Date()
+          })
           await likeTweet({ tweet_id: tweetDetail?.data[0]._id })
         }
       }],
@@ -126,6 +139,14 @@ export const TweetDetail = () => {
         if (checkBookmark(tweetDetail?.data[0].bookmarks as Like[])) {
           await unBookmarkTweet({ tweet_id: tweetDetail?.data[0]._id, user_id })
         } else {
+          (tweetDetail as any)?.data[0].user_id !== user_id && socket?.emit("send_notification_bookmark", {
+            tweet_id: tweet_id,
+            to: (tweetDetail as any)?.data[0].user_id,
+            username: getMe?.data[0].name,
+            avatar: getMe?.data[0].avatar,
+            status: 'bookmark',
+            created_at: new Date()
+          })
           await bookmarkTweet({ tweet_id: tweetDetail?.data[0]._id, user_id })
         }
       }],
@@ -158,6 +179,16 @@ export const TweetDetail = () => {
         content_comment: content,
         image_comment: file !== '' && file instanceof File ? uploadImage[0].image : file
       }).unwrap()
+      if (user_id !== (tweetDetail as any)?.data[0].user_id) {
+        socket?.emit('send_notification_comment', {
+          tweet_id: tweet_id,
+          to: (tweetDetail as any)?.data[0].user_id,
+          username: getMe?.data[0].name,
+          avatar: getMe?.data[0].avatar,
+          status: 'comment',
+          created_at: new Date()
+        })
+      }
       SetFile('')
       setContent('')
     } catch (error: unknown) {
@@ -165,7 +196,7 @@ export const TweetDetail = () => {
     }
   }
 
-  const handleCreateRepliesComment = async () => {
+  const handleCreateRepliesComment = async (user_id_comment: string) => {
     try {
       let uploadImage: UploadImageResponse[] = [];
       if (fileRepliesComment !== '' && fileRepliesComment instanceof File) {
@@ -179,6 +210,16 @@ export const TweetDetail = () => {
         replies_content_comment: RepliesContent,
         replies_image_comment: fileRepliesComment !== '' && fileRepliesComment instanceof File ? uploadImage[0].image : fileRepliesComment
       }).unwrap()
+      if (user_id !== user_id_comment) {
+        socket?.emit('send_notification_reply_comment', {
+          tweet_id: tweet_id,
+          to: user_id_comment,
+          username: getMe?.data[0].name,
+          avatar: getMe?.data[0].avatar,
+          status: 'reply_comment',
+          created_at: new Date()
+        })
+      }
       setRepliesContent('')
       setFileRepliesComment('')
     } catch (error: unknown) {
@@ -224,7 +265,7 @@ export const TweetDetail = () => {
           </div>
         </div >
       </div>
-      <div className="w-[420px]">
+      <div className="w-[470px]">
         {
           isLoading ? <div className="my-[50px]"><Skeleton /></div> : <div className="flex items-center ml-[20px]">
             <div className="w-[80px] h-full">
@@ -269,16 +310,16 @@ export const TweetDetail = () => {
         <div className='w-full flex-1 pb-[20px] overflow-y-scroll max-h-[600px]'>
           <div className='px-[20px]  cursor-pointer  w-full h-full'>
             {
-              loading ? <div className="mt-[200px]"><Skeleton /></div> : <>
+              loading ? <div className="mt-[200px]"><Skeleton /></div> : <div className="mt-[20px]">
                 {
                   (getComment as GetCommentResponse)?.data.length > 0 ? getComment?.data.map(comment => {
-                    return <div className='w-full flex mt-[30px]' key={comment._id}>
+                    return <div className='w-full flex ' key={comment._id}>
                       <img src={comment.info_user?.avatar ? comment.info_user?.avatar : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
                       <div className='w-full'>
                         <div className='w-full'>
                           <div className='inline-block bg-[#F0F2F5] rounded-xl px-[20px] py-[10px]'>
                             <h4 className='font-[600] font-fontFamily text-[16px]'>{comment?.info_user?.username}</h4>
-                            <p className='text-[14px] font-fontFamily'>{comment?.content_comment}</p>
+                            <p className='text-[14px] font-fontFamily mt-[4px]'>{comment?.content_comment}</p>
                           </div>
                           {
                             comment.image_comment !== '' && <div className='mt-[20px]'>
@@ -386,7 +427,7 @@ export const TweetDetail = () => {
                           </>
 
                         }
-                         {
+                        {
                           Object.keys(comment.replies_comments[0])?.length > 0 && openReplyComment === false && <div className='flex items-center text-[15px] font-fontFamily mt-[-10px] font-[600] text-[#828484] mb-[10px]' onClick={() => setOpenReplyComment(true)}>
                             <Icons.PiArrowBendUpRightThin size={25} />
                             <p className='text-[16px] ml-[10px] my-[20px]'>{`Xem ${comment.replies_comments.length === 1 ? '' : 'tất cả'} ${comment?.replies_comments?.length} phản hồi`}</p>
@@ -403,7 +444,7 @@ export const TweetDetail = () => {
                                   avatar_user={tweetDetail?.data[0].users.avatar as string}
                                   content={RepliesContent}
                                   setContent={setRepliesContent}
-                                  handleCreateComment={handleCreateRepliesComment}
+                                  handleCreateComment={() => handleCreateRepliesComment(comment.user_id)}
                                 />
                                 <div className='relative'>
                                   {
@@ -420,17 +461,17 @@ export const TweetDetail = () => {
                             }
                           </div>
                         }
-                       
+
                       </div>
                     </div>
                   }) : <div className='w-full h-full flex text-[20px] pt-[50px] items-center justify-center font-fontFamily font-[600] cursor-default'>{t('home.notComment')}</div>
                 }
                 {(getComment as GetCommentResponse)?.total_records as number > limitComment && <div className='text-[#a6aab0] text-[18px] font-fontFamily py-[15px] hover:underline' onClick={() => setLimitComment(prev => prev + 2)}>{t('home.seeMoreComments')}</div>}
-              </>
+              </div>
             }
           </div>
         </div>
-        <div className="py-[10px] px-[10px] fixed bottom-0 w-[420px] " style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
+        <div className="py-[10px] px-[10px] fixed bottom-0 w-[470px] " style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
           <InputPost
             className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
             file={file as File}
