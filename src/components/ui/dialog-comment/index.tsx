@@ -1,5 +1,5 @@
 
-import { useImperativeHandle, forwardRef, useState, useRef, useContext } from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, useContext, FormEvent} from 'react'
 import { t } from "i18next";
 
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
@@ -83,7 +83,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const handleRepliesComment = (comment_id: string) => {
         setIsShowInputRepliesComment(comment_id)
     }
-    const handleCreateComment = async () => {
+    const handleCreateComment = async (e:FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         try {
             if (user_id !== id_user) {
                 socket?.emit('send_notification_comment', {
@@ -358,7 +359,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                         <div className='w-full min-h-[120px] p-[10px] ' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }}>
                             <InputPost
                                 className='p-[5px] text-[17px] font-fontFamily  w-full active:outline-none focus:outline-none rounded-lg border-none overflow-hidden resize-none bg-[#F0F2F5]'
-
                                 file={file as File}
                                 setFile={SetFile}
                                 avatar_user={users.avatar}

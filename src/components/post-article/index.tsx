@@ -1,8 +1,9 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type ChangeEvent, useRef, useState, useEffect } from 'react'
+import { type ChangeEvent, useRef, useState, useEffect, useContext } from 'react'
 import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
@@ -22,6 +23,7 @@ import { Loading } from '../../assets/icons/eye';
 import { EmojiPickers, ShowEmoji } from '../common/emoji-picker';
 import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 import { ToastMessage } from '../../helps/toast-message';
+import { ContextAPI } from '../../hooks';
 
 const listIcons = [
     {
@@ -83,6 +85,7 @@ const permissionViews: permissionViews[] = [
 ]
 
 export const PostArticle = () => {
+    const { socket } = useContext(ContextAPI)
     const [uploadImages, { isLoading: isLoadingUploadImage }] = useUploadImageMutation()
     const [uploadVideo, { isLoading: isLoadingUploadVideo }] = useUploadVideoMutation()
     const [createTweet, { isLoading }] = useCreateTweetMutation()
@@ -91,7 +94,7 @@ export const PostArticle = () => {
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
-    const {  handleSubmit } = useForm({
+    const { handleSubmit } = useForm({
         defaultValues: {
             textPost: ''
         }
@@ -205,7 +208,7 @@ export const PostArticle = () => {
         contentEditableRef.current.focus();
     };
 
-    const { user_id, avatar } = getProfileToLS() as { user_id: string, avatar: string }
+    const { user_id, avatar, username } = getProfileToLS() as { user_id: string, avatar: string, username: string }
 
     const onSubmit = (handleSubmit(async () => {
         let uploadImage: { image: string, type: number }[] = []
@@ -235,7 +238,7 @@ export const PostArticle = () => {
                 hashtags,
                 mentions
             }
-            await createTweet(bodyRequest).unwrap();
+            const res = await createTweet(bodyRequest).unwrap();
             setText('')
             setFiles([])
             setGif('')
@@ -244,6 +247,21 @@ export const PostArticle = () => {
                 icon: <Icons.AiOutlineGlobal />
             })
             isLoading || isLoadingUploadImage || isLoadingUploadVideo && setIsDisable(true)
+
+            if (res.message === 'create tweet successfully') {
+                if ((res.data as any).hasOwnProperty('tweet_id') && (res.data as any).user_ids.length > 0) {
+                    for (let i = 0; i < (res.data as any).user_ids.length; i++) {
+                        socket?.emit('send_notification_mentions', {
+                            status: 'mentions',
+                            from: user_id,
+                            to: (res.data as any).user_ids[i],
+                            created_at: new Date,
+                            tweet_id: (res.data as any).tweet_id,
+                            username: username,
+                        })
+                    }
+                }
+            }
         } catch (error: unknown) {
             console.log(error)
         }
@@ -288,7 +306,9 @@ export const PostArticle = () => {
                                 className="w-full absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[25px]"
                                 onClick={handlePlaceholderClick}
                             >
-                                {t('home.whatIsHappening')}
+                                {
+                                 `${username} ơi, ${t('home.whatIsHappening')}`
+                                }
 
                             </div>
                         )}

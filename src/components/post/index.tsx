@@ -19,6 +19,7 @@ import { ContextAPI } from "../../hooks"
 import { ViewIcon } from "../../assets/icons/eye"
 import { useGetMeQuery } from "../../apis"
 import { skipToken } from "@reduxjs/toolkit/query"
+import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags"
 
 interface Props {
     tweet: Tweet,
@@ -48,7 +49,7 @@ export const Post = ({ tweet }: Props) => {
     }
     const { data: getMe } = useGetMeQuery(user_id ? {
         user_id: user_id
-      } : skipToken)
+    } : skipToken)
 
     const listIcons = [
         {
@@ -101,7 +102,7 @@ export const Post = ({ tweet }: Props) => {
                         username: getMe?.data[0].name,
                         avatar: getMe?.data[0].avatar,
                         status: 'like',
-                        created_at:new Date()
+                        created_at: new Date()
                     })
 
                     await likeTweet({ tweet_id: tweet._id }).unwrap()
@@ -117,7 +118,7 @@ export const Post = ({ tweet }: Props) => {
                         username: getMe?.data[0].name,
                         avatar: getMe?.data[0].avatar,
                         status: 'bookmark',
-                        created_at:new Date()
+                        created_at: new Date()
                     })
                     await bookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 }
@@ -136,8 +137,10 @@ export const Post = ({ tweet }: Props) => {
         }
     }
 
-    const handleNavigateDetail = (tweet_id: string) => {
-        navigate(`/tweet/${tweet_id}`)
+    const handleNavigateDetail = ({ tweet_id, tweet_medias }: { tweet_id: string, tweet_medias: string[] }) => {
+        if (tweet_medias.length > 0) {
+            navigate(`/tweet/${tweet_id}`)
+        }
     }
 
     return (
@@ -147,15 +150,15 @@ export const Post = ({ tweet }: Props) => {
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
-                <div onClick={() => handleNavigateDetail(tweet._id)}>
+                <div onClick={() => handleNavigateDetail({ tweet_id: tweet._id, tweet_medias: tweet.medias })}>
                     <div className="mt-[8px]">
                         <div className=" w-full flex items-center font-fontFamily">
-                            <h2 className="text-[18px]">{tweet.users?.username}</h2>
-                            <p className="text-[15px] mx-1">@{tweet.users?.name}</p>
+                            <h2 className="text-[18px]">{tweet.users?.name}</h2>
+                            <p className="text-[15px] mx-1">@{tweet.users?.username}</p>
                         </div>
                         <p className="font-fontFamily text-[16px] pt-[5px]">{tweet.users?.bio}</p>
                     </div>
-                    <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweet?.content}</div>
+                    <div className="text-[16px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{formatMentionsAndHashtags(tweet?.content as string)}</div>
                     <div className="w-full mt-[20px] cursor-pointer">
                         {
                             tweet?.medias?.length > 0 && !typeVideo.includes(tweet.medias[0].slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias })

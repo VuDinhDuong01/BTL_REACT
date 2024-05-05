@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 
 import { useContext } from "react";
 import { useNavigate, generatePath } from "react-router-dom";
@@ -17,17 +15,19 @@ import { convertDateToHours } from "../../helps/convert-date-to-hour";
 const Notifications = () => {
 
   const { listNotification } = useContext(ContextAPI)
-
-
   const profile = getProfileToLS() as { username?: string, user_id?: string }
   const navigate = useNavigate()
 
   const handleNavigatePostDetail = (notification: NotificationType) => {
+    console.log(notification)
     if (notification?.status === 'follow') {
       navigate(generatePath(PAGE.PERSONAL, { user_id: notification?.sender_id as string }))
-    } else {
+    } else if (notification?.status === 'message') {
+      navigate(generatePath(PAGE.MESSAGE_DETAIL, { receiver_id: notification?.from as string ?? notification?.sender_id as string }))
+    }
+    else {
       navigate(generatePath(PAGE.TWEET_DETAIL, { tweet_id: notification?.tweet_id as string }))
-      window.location.reload()
+      // window.location.reload()
     }
   }
   return (
@@ -42,7 +42,7 @@ const Notifications = () => {
       </div>
       <div className="mt-[55px]">
         {
-          listNotification?.length > 0 ?  listNotification?.map((notification, index) => {
+          listNotification?.length > 0 ? listNotification?.map((notification, index) => {
             return <div onClick={() => handleNavigatePostDetail(notification)} className="w-full flex items-center text-black cursor-pointer hover:bg-[#efecec] py-[15px] px-[5px] border-b-[1px] border-solid border-b-[#d7cccc] border-t-transparent border-r-transparent border-l-transparent" key={index}>
               <div className="mr-[15px] text-[#1D9BF0] ">
                 <CiUser size={35} />
@@ -52,7 +52,6 @@ const Notifications = () => {
                 <div className="flex items-center">
                   <h3 className="text-[15px] font-fontFamily font-[600] mr-[7px]">{notification.username}</h3>
                   <p className="text-[16px] font-fontFamily ">{checkStatusNotification(notification.status)}</p>
-                  
                 </div>
                 <p className="text-[15px] font-fontFamily mt-[5px] font-[500] text-[#0866FF]">{convertDateToHours(notification?.created_at)}</p>
               </div>

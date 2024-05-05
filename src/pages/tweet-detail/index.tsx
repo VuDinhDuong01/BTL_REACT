@@ -11,7 +11,7 @@ import { Images } from "../../assets/images"
 import { PAGE } from "../../constants"
 import { useGetTweetDetailQuery } from "../../apis/tweet";
 import { Skeleton, Skeleton2 } from "../../components/ui/skeleton";
-import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default";
+import { DEFAULT_IMAGE_AVATAR, NOT_IMAGE } from "../../helps/image-user-default";
 import { Like } from "../../types/tweet";
 import { cn } from "../../helps/cn";
 import { getProfileToLS } from "../../helps";
@@ -27,6 +27,7 @@ import { UploadImageResponse, useGetMeQuery, useUploadImageMutation } from "../.
 import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from "../../apis/comment";
 import { GetCommentResponse, typeVideo } from "../../components/post";
 import { ViewIcon } from "../../assets/icons/eye";
+import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags";
 
 export const TweetDetail = () => {
   const [limitComment, setLimitComment] = useState<number>(2)
@@ -44,7 +45,7 @@ export const TweetDetail = () => {
   const [file, SetFile] = useState<File | string>('')
   const [fileRepliesComment, setFileRepliesComment] = useState<File | string>('')
   const { tweet_id } = useParams()
-  const { user_id} = getProfileToLS() as { user_id: string, username: string, avatar: string }
+  const { user_id } = getProfileToLS() as { user_id: string, username: string, avatar: string }
   const navigate = useNavigate()
   const { data: getComment, isLoading: loading } = useGetCommentQuery(tweet_id ? {
     tweet_id: tweet_id,
@@ -60,11 +61,20 @@ export const TweetDetail = () => {
   } : skipToken)
 
   const ImagesTweet = useMemo(() => {
-    return tweetDetail?.data[0].medias.map((image) => {
-      return {
-        original: image
-      }
-    })
+    if((tweetDetail as any )?.data[0].medias.length > 0 ){
+      return tweetDetail?.data[0].medias.map((image) => {
+        return {
+          original: image
+        }
+      })
+    }else {
+      return [
+        {
+          original : NOT_IMAGE
+        }
+      ]
+    }
+    
   }, [tweetDetail])
 
   const checkBookmark = (bookmarks: Like[]) => {
@@ -159,7 +169,6 @@ export const TweetDetail = () => {
   const handleFilerIcon = (listIcon: LikeComment[]) => {
     const icons = listIcon.map(icon => icon.icon)
     return Array.from(new Set(icons))
-
   }
 
   const handleCreateComment = async () => {
@@ -167,9 +176,7 @@ export const TweetDetail = () => {
       let uploadImage: UploadImageResponse[] = [];
       if (file !== '' && file instanceof File) {
         const formData = new FormData()
-
         formData.append("image", file)
-
         uploadImage = await uploadImages(formData).unwrap()
       }
 
@@ -244,7 +251,7 @@ export const TweetDetail = () => {
         <div className="w-full  flex items-center justify-center">
           <div>
             {
-              isLoading ? <div className=" mt-[100px]" ><Skeleton2 /> </div> : (ImagesTweet as { original: string }[])?.length > 0 && !typeVideo.includes(tweetDetail?.data[0].medias[0].slice(-3) as string) ?
+              isLoading ? <div className=" mt-[100px]" ><Skeleton2 /> </div> : ((ImagesTweet as { original: string }[])?.length > 0 && !typeVideo.includes(((ImagesTweet as {original:string}[])[0] as any)?.original.slice(-3) as string) ?
                 <ImageGallery
                   items={ImagesTweet as { original: string }[]}
                   showThumbnails={false}
@@ -256,11 +263,11 @@ export const TweetDetail = () => {
                       <img
                         src={item.original}
                         alt={item.originalAlt}
-                        style={{ height: '100vh', width: '700px' }}
+                        style={{ height: '100vh', width: '700px', objectFit: 'cover' }}
                       />
                     </div>
                   )}
-                /> : <video src={tweetDetail?.data[0].medias[0]} controls className="h-[100vh] w-[700px] rounded-[20px]" />
+                /> : <video src={tweetDetail?.data[0].medias[0]} controls className="h-[100vh] w-[700px] rounded-[20px]" />) 
             }
           </div>
         </div >
@@ -273,10 +280,10 @@ export const TweetDetail = () => {
             </div>
             <div >
               <div className="mt-[30px] font-fontFamily ">
-                <h2 className="text-[18px]">{tweetDetail?.data[0]?.users.username}</h2>
-                <p className="text-[15px] mx-1">@{tweetDetail?.data[0]?.users.name}</p>
+                <h2 className="text-[18px]">{tweetDetail?.data[0]?.users.name}</h2>
+                <p className="text-[15px] mx-1">@{tweetDetail?.data[0]?.users.username}</p>
               </div>
-              <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{tweetDetail?.data[0]?.content}</div>
+              <div className="text-[15px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{formatMentionsAndHashtags(tweetDetail?.data[0]?.content as string)}</div>
             </div>
           </div>
 
@@ -400,7 +407,7 @@ export const TweetDetail = () => {
                                           </div>
                                         }
                                         <div className='w-[200px] mt-[5px] flex items-center'>
-                                          <p className='text-[15px] font-fontFamily w-[150px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
+                                          <p className='text-[15px] font-fontFamily w-[170px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
                                           <div className='w-full relative'>
                                             <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
                                               {

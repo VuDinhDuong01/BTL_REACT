@@ -7,6 +7,7 @@ import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from '../
 import { Socket } from 'socket.io-client'
 import { useGetNotificationQuery } from '../apis/notification'
 import { skipToken } from '@reduxjs/toolkit/query'
+import { useGetMeQuery } from '../apis'
 
 
 interface ContextProp {
@@ -45,7 +46,9 @@ const init = {
     listNotification: [],
     setListNotification: () => null,
     countNotification: 0,
-    setCountNotification: () => null
+    setCountNotification: () => null,
+
+
 }
 
 export const ContextAPI = createContext<ContextProp>(init)
@@ -53,11 +56,12 @@ export const ContextAPI = createContext<ContextProp>(init)
 export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const profile = getProfileToLS() as { user_id: string }
     const [limit, setLimit] = useState<number>(10)
-    const { data: getNotifications, isLoading } = useGetNotificationQuery(profile.user_id ? {
-        user_id: profile.user_id as string,
+    const { data: getNotifications, isLoading } = useGetNotificationQuery(profile?.user_id ? {
+        user_id: profile?.user_id as string,
         limit: limit,
         page: 1
     } : skipToken)
+
     const [listNotification, setListNotification] = useState<any[]>([])
     const [countNotification, setCountNotification] = useState<number>(0)
     const [likeComment] = useLikeCommentMutation()
@@ -88,39 +92,21 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         socket?.on("notification_like", (data: any) => {
-            setListNotification(prev => {
-                const existsNotification = prev.some(item => item.to === data.to && item.tweet_id === data.tweet_id);
-                if (!existsNotification) {
-                    return [data, ...prev];
-                }
-                return prev;
-            });
+            setListNotification(prev => [data, ...prev]);
             setCountNotification(prev => prev + 1)
         })
     }, [socket])
 
     useEffect(() => {
         socket?.on('following_user', (data: any) => {
-            setListNotification(prev => {
-                const existFollow = prev.some(item => item.to === data.to && item.from === data.from && item.status === data.status)
-                if (!existFollow) {
-                    return ([data, ...prev])
-                }
-                return prev
-            })
+            setListNotification(prev => [data, ...prev])
             setCountNotification(prev => prev + 1)
         })
     }, [socket])
 
     useEffect(() => {
         socket?.on('notification_bookmark', (data: any) => {
-            setListNotification(prev => {
-                const existsNotification = prev.some(item => item.to === data.to && item.tweet_id === data.tweet_id && item.status === data.status);
-                if (!existsNotification) {
-                    return [data, ...prev];
-                }
-                return prev;
-            });
+            setListNotification(prev => [data, ...prev]);
             setCountNotification(prev => prev + 1)
         })
     }, [socket])
@@ -130,15 +116,28 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
             setListNotification(prev => ([data, ...prev]));
             setCountNotification(prev => prev + 1)
         })
-       
+
     }, [socket])
     useEffect(() => {
         socket?.on('notification_reply_comment', (data: any) => {
             setListNotification(prev => ([data, ...prev]));
             setCountNotification(prev => prev + 1)
         })
-  
+
     }, [socket])
+    useEffect(() => {
+        socket?.on('notification_message', (data: any) => {
+            setListNotification(prev => ([data, ...prev]));
+            setCountNotification(prev => prev + 1)
+        })
+    }, [socket])
+    useEffect(() => {
+        socket?.on('notification_mentions', (data: any) => {
+            setListNotification(prev => ([data, ...prev]));
+            setCountNotification(prev => prev + 1)
+        })
+    }, [socket])
+
 
     const reset = () => {
         setAuth('')

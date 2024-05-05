@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 
 import { BookMarkIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
-import { Images } from "../../assets/images"
 import { Button } from "../ui/button"
 import { PAGE } from "../../constants"
 import { useGetMeQuery, useLogoutMutation } from "../../apis";
@@ -18,8 +17,7 @@ import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-pass
 import { useClickOutSide } from "../../hooks/useClickOutSide";
 import { ContextAPI } from "../../hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
-// import { NotificationType } from "../post";
-
+import { DEFAULT_IMAGE_COVER_PHOTO } from "../../helps/image-user-default";
 
 export const SidebarLeft = () => {
 
@@ -36,10 +34,6 @@ export const SidebarLeft = () => {
   } : skipToken)
   const {  countNotification, setCountNotification} = useContext(ContextAPI)
 
-  // const [listNotificationCopy, setListNotificationCopy] = useState<any[]>([])
-  // useEffect(() => {
-  //   setListNotificationCopy(([...listNotification] as any[]) ?? [])
-  // }, [listNotification])
   const { t } = useTranslation()
   const handleLogout = async () => {
     try {
@@ -66,9 +60,7 @@ export const SidebarLeft = () => {
   })
 
   const handleEmptyListNotification = () => {
-    // setListNotificationCopy([])
     setCountNotification(0)
-    // setListNotification([])
   }
 
   return (
@@ -165,7 +157,7 @@ export const SidebarLeft = () => {
         )}
       >
         <div className="flex items-center cursor-pointer fixed bottom-[10px] w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
-          <img src={Boolean(getMe?.data[0].avatar) ? getMe?.data[0].avatar : Images.logo} alt="avatar" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
+          <img src={Boolean(getMe?.data[0].avatar) ? getMe?.data[0].avatar : DEFAULT_IMAGE_COVER_PHOTO} alt="avatar" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
           <div className="ml-[10px] ">
             <h3 className="text-[14px] font-fontFamily">{getMe?.data[0].name}</h3>
             <p className="font-fontFamily text-[12px] mt-[5px]">{getMe?.data[0].username}</p>

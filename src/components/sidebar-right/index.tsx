@@ -44,7 +44,7 @@ export const SidebarRight = () => {
   useEffect(() => {
     loadingFollow ? setDisable(true) : setDisable(false)
   }, [loadingFollow])
-  const { data: getMe } = useGetMeQuery(profile.user_id ? {
+  const { data: getMe } = useGetMeQuery(profile?.user_id ? {
     user_id: profile.user_id
   } : skipToken)
 
@@ -53,7 +53,7 @@ export const SidebarRight = () => {
     try {
       socket?.emit("follow_user", {
         to: following_id,
-        from: profile?.user_id,
+        from: profile?.user_id ?? '',
         status: 'follow',
         username: getMe?.data[0].name,
         avatar: getMe?.data[0].avatar,

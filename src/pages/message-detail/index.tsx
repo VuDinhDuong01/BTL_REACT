@@ -40,7 +40,7 @@ export const MessageDetail = () => {
 
   const refEmojiPicker = useRef<ShowEmoji>(null)
   const profile = getProfileToLS() as {
-    user_id: string
+    user_id: string, avatar:string , username: string 
   }
 
 
@@ -67,7 +67,6 @@ export const MessageDetail = () => {
       setFocus(data)
     })
     socket?.on('check_user_active_client',(data:boolean)=>{
-      console.log(1)
       setUserActive(data)
     })
     socket?.on("disconnect", () => {
@@ -86,13 +85,22 @@ export const MessageDetail = () => {
     if (socket) {
       socket.emit('message_private', {
         content: textContent,
-        from: profile.user_id,
+        from: profile?.user_id,
         to: receiver_id
+      })
+
+      socket.emit('send_notification_message',{
+        from:profile?.user_id,
+        to: receiver_id,
+        status:'message',
+        created_at: new Date(),
+        avatar: profile?.avatar,
+        username: profile?.username
       })
     }
 
     setListMessage((prev: MessageType[]) => ([...prev, {
-      sender_id: profile.user_id,
+      sender_id: profile?.user_id,
       content: message.content
     }]))
     setMessage({
@@ -128,11 +136,6 @@ export const MessageDetail = () => {
       })
     }
   }
-
-  // useEffect(()=>{
-  //   socket?.on('check_active',(data)=>{
-  //   })
-  // },[socket])
 
   return (
     <div className=' h-[100vh] max-w-[610px] relative  '>

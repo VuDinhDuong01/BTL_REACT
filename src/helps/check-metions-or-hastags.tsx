@@ -20,3 +20,12 @@ export const checkHashTagsOrMentions = ({ arrayText, char }: { arrayText: string
         return Array.from(new Set(arrayMentions));
     }, [arrayText, char]);
 };
+
+export const formatMentionsAndHashtags = (string: string) => {
+    const regex = /(?:^|\s)([#@][^\s]+)/g;
+    const formattedString = string.replace(
+        regex,
+        '<span style="color: #1B90DF;">$1</span>'
+    );
+    return <span dangerouslySetInnerHTML={{ __html: formattedString }} />
+}
