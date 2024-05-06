@@ -20,6 +20,7 @@ import { ViewIcon } from "../../assets/icons/eye"
 import { useGetMeQuery } from "../../apis"
 import { skipToken } from "@reduxjs/toolkit/query"
 import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags"
+import { PopupSharePost, ShowPopupSharePost } from "../ui/dialog-share-post"
 
 interface Props {
     tweet: Tweet,
@@ -38,6 +39,7 @@ export interface NotificationType {
 export const typeVideo = ['mp4', 'mvk']
 export const Post = ({ tweet }: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
+    const refShowPopupSharePost= useRef<ShowPopupSharePost>(null)
     const { user_id } = getProfileToLS() as { user_id: string, username: string, avatar: string }
     const [likeTweet] = useLikeMutation()
     const [unLikeTweet] = useUnLikeMutation()
@@ -60,7 +62,7 @@ export const Post = ({ tweet }: Props) => {
         },
         {
             id: 2,
-            title: 'Repost',
+            title: 'Report',
             icon: <Icons.PiShareFat size={21} />,
             numberOfTurns: 12000
         },
@@ -124,9 +126,16 @@ export const Post = ({ tweet }: Props) => {
                 }
             }],
             [
-                'Reply', async () => {
+                'Reply',  () => {
                     if (refShowPopupComment.current) {
                         refShowPopupComment.current.showPopup()
+                    }
+                }
+            ],
+            [
+                'Report', async()=>{
+                    if(refShowPopupSharePost.current){
+                        refShowPopupSharePost.current.showPopup()
                     }
                 }
             ]
@@ -146,6 +155,7 @@ export const Post = ({ tweet }: Props) => {
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} id_user={tweet.user_id} users={tweet?.users} />
+            <PopupSharePost ref={refShowPopupSharePost} tweet_id={tweet._id} id_user={tweet.user_id} users={tweet?.users} />
             <div className="w-[80px] h-full flex items-center ">
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>

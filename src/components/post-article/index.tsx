@@ -25,7 +25,7 @@ import { DEFAULT_IMAGE_AVATAR } from '../../helps/image-user-default';
 import { ToastMessage } from '../../helps/toast-message';
 import { ContextAPI } from '../../hooks';
 
-const listIcons = [
+export const listIcons = [
     {
         id: 1,
         icons: <Icons.GoFileMedia size={20} />,
@@ -57,7 +57,7 @@ interface permissionViews {
     audience: number
 }
 
-const permissionViews: permissionViews[] = [
+export const permissionViews: permissionViews[] = [
     {
         id: 1,
         title: t('home.everyone'),

@@ -18,7 +18,12 @@ interface DivideImageSizeProps {
     setFiles: Dispatch<SetStateAction<{
         link: string;
         file: File;
-    }[]>>
+    }[]>>,
+    hImage1?:string ,
+    hImage2?:string ,
+    hImage3?:string ,
+    hImage4?:string ,
+
 }
 interface RenderImageProps extends DivideImageSizeProps {
     start: number;
@@ -70,11 +75,11 @@ const renderImage = ({ arrayImage, start, end, setFiles }: RenderImageProps) => 
     </div>
 }
 
-export const ConvertSizeImagesPost = ({ arrayImage, setFiles }: DivideImageSizeProps) => {
+export const ConvertSizeImagesPost = ({ arrayImage, setFiles ,hImage1 }: DivideImageSizeProps) => {
     switch (arrayImage.length) {
         case 1:
             return <div className="w-full relative">
-                <img src={arrayImage[0].file as string} className={cn("w-full object-cover rounded-[10px] h-[250px]")} alt="image" />
+                <img src={arrayImage[0].file as string} className={cn(`w-full object-cover rounded-[10px] ${hImage1 ? hImage1 : 'h-[250px]'} `)} alt="image" />
 
                 {handleEventImagePost({ setFiles, link: arrayImage[0].link })}
 
