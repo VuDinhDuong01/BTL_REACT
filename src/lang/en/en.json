@@ -81,7 +81,8 @@
         "notifications":"Notifications",
         "seeMoreComments":"See more comments",
         "active":"Active",
-        "noActive":"No Active"
+        "noActive":"No Active",
+        "addComment":"Add comment"
 
     },
     "sideBarRight":{

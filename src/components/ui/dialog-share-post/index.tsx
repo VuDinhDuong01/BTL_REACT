@@ -1,7 +1,7 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useImperativeHandle, forwardRef, useState, useRef, useContext, useEffect, ChangeEvent } from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, useContext, ChangeEvent } from 'react'
 import { t } from "i18next";
 
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
@@ -11,27 +11,28 @@ import { Icons } from '../../../helps/icons';
 // import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
 
-import { useUploadImageMutation, useUploadVideoMutation } from '../../../apis';
-import { getProfileToLS, regex } from '../../../helps';
+import { useUploadImageMutation } from '../../../apis';
+import { getProfileToLS } from '../../../helps';
 
 import { cn } from '../../../helps/cn';
 
 import { ContextAPI } from '../../../hooks';
 
 import { ShowGIF, handleShowPopup } from '../../show-gif';
-import { DEFAULT_IMAGE_AVATAR, NOT_IMAGE } from '../../../helps/image-user-default';
+import { DEFAULT_IMAGE_AVATAR } from '../../../helps/image-user-default';
 import { ConvertSizeImagesPost } from '../../../helps/convert-size-image-post';
 import { EmojiPickers, ShowEmoji } from '../../common/emoji-picker';
 import { Button } from '../button';
 import { listIcons, permissionViews } from '../../post-article';
 import { Loading } from '../../../assets/icons/eye';
 import { ToastMessage } from '../../../helps/toast-message';
-import { checkHashTagsOrMentions } from '../../../helps/check-metions-or-hastags';
+
 import omit from 'lodash/omit'
-import { useCreateTweetMutation, useGetTweetDetailQuery } from '../../../apis/tweet';
+import { useGetTweetDetailQuery } from '../../../apis/tweet';
 import { EmojiClickData } from 'emoji-picker-react';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { DivideImageSize } from '../../../helps/divide-size-image';
+import { useCreateSharePostMutation } from '../../../apis/share-post';
 export type ShowPopupSharePost = {
     showPopup: () => void;
 };
@@ -45,7 +46,7 @@ interface PropsDialogComment {
 const typeImages = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
 const typeVideo = ['video/mp4', 'video/webm']
 
-export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>(({ tweet_id, id_user, users }, ref) => {
+export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>(({ tweet_id }, ref) => {
 
 
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
@@ -84,9 +85,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
     //     }, ref: refPopComment
     // })
 
-    // const handleRepliesComment = (comment_id: string) => {
-    //     setIsShowInputRepliesComment(comment_id)
-    // }
 
 
 
@@ -96,16 +94,12 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
     //     return Array.from(new Set(icons))
     // }
 
-    // const renderColorLike = (icon: string, like_comment: LikeComment[]) => {
-    //     return like_comment?.some(item => item.user_id === user_id && item.icon === icon)
-    // }
 
 
 
     const [uploadImages, { isLoading: isLoadingUploadImage }] = useUploadImageMutation()
-    const [uploadVideo, { isLoading: isLoadingUploadVideo }] = useUploadVideoMutation()
-    const [createTweet, { isLoading }] = useCreateTweetMutation()
-    const [isDisable, setIsDisable] = useState<boolean>(false)
+    const [createSharePost] = useCreateSharePostMutation()
+
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -120,14 +114,12 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         icon: <Icons.AiOutlineGlobal />
     })
     const emojiRef = useRef<ShowEmoji>(null)
-    const [audience, setAudience] = useState<number>(0)
+    // const [audience, setAudience] = useState<number>(0)
     const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
     useClickOutSide({ onClickOutSide: () => setPopupPermission(false), ref: permissionRef })
     const [gif, setGif] = useState<string>('')
     const [text, setText] = useState('')
     const contentEditableRef = useRef<any>(null)
-    // const mentions = checkHashTagsOrMentions({ arrayText: text, char: '@' })
-    // const hashtags = checkHashTagsOrMentions({ arrayText: text, char: '#' })
 
     const [files, setFiles] = useState<{ link: string, file: File, name?: string, type?: string }[]>([])
     const handleIcon = (title: string) => () => {
@@ -147,7 +139,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
 
     const handleShowPermissionView = (item: any) => () => {
         setPopupPermission(false)
-        setAudience(item.audience)
+        // setAudience(item.audience)
         for (const element of permissionViews) {
             if (element.id === item.id) {
                 setShowPermissionView(omit(element, ['id']))
@@ -182,119 +174,85 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         setGif('')
     }
 
-    const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
-        setText(prev => (prev + emojiData.emoji))
-    }
 
     const handleTextChange = () => {
         const newText = contentEditableRef.current.innerText;
         setText(newText);
     };
 
-    // useEffect(() => {
-    //     highlightHashtags();
-    // }, [text]);
-
-    const moveCaretToEnd = () => {
-        const range = document.createRange();
-        const selection = window.getSelection();
-
-        range.selectNodeContents(contentEditableRef.current);
-        range.collapse(false);
-
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-    };
-
-    // useEffect(() => {
-    //     highlightHashtags();
-    //     moveCaretToEnd();
-    // }, [text]);
-
-    // const highlightHashtags = () => {
-    //     const highlightedText = text?.replace(regex.checkHashtagOrMention, (match) => `<span style="color: #6ABDF5;">${match}</span>`);
-    //     if (contentEditableRef?.current) {
-    //         contentEditableRef.current.innerHTML = highlightedText
-    //     }
-    // };
+    console.log(text)
+    const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
+        setText(prev => (prev + emojiData.emoji
+        ))
+    }
 
     const handlePlaceholderClick = () => {
         contentEditableRef.current.focus();
     };
 
-    const { avatar } = getProfileToLS() as { user_id: string, avatar: string, username: string }
+    const { avatar, user_id } = getProfileToLS() as { user_id: string, avatar: string, username: string }
     const { data: tweetDetail } = useGetTweetDetailQuery(tweet_id ? {
         tweet_id: tweet_id,
     } : skipToken)
 
-    // const onSubmit = (handleSubmit(async () => {
-    //     let uploadImage: { image: string, type: number }[] = []
-    //     let uploadVideos: { path: string, message: string } = { path: '', message: '' }
-    //     try {
-    //         if (files.length > 0) {
-    //             const formData = new FormData();
-    //             if (typeImages.includes(files[0].file.type)) {
-    //                 for (let i = 0; i < files.length; i++) {
-    //                     formData.append('image', files[i].file)
-    //                 }
-    //                 uploadImage = await uploadImages(formData).unwrap()
-    //             } else {
-    //                 formData.append('video', files[0].file)
-    //                 uploadVideos = await uploadVideo(formData).unwrap()
-    //             }
+    const handleCreateSharePost = async () => {
+        let uploadImage: { image: string, type: number }[] = []
 
-    //         }
-    //         const medias = files.length > 0 && typeImages.includes(files[0].file?.type) ?
-    //             uploadImage.map(item => item.image) : files.length > 0 &&
-    //                 typeVideo.includes(files[0].file?.type) ? [uploadVideos.path] : []
-    //         const bodyRequest = {
-    //             content: text,
-    //             medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
-    //             user_id,
-    //             audience,
-    //             hashtags,
-    //             mentions
-    //         }
-    //         const res = await createTweet(bodyRequest).unwrap();
-    //         setText('')
-    //         setFiles([])
-    //         setGif('')
-    //         setShowPermissionView({
-    //             title: t('home.everyone'),
-    //             icon: <Icons.AiOutlineGlobal />
-    //         })
-    //         isLoading || isLoadingUploadImage || isLoadingUploadVideo && setIsDisable(true)
+        try {
+            if (files.length > 0) {
+                const formData = new FormData();
+                if (typeImages.includes(files[0].file.type)) {
+                    for (let i = 0; i < files.length; i++) {
+                        formData.append('image', files[i].file)
+                    }
+                    uploadImage = await uploadImages(formData).unwrap()
+                }
 
-    //         if (res.message === 'create tweet successfully') {
-    //             if ((res.data as any)?.hasOwnProperty('tweet_id') && (res.data as any).user_ids.length > 0) {
-    //                 for (let i = 0; i < (res.data as any).user_ids.length; i++) {
-    //                     socket?.emit('send_notification_mentions', {
-    //                         status: 'mentions',
-    //                         from: user_id,
-    //                         to: (res.data as any).user_ids[i],
-    //                         created_at: new Date,
-    //                         tweet_id: (res.data as any).tweet_id,
-    //                         username: username,
-    //                     })
-    //                 }
-    //             }
-    //         }
-    //     } catch (error: unknown) {
-    //         console.log(error)
-    //     }
-    // }))
+            }
+            const medias = (files.length > 0 && typeImages.includes(files[0].file?.type) && uploadImage.map(item => item.image)) as string[]
+
+            const bodyRequest = {
+                content: text,
+                medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
+                userId: user_id,
+                postId: (tweetDetail as any)?.data[0]._id
+            }
+            await createSharePost(bodyRequest).unwrap();
+            setText('')
+            setFiles([])
+            setGif('')
+            setShowPermissionView({
+                title: t('home.everyone'),
+                icon: <Icons.AiOutlineGlobal />
+            })
+
+
+            //  if (res.message === 'create tweet successfully') {
+            //     if ((res.data as any)?.hasOwnProperty('tweet_id') && (res.data as any).user_ids.length > 0) {
+            //         for (let i = 0; i < (res.data as any).user_ids.length; i++) {
+            //             socket?.emit('send_notification_mentions', {
+            //                 status: 'mentions',
+            //                 from: user_id,
+            //                 to: (res.data as any).user_ids[i],
+            //                 created_at: new Date,
+            //                 tweet_id: (res.data as any).tweet_id,
+            //                 username: username,
+            //             })
+            //         }
+            //     }
+            //  }
+        } catch (error: unknown) {
+            console.log(error)
+        }
+    }
 
     // useEffect(() => {
     //     gif.length <= 0 && text === '' && files.length <= 0 ? setIsDisable(true) : setIsDisable(false)
     // }, [gif, text, files])
 
 
-    // useEffect(() => {
-    //     if (files.length > 0 && typeVideo.includes(files[0].file.type)) {
-    //         const url = URL.createObjectURL(files[0].file);
-    //         setVideoUrl(url);
-    //     }
-    // }, [files])
+
+
     return (<div>
         {
             isShowPopup && <Dialog open={isShowPopup}>
@@ -303,7 +261,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                     <div className='max-h-[700px]  w-[650px] bg-white rounded-[20px] flex flex-col relative' style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} >
                         <div className=' flex  ml-[10px] '><div className='mr-[15px] mt-[10px] cursor-pointer w-[30px] h-[30px] rounded-[50%] hover:bg-black3 flex items-center text-black justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div></div>
 
-                        <form className="w-full  mt-[20px] flex-1 " >
+                        {/* <form className="w-full  mt-[20px] flex-1 " > */}
                             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
                             <div className=" max-h-[500px] overflow-y-scroll flex  border-r-transparent border-l-transparent border-t-transparent">
                                 <div className="w-[65px] ml-[10px] mt-[3px]">
@@ -329,8 +287,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                                 className=" absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[25px]"
                                                 onClick={handlePlaceholderClick}
                                             >
-                                                Thêm bình luận
-
+                                                {t('home.addComment')}
                                             </div>
                                         )}
                                     </div>
@@ -345,10 +302,9 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                                         file: URL.createObjectURL(file.file),
                                                         link: file.link
                                                     }
-                                                }), setFiles, hImage1:'h-[150px]'
+                                                }), setFiles, hImage1: 'h-[150px]'
                                             })
                                         }
-
                                         {
                                             Boolean(gif) && <div className='w-full relative'>
                                                 <img src={gif as string} alt='gif' className='w-full object-cover rounded-lg h-[100px]' />
@@ -426,16 +382,18 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                                 </div>
                                             })
                                         }
-                                        <input type="file" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
-                                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute top-[40px]' />
+                                        <input type="file" accept="image/*" multiple style={{ display: 'none ' }} ref={mediaRef} onChange={handleFileMedia} />
+                                        <EmojiPickers handleShowEmojiPicker={handleShowEmojiPicker} ref={emojiRef} className=' absolute top-[-390px]' />
                                     </div>
                                     <Button
-                                        className={`!text-[15px] my-[7px] ${isLoading || isLoadingUploadImage || isLoadingUploadVideo ? '!cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} ${isDisable ? '!cursor-not-allowed opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily  m-auto  bg-green2 !rounded-[50px] flex items-center justify-center `}
-                                        disabled={isDisable}>{isLoading || isLoadingUploadImage || isLoadingUploadVideo ? <Loading /> : t('sidebarLeft.post')}
+                                        onClick={handleCreateSharePost}
+                                        className={`!text-[15px] my-[7px] ${isLoadingUploadImage ? '!cursor-not-allowed  opacity-[0.7]' : 'cursor-pointer'} !font-[700]  text-white font-fontFamily  m-auto  bg-green2 !rounded-[50px] flex items-center justify-center `}
+                                        // disabled={true}
+                                        >{isLoadingUploadImage ? <Loading /> : t('sidebarLeft.post')}
                                     </Button>
                                 </div>
                             </div>
-                        </form>
+                        {/* </form> */}
                     </div>
                 </DialogContent>
             </Dialog>
