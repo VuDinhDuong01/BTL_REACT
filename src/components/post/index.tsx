@@ -56,15 +56,15 @@ export const Post = ({ tweet }: Props) => {
     const listIcons = [
         {
             id: 1,
-            title: 'Reply',
+            title: 'Comment',
             icon: <Icons.BiMessageRounded size={21} />,
             numberOfTurns: tweet?.comment_count
         },
         {
             id: 2,
-            title: 'Report',
+            title: 'Share',
             icon: <Icons.PiShareFat size={21} />,
-            numberOfTurns: 12000
+            numberOfTurns: tweet.count_share_post
         },
         {
             id: 3,
@@ -126,14 +126,14 @@ export const Post = ({ tweet }: Props) => {
                 }
             }],
             [
-                'Reply',  () => {
+                'Comment',  () => {
                     if (refShowPopupComment.current) {
                         refShowPopupComment.current.showPopup()
                     }
                 }
             ],
             [
-                'Report', async()=>{
+                'Share', async()=>{
                     if(refShowPopupSharePost.current){
                         refShowPopupSharePost.current.showPopup()
                     }

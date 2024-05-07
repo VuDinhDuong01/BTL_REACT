@@ -15,6 +15,8 @@ export const checkStatusNotification = (status: string) => {
       return 'đã phản hồi bình luận của bạn.'
     case 'mentions':
       return 'đã nhắc tên bạn trong một bài đăng.'
+      case 'share_post':
+        return 'đã chia sẻ bài đăng của bạn.'
     default:
       break;
   }

@@ -23,7 +23,7 @@ export const sharePostAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data,
             }),
-            invalidatesTags: ['getDetailSharePost']
+            invalidatesTags: ['getDetailSharePost','getListTweet']
         }),
 
         // unFollow: build.mutation<GenerateType<{}>, { follower_id: string, following_id: string }>({

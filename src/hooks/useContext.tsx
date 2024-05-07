@@ -138,6 +138,13 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
         })
     }, [socket])
 
+    useEffect(() => {
+        socket?.on('notification_share_post', (data: any) => {
+            setListNotification(prev => ([data, ...prev]));
+            setCountNotification(prev => prev + 1)
+        })
+    }, [socket])
+
 
     const reset = () => {
         setAuth('')

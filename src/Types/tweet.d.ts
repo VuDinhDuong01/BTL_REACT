@@ -25,7 +25,8 @@ export interface Tweet {
     likes:Like[]
     like_count?: number
     bookmarks?: Like[],
-    comment_count?:number
+    comment_count?:number,
+    count_share_post:number
   }
  export interface Like {
     _id: string
