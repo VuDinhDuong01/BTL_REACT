@@ -3,16 +3,16 @@
 
 import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useContext } from 'react'
 import { t } from "i18next";
+import omit from 'lodash/omit'
+import { EmojiClickData } from 'emoji-picker-react';
+import { skipToken } from '@reduxjs/toolkit/query';
 
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
-
 import { useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
-
 import { cn } from '../../../helps/cn';
-
 import { ShowGIF, handleShowPopup } from '../../show-gif';
 import { DEFAULT_IMAGE_AVATAR } from '../../../helps/image-user-default';
 import { ConvertSizeImagesPost } from '../../../helps/convert-size-image-post';
@@ -21,14 +21,12 @@ import { Button } from '../button';
 import { listIcons, permissionViews } from '../../post-article';
 import { Loading } from '../../../assets/icons/eye';
 import { ToastMessage } from '../../../helps/toast-message';
-
-import omit from 'lodash/omit'
-import { useGetTweetDetailQuery } from '../../../apis/tweet';
-import { EmojiClickData } from 'emoji-picker-react';
-import { skipToken } from '@reduxjs/toolkit/query';
+import { useCreateTweetMutation, useGetTweetDetailQuery } from '../../../apis/tweet';
 import { DivideImageSize } from '../../../helps/divide-size-image';
-import { useCreateSharePostMutation } from '../../../apis/share-post';
 import { ContextAPI } from '../../../hooks';
+import { formatMentionsAndHashtags } from '../../../helps/check-metions-or-hastags';
+import { createPortal } from 'react-dom';
+
 export type ShowPopupSharePost = {
     showPopup: () => void
 };
@@ -37,7 +35,6 @@ interface PropsDialogComment {
     users: { username: string, avatar: string, bio: string }
     id_user: string
 }
-
 
 const typeImages = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
 const typeVideo = ['video/mp4', 'video/webm']
@@ -59,7 +56,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         showPopup: showPopup,
     }));
 
-
     useClickOutSide({
         onClickOutSide: () => {
             setIsShowPopup(false)
@@ -69,9 +65,8 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         }, ref: refSharePost
     })
 
-
     const [uploadImages, { isLoading: isLoadingUploadImage }] = useUploadImageMutation()
-    const [createSharePost] = useCreateSharePostMutation()
+
 
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
@@ -101,8 +96,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         }
     };
 
-
-
     const handleShowPermissionView = (item: any) => () => {
         setPopupPermission(false)
         for (const element of permissionViews) {
@@ -122,7 +115,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                 })
                 return;
             }
-
             setFiles(arrayFile.map(item => {
                 return {
                     link: item.name,
@@ -152,11 +144,14 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
     const handlePlaceholderClick = () => {
         contentEditableRef.current.focus();
     };
+    const [createShareTweet] = useCreateTweetMutation()
 
     const { avatar, user_id, username } = getProfileToLS() as { user_id: string, avatar: string, username: string }
     const { data: tweetDetail } = useGetTweetDetailQuery(tweet_id ? {
         tweet_id: tweet_id,
     } : skipToken)
+
+    console.log(tweetDetail)
 
     const handleCreateSharePost = async () => {
         if (submit) return
@@ -172,17 +167,23 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                     }
                     uploadImage = await uploadImages(formData).unwrap()
                 }
-
             }
             const medias = (files.length > 0 && typeImages.includes(files[0].file?.type) && uploadImage.map(item => item.image)) as string[]
 
             const bodyRequest = {
                 content: text,
                 medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
-                userId: user_id,
-                postId: (tweetDetail as any)?.data[0]._id
+                user_id: user_id,
+                check_share: true,
+                medias_share: (tweetDetail as any)?.data[0]?.medias,
+                username_share: (tweetDetail as any)?.data[0]?.users?.name,
+                content_share: (tweetDetail as any)?.data[0]?.content,
+                avatar_share: (tweetDetail as any)?.data[0]?.users?.avatar,
+                audience: 0,
+                hashtags: [],
+                mentions: []
             }
-            const res = await createSharePost(bodyRequest).unwrap();
+            const res = await createShareTweet(bodyRequest).unwrap();
             if (res.message) {
                 ToastMessage({ message: "Bạn đã chia sẻ thành công", status: 'success' })
                 setIsShowPopup(false)
@@ -213,11 +214,12 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         }
     }
 
+
     return (<div>
         {
-            isShowPopup && <Dialog open={isShowPopup}>
-                <DialogOverlay className='fixed inset-0 z-50 bg-black/50 backdrop-blur-sm  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 overflow-y-auto py-16 grid place-items-center' />
-                <DialogContent className=' w-full h-full  fixed inset-0  z-[99] cursor-pointer'  >
+            isShowPopup && createPortal(<Dialog open={isShowPopup}>
+                <DialogOverlay className='fixed inset-0 z-[99] bg-black/30' />
+                <DialogContent className=' w-full h-full  fixed inset-0  z-[999] cursor-pointer'  >
                     <div className='max-h-[700px]  w-[650px] bg-white rounded-[20px] flex flex-col relative' ref={refSharePost} style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} >
                         <div className=' flex  ml-[10px] '><div className='mr-[15px] mt-[10px] cursor-pointer w-[30px] h-[30px] rounded-[50%] hover:bg-black3 flex items-center text-black justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div></div>
 
@@ -311,7 +313,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                                 <h2 className="text-[18px] text-black">{(tweetDetail as any).data[0].users.name}</h2>
                                             </div>
                                         </div>
-                                        <div className="text-[16px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{(tweetDetail as any).data[0].content}</div>
+                                        <div className="text-[16px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{formatMentionsAndHashtags((tweetDetail as any).data[0].content as string)}</div>
                                     </div>
                                     <div className="w-full mt-[20px] cursor-pointer">
                                         {
@@ -352,7 +354,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                         </div>
                     </div>
                 </DialogContent>
-            </Dialog>
+            </Dialog>, document.body)
         }
     </div>
     )

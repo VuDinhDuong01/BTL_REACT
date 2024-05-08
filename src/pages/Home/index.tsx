@@ -21,8 +21,6 @@ interface ActionTweet {
   title_tweet: string
 }
 
-
-
 export const Home = () => {
   const actionArray: ActionTweet[] = [
     { id: 1, title: t('home.forYou'), title_tweet: 'for_you' },
@@ -70,11 +68,11 @@ export const Home = () => {
 
   return (
     <div className="w-full">
-      <div className="min-w-[611px] z-10  flex items-center  bg-white border-b-[1px] h-[55px]  justify-between fixed  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
+      <div className="min-w-[611px] z-10 flex items-center  bg-white border-b-[1px] h-[55px]  justify-between fixed  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
         {actionArray.map((action) => (
           <div
             className={cn('h-full w-full relative  ', {
-              'before:content-[""] before:absolute before:-bottom-[2px] before:w-full z-[]  before:left-0 before:h-[2px]  before:rounded-[2px] before:bg-green2':
+              'before:content-[""] before:absolute before:-bottom-[2px] before:w-full   before:left-0 before:h-[2px]  before:rounded-[2px] before:bg-green2':
                 action.id === optionAction,
             })}
             key={action.id}

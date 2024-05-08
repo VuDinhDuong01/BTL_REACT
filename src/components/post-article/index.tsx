@@ -236,7 +236,7 @@ export const PostArticle = () => {
                 user_id,
                 audience,
                 hashtags,
-                mentions
+                mentions,
             }
             const res = await createTweet(bodyRequest).unwrap();
             setText('')
