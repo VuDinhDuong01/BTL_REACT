@@ -177,9 +177,9 @@ export const PostArticle = () => {
         setText(newText);
     };
 
-    useEffect(() => {
-        highlightHashtags();
-    }, [text]);
+    // useEffect(() => {
+    //     highlightHashtags();
+    // }, [text]);
 
     const moveCaretToEnd = () => {
         const range = document.createRange();

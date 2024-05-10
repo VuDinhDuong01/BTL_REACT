@@ -86,7 +86,7 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
         }
     }, [content])
 
-    return <form className=' min-h-[100px] flex w-full' onSubmit={handleCreateComment}>
+    return <div className=' min-h-[100px] flex w-full'>
         <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
         <div className='flex-1 relative w-full'>
             <textarea className={className + ' min-h-[100px]'} placeholder={t('home.comment')} value={content} onChange={E=>handleChange(E)}  ref={textAreaRef} />
@@ -107,14 +107,16 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
                 <input type="file" accept=".jpg, .jpeg, .png" style={{ display: 'none' }} ref={inputRef} onChange={handleFile} />
             </div>
             <div className="absolute bottom-[5px] right-[10px]">
-                <Button disabled={
+                <Button 
+                 onClick={handleCreateComment}
+                disabled={
                     !Boolean(content)} className={cn("border-none outline-none ", {
                         '!text-[#3C87DA] cursor-pointer': Boolean(content),
                         'text-[#686a6f] !cursor-not-allowed': !Boolean(content)
                     })} ><div><IoSend /></div></Button>
             </div>
         </div>
-    </form>
+    </div>
 
 
 

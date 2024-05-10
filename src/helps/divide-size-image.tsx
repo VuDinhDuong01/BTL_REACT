@@ -18,7 +18,7 @@ const renderImage = ({ arrayImage, start, end, }: RenderImageProps) => {
             <div className="w-full grid grid-cols-12 gap-1">
                 {
                     ImageCurrent.map((image, index) => {
-                        return <div key={index} className="w-full   col-span-6">
+                        return <div key={index} className="w-full col-span-6">
                             <img src={image as string} className={cn("w-full rounded-md  object-cover", {
                                 "min-h-[500px]": arrayImage.length === 2,
                                 "min-h-[100px]": arrayImage.length === 3,
@@ -36,8 +36,8 @@ const renderImage = ({ arrayImage, start, end, }: RenderImageProps) => {
 export const DivideImageSize = ({ arrayImage, setFiles }: DivideImageSizeProps) => {
     switch (arrayImage.length) {
         case 1:
-            return <div className="w-full ">
-                <img src={arrayImage[0] as string} className={cn("w-full object-cover rounded-[10px] min-h-[500px]")} alt="image" />
+            return <div className="w-full h-full">
+                <img src={arrayImage[0] as string} className={cn("w-full  rounded-[10px] min-h-[200px]")} alt="image" />
             </div>
         case 2:
             return renderImage({ arrayImage: arrayImage, start: 0, end: 2, setFiles: setFiles })

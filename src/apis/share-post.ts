@@ -9,10 +9,9 @@ import { GenerateType } from "../types/generate"
 const {CREATE_SHARE_POST } = URL_API
 
 interface TRequest {
-  userId:string 
+ 
   postId:string 
-  medias: string[],
-  content:string 
+  
 }
 export const sharePostAPI = baseCreateApi.injectEndpoints({
     endpoints: build => ({

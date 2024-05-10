@@ -26,6 +26,7 @@ import { DivideImageSize } from '../../../helps/divide-size-image';
 import { ContextAPI } from '../../../hooks';
 import { formatMentionsAndHashtags } from '../../../helps/check-metions-or-hastags';
 import { createPortal } from 'react-dom';
+import { useCreateSharePostMutation } from '../../../apis/share-post';
 
 export type ShowPopupSharePost = {
     showPopup: () => void
@@ -37,7 +38,7 @@ interface PropsDialogComment {
 }
 
 const typeImages = ['image/png', 'image/jpg', 'image/jpeg', 'image/webp']
-const typeVideo = ['video/mp4', 'video/webm']
+const typeVideo = ['mp4', 'webm']
 
 export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>(({ tweet_id, id_user }, ref) => {
 
@@ -67,7 +68,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
 
     const [uploadImages, { isLoading: isLoadingUploadImage }] = useUploadImageMutation()
 
-
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
     const permissionRef = useRef<HTMLDivElement>(null)
@@ -81,7 +81,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
     const [gif, setGif] = useState<string>('')
     const [text, setText] = useState('')
     const contentEditableRef = useRef<any>(null)
-
+    const [createSharePost] = useCreateSharePostMutation()
     const [files, setFiles] = useState<{ link: string, file: File, name?: string, type?: string }[]>([])
     const handleIcon = (title: string) => () => {
         const actionMap = new Map([
@@ -92,7 +92,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         ]);
         const action = actionMap.get(title);
         if (action) {
-            action();
+            action()
         }
     };
 
@@ -132,7 +132,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
     }
 
     const handleTextChange = () => {
-        const newText = contentEditableRef.current.innerText;
+        const newText = contentEditableRef.current.innerHTML;
         setText(newText);
     };
 
@@ -151,9 +151,8 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         tweet_id: tweet_id,
     } : skipToken)
 
-    console.log(tweetDetail)
-
     const handleCreateSharePost = async () => {
+
         if (submit) return
         setSubmit(true)
         let uploadImage: { image: string, type: number }[] = []
@@ -181,9 +180,10 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                 avatar_share: (tweetDetail as any)?.data[0]?.users?.avatar,
                 audience: 0,
                 hashtags: [],
-                mentions: []
+                mentions: [],
+                postId: (tweetDetail as any)?.data[0]?._id
             }
-            const res = await createShareTweet(bodyRequest).unwrap();
+            const [res,] = await Promise.all([createShareTweet(bodyRequest).unwrap(), createSharePost({ postId: (tweetDetail as any)?.data[0]?._id }).unwrap()]);
             if (res.message) {
                 ToastMessage({ message: "Bạn đã chia sẻ thành công", status: 'success' })
                 setIsShowPopup(false)
@@ -195,7 +195,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                     icon: <Icons.AiOutlineGlobal />
                 })
             }
-
             if (res.message === 'create share post successfully') {
                 socket?.emit('send_notification_share_post', {
                     status: 'share_post',
@@ -222,7 +221,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                 <DialogContent className=' w-full h-full  fixed inset-0  z-[999] cursor-pointer'  >
                     <div className='max-h-[700px]  w-[650px] bg-white rounded-[20px] flex flex-col relative' ref={refSharePost} style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} >
                         <div className=' flex  ml-[10px] '><div className='mr-[15px] mt-[10px] cursor-pointer w-[30px] h-[30px] rounded-[50%] hover:bg-black3 flex items-center text-black justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div></div>
-
                         <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
                         <div className=" max-h-[500px] overflow-y-scroll flex  border-r-transparent border-l-transparent border-t-transparent">
                             <div className="w-[65px] ml-[10px] mt-[3px]">

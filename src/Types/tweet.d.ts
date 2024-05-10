@@ -6,7 +6,8 @@ interface TweetProps {
   content?: string,
   hashtags?: string[],
   mentions?: string[],
-  audience?: number
+  audience?: number,
+  postId?:string 
 }
 
 export interface Tweet {
@@ -31,7 +32,8 @@ export interface Tweet {
   medias_share: string[],
   username_share: string ,
   content_share: string ,
-  avatar_share: string 
+  avatar_share: string ,
+  postId:string 
 }
 export interface Like {
   _id: string

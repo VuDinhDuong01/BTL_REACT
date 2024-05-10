@@ -135,6 +135,7 @@ export const Post = ({ tweet }: Props) => {
             ],
             [
                 'Share', async () => {
+                    if (tweet.check_share) return
                     if (refShowPopupSharePost.current) {
                         refShowPopupSharePost.current.showPopup()
                     }
@@ -147,8 +148,8 @@ export const Post = ({ tweet }: Props) => {
         }
     }
 
-    const handleNavigateDetail = ({ tweet_id, tweet_medias }: { tweet_id: string, tweet_medias: string[] }) => {
-        if (tweet_medias.length > 0) {
+    const handleNavigateDetail = ({ tweet_id, tweet_medias, check_share }: { tweet_id: string, tweet_medias: string[], check_share: boolean }) => {
+        if (tweet_medias.length > 0 || check_share) {
             navigate(`/tweet/${tweet_id}`)
         }
     }
@@ -161,7 +162,7 @@ export const Post = ({ tweet }: Props) => {
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
-                <div onClick={() => handleNavigateDetail({ tweet_id: tweet._id, tweet_medias: tweet.medias })}>
+                <div onClick={() => handleNavigateDetail({ tweet_id: tweet?.check_share ? tweet.postId : tweet._id, tweet_medias: tweet.medias, check_share: tweet.check_share })}>
                     <div className="mt-[8px]">
                         <div className=" w-full flex items-center font-fontFamily">
                             <h2 className="text-[18px]">{tweet.users?.name}</h2>
@@ -173,7 +174,11 @@ export const Post = ({ tweet }: Props) => {
                     {
                         tweet?.check_share ? (
                             <div className="mt-[10px]">
-                                <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
+                                {
+                                    tweet.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
+                                }
+                                <div className="border-[1.5px] border-solid border-[#CFD9DE] rounded-lg min-h-[349px]">
+
                                     <div className='p-[10px]'>
                                         <div className="mt-[8px]">
                                             <div className=" w-full flex items-center font-fontFamily">
@@ -182,7 +187,9 @@ export const Post = ({ tweet }: Props) => {
                                             </div>
                                         </div>
                                         <div className="text-[15px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{formatMentionsAndHashtags(tweet.content_share as string)}</div>
+
                                     </div>
+
                                     <div className="w-full mt-[10px] cursor-pointer">
                                         {
                                             tweet.medias_share?.length > 0 && !typeVideo.includes(tweet.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet.medias_share })
@@ -191,7 +198,10 @@ export const Post = ({ tweet }: Props) => {
                                             tweet.medias_share?.length > 0 && typeVideo.includes(tweet.medias_share[0].slice(-3)) && <video src={tweet.medias_share[0]} className="w-full rounded-[20px]" controls />
                                         }
                                     </div>
+
                                 </div>
+
+
                             </div>
                         ) : (
                             <div className="w-full mt-[20px] cursor-pointer">
@@ -222,16 +232,21 @@ export const Post = ({ tweet }: Props) => {
                                 "hover:text-[#F91880] ": item.title === 'Like',
                                 "text-[#F91880] ": checkLike(tweet.likes as Like[]) && item.title === 'Like',
                                 "hover:text-[rgb(29,155,240)] ": item.title === 'View',
+                            }, {
+                                "!text-black !hover:bg-[#e4a2c1]": item.title === 'Share' && tweet.check_share,
                             })}>
-                                <div key={item.id} title={item.title} className={cn("w-[35px]  h-[35px]   flex items-center justify-center rounded-[50%] cursor-pointer", {
+                                <div key={item.id} title={item.title} className={cn("w-[35px] h-[35px] flex items-center justify-center rounded-[50%] cursor-pointer", {
                                     "hover:text-green2 hover:bg-[#b9daef]": checkBookmark(tweet.bookmarks as Like[]) && item.title === 'Bookmark',
                                     "hover:text-[#1D9BF0] hover:bg-[#98c8e7]": item.title === 'Comment',
                                     "hover:text-[#47CDA0] hover:bg-[#b1e5d4]": item.title === 'Share',
                                     "hover:text-[#F91880] hover:bg-[#e4a2c1]": item.title === 'Like',
                                     " text-[#F91880]": checkLike(tweet.likes as Like[]) && item.title === 'Like',
                                     "hover:text-[#4FA3DD] hover:bg-[#a8d0ee]": item.title === 'View',
+                                }, {
+                                    "!text-black  cursor-not-allowed ": item.title === 'Share' && tweet.check_share,
+                                })}
 
-                                })}>
+                                >
                                     {item.icon}
                                 </div>
                                 <div className="text-[13px] font-fontFamily font-[500]">{item.numberOfTurns ? TotalNumber(item.numberOfTurns) : ''}</div>
