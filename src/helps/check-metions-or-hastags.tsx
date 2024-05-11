@@ -21,11 +21,11 @@ export const checkHashTagsOrMentions = ({ arrayText, char }: { arrayText: string
     }, [arrayText, char]);
 };
 
-export const formatMentionsAndHashtags = (string: string) => {
+export const formatMentionsAndHashtags = (string?: string) => {
     const regex = /(?:^|\s)([#@][^\s]+)/g;
-    const formattedString = string.replace(
+    const formattedString =string ? string.replace(
         regex,
         '<span style="color: #1B90DF;">$1</span>'
-    );
+    ):'';
     return <span dangerouslySetInnerHTML={{ __html: formattedString }} />
 }
