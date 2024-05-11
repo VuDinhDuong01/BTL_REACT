@@ -61,13 +61,23 @@ export const TweetDetail = () => {
   } : skipToken)
 
   const ImagesTweet = useMemo(() => {
-    if((tweetDetail as any )?.data[0].medias.length > 0 ){
+    if(
+      
+      ((tweetDetail as any )?.data[0].medias.length > 0 && !(tweetDetail as any)?.data[0].check_share)  
+    ){
       return tweetDetail?.data[0].medias.map((image) => {
         return {
           original: image
         }
       })
-    }else {
+    }else if( ((tweetDetail as any )?.data[0].medias_share.length > 0 && (tweetDetail as any)?.data[0].check_share)){
+      return tweetDetail?.data[0].medias_share.map((image) => {
+        return {
+          original: image
+        }
+      })
+    }
+    else {
       return [
         {
           original : NOT_IMAGE

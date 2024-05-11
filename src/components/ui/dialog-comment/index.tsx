@@ -1,5 +1,5 @@
 
-import { useImperativeHandle, forwardRef, useState, useRef, useContext, FormEvent} from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, useContext} from 'react'
 import { t } from "i18next";
 
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
@@ -83,8 +83,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const handleRepliesComment = (comment_id: string) => {
         setIsShowInputRepliesComment(comment_id)
     }
-    const handleCreateComment = async (e:FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const handleCreateComment = async () => {
+
         try {
             if (user_id !== id_user) {
                 socket?.emit('send_notification_comment', {

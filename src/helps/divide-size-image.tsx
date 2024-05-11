@@ -8,7 +8,7 @@ import { cn } from "./cn"
  * 
  */
 
-const renderImage = ({ arrayImage, start, end, }: RenderImageProps) => {
+const renderImage = ({ arrayImage, start, end,heightTwoImage }: RenderImageProps) => {
     let ImageCurrent: ImageItem[] = []
     if (arrayImage.length >= 2) {
         ImageCurrent = arrayImage.slice(start, end)
@@ -20,7 +20,7 @@ const renderImage = ({ arrayImage, start, end, }: RenderImageProps) => {
                     ImageCurrent.map((image, index) => {
                         return <div key={index} className="w-full col-span-6">
                             <img src={image as string} className={cn("w-full rounded-md  object-cover", {
-                                "min-h-[500px]": arrayImage.length === 2,
+                                [heightTwoImage || "min-h-[500px]"]: arrayImage.length === 2,
                                 "min-h-[100px]": arrayImage.length === 3,
                                 "min-h-[200px]": arrayImage.length === 4,
 
@@ -33,14 +33,14 @@ const renderImage = ({ arrayImage, start, end, }: RenderImageProps) => {
     </div>
 }
 
-export const DivideImageSize = ({ arrayImage, setFiles }: DivideImageSizeProps) => {
+export const DivideImageSize = ({ arrayImage, setFiles ,heightOneImage , heightTwoImage}: DivideImageSizeProps) => {
     switch (arrayImage.length) {
         case 1:
             return <div className="w-full h-full">
-                <img src={arrayImage[0] as string} className={cn("w-full  rounded-[10px] min-h-[200px]")} alt="image" />
+                <img src={arrayImage[0] as string} className={cn(`w-full  rounded-[10px] ${heightOneImage ? heightOneImage  :'min-h-[200px]' } `)} alt="image" />
             </div>
         case 2:
-            return renderImage({ arrayImage: arrayImage, start: 0, end: 2, setFiles: setFiles })
+            return renderImage({ arrayImage: arrayImage, start: 0, end: 2, setFiles: setFiles, heightTwoImage })
         case 3:
             return <div className='w-full'>
                 <div className="w-full">

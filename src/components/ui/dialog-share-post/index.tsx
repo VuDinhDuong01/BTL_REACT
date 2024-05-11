@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useContext } from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useContext, useEffect } from 'react'
 import { t } from "i18next";
-import omit from 'lodash/omit'
 import { EmojiClickData } from 'emoji-picker-react';
 import { skipToken } from '@reduxjs/toolkit/query';
 
@@ -18,7 +18,7 @@ import { DEFAULT_IMAGE_AVATAR } from '../../../helps/image-user-default';
 import { ConvertSizeImagesPost } from '../../../helps/convert-size-image-post';
 import { EmojiPickers, ShowEmoji } from '../../common/emoji-picker';
 import { Button } from '../button';
-import { listIcons, permissionViews } from '../../post-article';
+import { listIcons } from '../../post-article';
 import { Loading } from '../../../assets/icons/eye';
 import { ToastMessage } from '../../../helps/toast-message';
 import { useCreateTweetMutation, useGetTweetDetailQuery } from '../../../apis/tweet';
@@ -70,17 +70,11 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
 
     const mediaRef = useRef<HTMLInputElement>(null)
     const gifRef = useRef<handleShowPopup>(null)
-    const permissionRef = useRef<HTMLDivElement>(null)
-
-    const [showPermissionView, setShowPermissionView] = useState<{ title: string, icon: JSX.Element }>({
-        title: t('home.everyone'),
-        icon: <Icons.AiOutlineGlobal />
-    })
     const emojiRef = useRef<ShowEmoji>(null)
-    const [showPopupPermission, setPopupPermission] = useState<boolean>(false)
+    const textAreaRef = useRef<HTMLTextAreaElement>(null)
+
     const [gif, setGif] = useState<string>('')
     const [text, setText] = useState('')
-    const contentEditableRef = useRef<any>(null)
     const [createSharePost] = useCreateSharePostMutation()
     const [files, setFiles] = useState<{ link: string, file: File, name?: string, type?: string }[]>([])
     const handleIcon = (title: string) => () => {
@@ -96,21 +90,13 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         }
     };
 
-    const handleShowPermissionView = (item: any) => () => {
-        setPopupPermission(false)
-        for (const element of permissionViews) {
-            if (element.id === item.id) {
-                setShowPermissionView(omit(element, ['id']))
-            }
-        }
-    }
 
     const handleFileMedia = (e: ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const arrayFile = Array.from(e.target.files);
-            if (arrayFile.length > 4) {
+            if (arrayFile.length > 2) {
                 ToastMessage({
-                    message: 'không được tải quá 4 file',
+                    message: 'không được tải nhiều hơn 2 file',
                     status: 'error'
                 })
                 return;
@@ -131,9 +117,8 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         setGif('')
     }
 
-    const handleTextChange = () => {
-        const newText = contentEditableRef.current.innerHTML;
-        setText(newText);
+    const handleOnChange = (e: any) => {
+        setText(e.target.value)
     };
 
     const handleShowEmojiPicker = (emojiData: EmojiClickData) => {
@@ -141,15 +126,14 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         ))
     }
 
-    const handlePlaceholderClick = () => {
-        contentEditableRef.current.focus();
-    };
+
     const [createShareTweet] = useCreateTweetMutation()
 
     const { avatar, user_id, username } = getProfileToLS() as { user_id: string, avatar: string, username: string }
     const { data: tweetDetail } = useGetTweetDetailQuery(tweet_id ? {
         tweet_id: tweet_id,
     } : skipToken)
+
 
     const handleCreateSharePost = async () => {
 
@@ -190,10 +174,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                 setText('')
                 setFiles([])
                 setGif('')
-                setShowPermissionView({
-                    title: t('home.everyone'),
-                    icon: <Icons.AiOutlineGlobal />
-                })
             }
             if (res.message === 'create share post successfully') {
                 socket?.emit('send_notification_share_post', {
@@ -212,7 +192,12 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
             setSubmit(false)
         }
     }
-
+    useEffect(() => {
+        if (textAreaRef.current) {
+            (textAreaRef?.current as any).style.height = "auto";
+            (textAreaRef.current as any).style.height = (textAreaRef.current as any).scrollHeight + "px";
+        }
+    }, [text])
 
     return (<div>
         {
@@ -228,27 +213,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                             </div>
                             <div className="flex-1">
                                 <div className='w-full relative'>
-                                    <div
-                                        ref={contentEditableRef}
-                                        contentEditable="true"
-                                        onInput={handleTextChange}
-                                        className='border-none outline-none font-fontFamily text-[20px] text-[#667581] w-full overflow-hidden whitespace-normal'
-                                        style={{
-                                            padding: '5px',
-                                            minHeight: '50px',
-                                            maxWidth: '530px',
-                                            whiteSpace: 'pre-wrap',
-                                            wordWrap: 'break-word',
-                                        }}
-                                    />
-                                    {!text && (
-                                        <div
-                                            className=" absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[25px]"
-                                            onClick={handlePlaceholderClick}
-                                        >
-                                            {t('home.addComment')}
-                                        </div>
-                                    )}
+                                    <textarea ref={textAreaRef} placeholder={t('home.addComment')} className='w-full pr-[25px] font-fontFamily min-h-[30px] text-[20px] resize-none active:outline-none focus:outline-none rounded-lg border-none' value={text} onChange={handleOnChange} />
                                 </div>
                                 <div className={cn('pr-[10px]', {
                                     'mb-[10px] mt-[10px]': files.length > 0
@@ -271,38 +236,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                         </div>
                                     }
                                 </div>
-                                <div className='w-full cursor-pointer'>
-                                    <div className=''>
-                                        <div className=" inline-block px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
-                                            <div className='flex items-center'>
-                                                {showPermissionView.icon}
-                                                <p className="ml-[5px] text-[14px] font-fontFamily font-[700] text-green2 ">{showPermissionView.title}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {
-                                        showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 fixed max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
-                                            <div>
-                                                <div className="mb-[20px] mt-[10px] px-[10px]">
-                                                    <h3 className="text-[17px] mb-[10px] font-fontFamily">  {t('home.whoCanReply')}</h3>
-                                                    <p className="text-[14px] font-fontFamily"> {t('home.chooseUserReply')}</p>
-                                                </div>
-                                                <div className="w-full">
-                                                    {
-                                                        permissionViews.map((item) => {
-                                                            return <div key={item.id} className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-white1" onClick={handleShowPermissionView(item)}>
-                                                                <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
-                                                                    {item.icon}
-                                                                </div>
-                                                                <h3 className="text-[17px] font-fontFamily ">{item.title}</h3>
-                                                            </div>
-                                                        })
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                </div>
+
                                 <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
                                     <div className='p-[10px]'>
                                         <div className="mt-[8px]">
@@ -323,6 +257,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                         <div className="h-[60px] flex items-center border-r-transparent border-l-transparent border-b-transparent mt-[10px] px-[10px] border-solid border-t-[1px] border-[#CFD9DE]">
                             <div className="flex-1 flex items-center justify-between h-full relative">

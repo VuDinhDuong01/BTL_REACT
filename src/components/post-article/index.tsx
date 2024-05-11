@@ -177,10 +177,6 @@ export const PostArticle = () => {
         setText(newText);
     };
 
-    // useEffect(() => {
-    //     highlightHashtags();
-    // }, [text]);
-
     const moveCaretToEnd = () => {
         const range = document.createRange();
         const selection = window.getSelection();
@@ -271,11 +267,22 @@ export const PostArticle = () => {
         gif.length <= 0 && text === '' && files.length <= 0 ? setIsDisable(true) : setIsDisable(false)
     }, [gif, text, files])
 
-
     useEffect(() => {
         if (files.length > 0 && typeVideo.includes(files[0].file.type)) {
-            const url = URL.createObjectURL(files[0].file);
-            setVideoUrl(url);
+            const fileSizeInBytes = files[0].file?.size;
+            const fileSizeInMegabytes = fileSizeInBytes ? fileSizeInBytes / (1024 * 1024) : 0; // Chia cho 1,048,576 để chuyển đổi từ byte sang megabyte
+            
+            if (fileSizeInMegabytes > 2) {
+                ToastMessage({
+                    message: 'Không được upload file có kích thước lớn hơn 2 MB',
+                    status: 'error'
+                });
+                setVideoUrl('')
+            } else {
+                const url = URL.createObjectURL(files[0].file);
+                setVideoUrl(url);
+            }
+           
         }
     }, [files])
 
@@ -307,7 +314,7 @@ export const PostArticle = () => {
                                 onClick={handlePlaceholderClick}
                             >
                                 {
-                                 `${username} ơi, ${t('home.whatIsHappening')}`
+                                    `${username} ơi, ${t('home.whatIsHappening')}`
                                 }
 
                             </div>
@@ -328,7 +335,7 @@ export const PostArticle = () => {
                             })
                         }
                         {
-                            files.length > 0 && typeVideo.includes(files[0].file.type) &&
+                            files.length > 0 && typeVideo.includes(files[0].file.type) && videoUrl !== ''&& 
                             <div className='w-full relative '>
                                 <video
                                     className='w-full rounded-xl'

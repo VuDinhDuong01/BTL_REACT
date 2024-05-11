@@ -162,7 +162,7 @@ export const Post = ({ tweet }: Props) => {
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
-                <div onClick={() => handleNavigateDetail({ tweet_id: tweet?.check_share ? tweet.postId : tweet._id, tweet_medias: tweet.medias, check_share: tweet.check_share })}>
+                <div onClick={() => handleNavigateDetail({ tweet_id: tweet._id, tweet_medias: tweet.medias, check_share: tweet.check_share })}>
                     <div className="mt-[8px]">
                         <div className=" w-full flex items-center font-fontFamily">
                             <h2 className="text-[18px]">{tweet.users?.name}</h2>
@@ -175,7 +175,7 @@ export const Post = ({ tweet }: Props) => {
                         tweet?.check_share ? (
                             <div className="mt-[10px]">
                                 {
-                                    tweet.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias })
+                                    tweet.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias, heightOneImage: 'h-[150px]' ,heightTwoImage:'h-[150px]' })
                                 }
                                 <div className="border-[1.5px] border-solid border-[#CFD9DE] rounded-lg min-h-[349px]">
 
@@ -192,7 +192,7 @@ export const Post = ({ tweet }: Props) => {
 
                                     <div className="w-full mt-[10px] cursor-pointer">
                                         {
-                                            tweet.medias_share?.length > 0 && !typeVideo.includes(tweet.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet.medias_share })
+                                            tweet.medias_share?.length > 0 && !typeVideo.includes(tweet.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet.medias_share,heightOneImage: 'min-h-[150px]' ,heightTwoImage:'min-h-[150px]' })
                                         }
                                         {
                                             tweet.medias_share?.length > 0 && typeVideo.includes(tweet.medias_share[0].slice(-3)) && <video src={tweet.medias_share[0]} className="w-full rounded-[20px]" controls />
