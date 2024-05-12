@@ -8,7 +8,7 @@ import { Button } from '../button'
 import { Input } from '../Input'
 import { HandleDiaLog } from '../../../types/login'
 import { regex } from '../../../helps'
-import { useVerifyEmailMutation } from '../../../apis'
+import { useResetUserNotVerifyMutation, useVerifyEmailMutation } from '../../../apis'
 import { Loading } from '../../../assets/icons/eye'
 import { PAGE } from '../../../constants'
 import { Delete } from 'lucide-react'
@@ -17,14 +17,16 @@ interface FormDiaLogProp {
     title1?: string,
     title2?: string
     titleButton?: string
-    user_id: string
+    user_id: string, 
+    email:string 
 
 }
 
-export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton, user_id }, ref) => {
+export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholder, title1, title2, titleButton, user_id, email }, ref) => {
 
     const [openDiaLog, setOpenDiaLog] = useState<boolean>(false)
     const [disableButton, setDisableButton] = useState<boolean>(false)
+    const [resetUser]= useResetUserNotVerifyMutation()
 
     const navigate = useNavigate()
     const handleOpenDiaLog = () => {
@@ -60,8 +62,14 @@ export const FormDiaLog = forwardRef<HandleDiaLog, FormDiaLogProp>(({ placeholde
         }
     }
 
-    const handleDeleteDialog = () => {
-        setOpenDiaLog(false)
+    const handleDeleteDialog = async() => {
+         try{
+             await resetUser({email}).unwrap()
+            setOpenDiaLog(false)
+         }catch(error:unknown){
+            console.log(error)
+         }
+       
     }
 
     useEffect(() => {

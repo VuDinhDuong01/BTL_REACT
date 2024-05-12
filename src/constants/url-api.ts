@@ -45,5 +45,6 @@ export const URL_API = {
     ALL_LIKE:'all_like',
     DELETE_LIKE:'like',
     DELETE_MANY_LIKE:'many_like',
-    CREATE_SHARE_POST:'share_post'
+    CREATE_SHARE_POST:'share_post',
+    RESET_USER:'reset_user'
 } as const 

@@ -73,6 +73,9 @@ export const Register = () => {
     })
   }, [watch])
 
+  const emailWatch= watch('email')
+
+
 
   return (
     <div className='flex h-[100vh] w-[100%]  flex-col items-center justify-center overflow-hidden bg-cover bg-center bg-no-repeat'
@@ -80,7 +83,7 @@ export const Register = () => {
         backgroundImage: `url(${Images.background})`,
       }}>
       {
-        createPortal(<FormDiaLog ref={handleDiaLogEl} placeholder={t('register.enterCode')} titleButton={t("register.verify")} title1={t('register.verifyCode1')} title2={t('register.verifyCode2')} user_id={userId} />, document.body)
+        createPortal(<FormDiaLog ref={handleDiaLogEl} email={emailWatch} placeholder={t('register.enterCode')} titleButton={t("register.verify")} title1={t('register.verifyCode1')} title2={t('register.verifyCode2')} user_id={userId} />, document.body)
       }
       <div className=" absolute top-[20px] right-[30px]">
         <Select onValueChange={handleChangeLanguage}>

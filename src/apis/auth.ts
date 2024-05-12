@@ -8,7 +8,7 @@ import { baseCreateApi } from './createApi'
 import { GenerateType } from '../types/generate'
 import { Tweet } from '../types/tweet'
 
-const { REGISTER, GET_SEARCH_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE, ALL_USER,
+const { REGISTER, GET_SEARCH_USER,RESET_USER, LOGIN, VERIFY_EMAIL, GET_TWEET_USER, CONFIRM_EMAIL, UPLOAD_VIDEO, CONFIRM_CODE, RESET_PASSWORD, CHANGE_PASSWORD, REFRESH_TOKEN, GET_ME, UPDATE_ME, LOGOUT_OUT, UPLOAD_IMAGE, ALL_USER,
   DELETE_USER,
   DELETE_MANY_USER } = URL_API
 interface ConfirmCodeMutation {
@@ -38,9 +38,16 @@ export const authAPI = baseCreateApi.injectEndpoints({
       invalidatesTags: ['login']
     }),
 
-    register: build.mutation<AuthResponseType, AuthRequestProp>({
+    register: build.mutation<any, AuthRequestProp>({
       query: (data) => ({
         url: REGISTER,
+        method: METHOD_API.POST,
+        data,
+      }),
+    }),
+    resetUserNotVerify:build.mutation<AuthResponseType, {email: string }>({
+      query: (data) => ({
+        url: RESET_USER,
         method: METHOD_API.POST,
         data,
       }),
@@ -192,6 +199,7 @@ export const {
   useUploadVideoMutation,
   useGetTweetUserQuery,
   useGetSearchUserQuery,
+  useResetUserNotVerifyMutation
   
 }
   = authAPI
