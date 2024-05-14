@@ -323,7 +323,6 @@ export const TweetDetail = () => {
             })
           }
         </div>
-
         <div className='w-full flex-1 pb-[20px] overflow-y-scroll max-h-[600px]'>
           <div className='px-[20px]  cursor-pointer  w-full h-full'>
             {
@@ -416,7 +415,7 @@ export const TweetDetail = () => {
                                             <img src={replies_comment.replies_image_comment} alt="image-comment" className='w-[200px] h-[100px] object-cover rounded-lg' />
                                           </div>
                                         }
-                                        <div className='w-[200px] mt-[5px] flex items-center'>
+                                        <div className='w-[250px] mt-[5px] flex items-center'>
                                           <p className='text-[15px] font-fontFamily w-[170px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
                                           <div className='w-full relative'>
                                             <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
@@ -431,7 +430,7 @@ export const TweetDetail = () => {
                                               handleLike(replies_comment._id)
                                             }}>{renderTextLike(replies_comment?.replies_like_comments)}</p>
                                             {
-                                              isHovered === replies_comment._id && <div className=''><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                              isHovered === replies_comment._id && <div className='absolute top-[-60px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                             }
                                           </div>
                                         </div>

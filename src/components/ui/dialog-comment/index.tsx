@@ -284,7 +284,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                             </div>
                                                                                         }
                                                                                         <div className='w-[250px] mt-[5px] flex items-center'>
-                                                                                            <p className='text-[15px] font-fontFamily w-[150px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
+                                                                                            <p className='text-[15px] font-fontFamily w-[170px]  pr-[10px] text-black'>{convertDateToHours(replies_comment.created_at)}</p>
                                                                                             <div className='w-full relative'>
                                                                                                 <p className={cn('text-[15px] font-fontFamily font-[540] text-[#a6aab0] cursor-pointer hover:underline',
                                                                                                     {

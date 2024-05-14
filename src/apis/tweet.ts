@@ -32,7 +32,7 @@ export const tweetAPI = baseCreateApi.injectEndpoints({
                 url: `${TWEET_DETAIL}/${tweet_id}`,
                 method: METHOD_API.GET,
             }),
-            providesTags: ['getListTweet']
+             providesTags: ['getListTweet']
         }),
         getAllTweet: build.query<any, { limit?: number, page?: number, content?: string, sort_by?: string, order?: string }>({
             query: (params) => ({

@@ -7,7 +7,6 @@ import { useCreateLikeRepliesCommentMutation, useLikeCommentMutation } from '../
 import { Socket } from 'socket.io-client'
 import { useGetNotificationQuery } from '../apis/notification'
 import { skipToken } from '@reduxjs/toolkit/query'
-import { useGetMeQuery } from '../apis'
 
 
 interface ContextProp {
