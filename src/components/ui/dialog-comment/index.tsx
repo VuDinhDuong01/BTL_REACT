@@ -1,5 +1,5 @@
 
-import { useImperativeHandle, forwardRef, useState, useRef, useContext} from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef} from 'react'
 import { t } from "i18next";
 
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
@@ -8,7 +8,7 @@ import { Images } from '../../../assets/images';
 import { convertDateToHours } from '../../../helps/convert-date-to-hour';
 import { InputPost } from '../../common/input-post';
 import { useClickOutSide } from '../../../hooks/useClickOutSide';
-import { useCreateCommentMutation, useCreateRepliesCommentMutation, useGetCommentQuery } from '../../../apis/comment';
+import { useCreateCommentMutation, useCreateRepliesCommentMutation } from '../../../apis/comment';
 import { UploadImageResponse, useGetMeQuery, useUploadImageMutation } from '../../../apis';
 import { getProfileToLS } from '../../../helps';
 import { ListIcons } from '../../list-icons';
@@ -16,8 +16,8 @@ import { LikeComment } from '../../../types/comment';
 import { cn } from '../../../helps/cn';
 import { GetCommentResponse } from '../../post';
 import { Skeleton } from '../skeleton';
-import { ContextAPI } from '../../../hooks';
 import { skipToken } from '@reduxjs/toolkit/query';
+import { contextProvider } from '../../../hooks';
 
 export type ShowPopupComment = {
     showPopup: () => void;
@@ -30,7 +30,6 @@ interface PropsDialogComment {
 
 export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ users, tweet_id, id_user }, ref) => {
     const refPopComment = useRef<HTMLDivElement>(null)
-    const [limitComment, setLimitComment] = useState<number>(2)
     const [createComment] = useCreateCommentMutation()
     const [createRepliesComment] = useCreateRepliesCommentMutation()
     const [content, setContent] = useState<string>('')
@@ -42,13 +41,8 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
     const [uploadImages] = useUploadImageMutation()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const { user_id } = getProfileToLS() as { user_id: string }
-    const { socket, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment } = useContext(ContextAPI)
+    const { getComment,isLoading,setLimitComment,limitComment,socket, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment } = contextProvider()
 
-    const { data: getComment, isLoading } = useGetCommentQuery(tweet_id ? {
-        tweet_id: tweet_id,
-        limit: limitComment,
-        page: 1
-    } : skipToken)
     const { data: getMe  } = useGetMeQuery(user_id ? {
         user_id: user_id
       } : skipToken)
@@ -190,7 +184,6 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                 <div className='w-full flex items-center justify-center text-[20px] font-fontFamily'><h2 className='text-[20px] text-black'>{`Bài viết của ${users?.username}`}</h2></div>
                             </div>
                         </div>
-
                         <div className='w-full flex-1 overflow-auto py-[20px] '>
                             <div className='px-[20px] cursor-pointer  w-full h-full'>
                                 {

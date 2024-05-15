@@ -2,10 +2,9 @@
 /* eslint-disable no-prototype-builtins */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useContext, useEffect } from 'react'
+import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useEffect } from 'react'
 import { t } from "i18next";
 import { EmojiClickData } from 'emoji-picker-react';
-import { skipToken } from '@reduxjs/toolkit/query';
 
 import { Dialog, DialogContent, DialogOverlay } from "../dialog";
 import { Icons } from '../../../helps/icons';
@@ -21,12 +20,13 @@ import { Button } from '../button';
 import { listIcons } from '../../post-article';
 import { Loading } from '../../../assets/icons/eye';
 import { ToastMessage } from '../../../helps/toast-message';
-import { useCreateTweetMutation, useGetTweetDetailQuery } from '../../../apis/tweet';
+import { useCreateTweetMutation } from '../../../apis/tweet';
 import { DivideImageSize } from '../../../helps/divide-size-image';
-import { ContextAPI } from '../../../hooks';
 import { formatMentionsAndHashtags } from '../../../helps/check-metions-or-hastags';
 import { createPortal } from 'react-dom';
 import { useCreateSharePostMutation } from '../../../apis/share-post';
+import { contextProvider } from '../../../hooks';
+import { Skeleton } from '../skeleton';
 
 export type ShowPopupSharePost = {
     showPopup: () => void
@@ -42,7 +42,7 @@ const typeVideo = ['mp4', 'webm']
 
 export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>(({ tweet_id, id_user }, ref) => {
 
-    const { socket } = useContext(ContextAPI)
+    const { socket, isLoadingShare, tweetDetail } = contextProvider()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const refSharePost = useRef<any>(null)
     const [submit, setSubmit] = useState<boolean>(false)
@@ -130,10 +130,6 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
     const [createShareTweet] = useCreateTweetMutation()
 
     const { avatar, user_id, username } = getProfileToLS() as { user_id: string, avatar: string, username: string }
-    const { data: tweetDetail } = useGetTweetDetailQuery(tweet_id ? {
-        tweet_id: tweet_id,
-    } : skipToken)
-
 
     const handleCreateSharePost = async () => {
 
@@ -237,25 +233,28 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                     }
                                 </div>
 
-                                <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
-                                    <div className='p-[10px]'>
-                                        <div className="mt-[8px]">
-                                            <div className=" w-full flex items-center font-fontFamily">
-                                                <img src={(tweetDetail as any).data[0].users.avatar} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
-                                                <h2 className="text-[18px] text-black">{(tweetDetail as any).data[0].users.name}</h2>
+                                {
+                                    isLoadingShare ? <div><Skeleton /> </div> : <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
+                                        <div className='p-[10px]'>
+                                            <div className="mt-[8px]">
+                                                <div className=" w-full flex items-center font-fontFamily">
+                                                    <img src={(tweetDetail as any)?.data[0]?.users?.avatar} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
+                                                    <h2 className="text-[18px] text-black">{(tweetDetail as any)?.data[0]?.users?.name}</h2>
+                                                </div>
                                             </div>
+                                            <div className="text-[16px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{formatMentionsAndHashtags((tweetDetail as any)?.data[0]?.content as string)}</div>
                                         </div>
-                                        <div className="text-[16px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{formatMentionsAndHashtags((tweetDetail as any).data[0].content as string)}</div>
+                                        <div className="w-full mt-[20px] cursor-pointer">
+                                            {
+                                                (tweetDetail as any)?.data[0].medias?.length > 0 && !typeVideo.includes((tweetDetail as any)?.data[0]?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: (tweetDetail as any)?.data[0].medias })
+                                            }
+                                            {
+                                                (tweetDetail as any)?.data[0].medias?.length > 0 && typeVideo.includes((tweetDetail as any)?.data[0]?.medias[0].slice(-3)) && <video src={(tweetDetail as any)?.data[0].medias[0]} className="w-full rounded-[20px]" controls />
+                                            }
+                                        </div>
                                     </div>
-                                    <div className="w-full mt-[20px] cursor-pointer">
-                                        {
-                                            (tweetDetail as any)?.data[0].medias?.length > 0 && !typeVideo.includes((tweetDetail as any)?.data[0]?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: (tweetDetail as any)?.data[0].medias })
-                                        }
-                                        {
-                                            (tweetDetail as any)?.data[0].medias?.length > 0 && typeVideo.includes((tweetDetail as any)?.data[0]?.medias[0].slice(-3)) && <video src={(tweetDetail as any)?.data[0].medias[0]} className="w-full rounded-[20px]" controls />
-                                        }
-                                    </div>
-                                </div>
+                                }
+
                             </div>
 
                         </div>

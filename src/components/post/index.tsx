@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useRef, useContext } from "react"
+import { useRef } from "react"
 import { useNavigate } from "react-router-dom"
 
 import { Icons } from "../../helps/icons"
@@ -15,12 +15,13 @@ import { Like, Tweet } from "../../types/tweet"
 import { getProfileToLS } from "../../helps"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
-import { ContextAPI } from "../../hooks"
+import {  contextProvider } from "../../hooks"
 import { ViewIcon } from "../../assets/icons/eye"
 import { useGetMeQuery } from "../../apis"
 import { skipToken } from "@reduxjs/toolkit/query"
 import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags"
 import { PopupSharePost, ShowPopupSharePost } from "../ui/dialog-share-post"
+// import { useGetCommentQuery } from "../../apis/comment"
 
 interface Props {
     tweet: Tweet,
@@ -46,7 +47,7 @@ export const Post = ({ tweet }: Props) => {
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
-    const { socket } = useContext(ContextAPI)
+    const {setTweetId,socket,setShareId}=contextProvider()
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
@@ -130,6 +131,7 @@ export const Post = ({ tweet }: Props) => {
                 'Comment', () => {
                     if (refShowPopupComment.current) {
                         refShowPopupComment.current.showPopup()
+                        setTweetId(tweet._id as string)
                     }
                 }
             ],
@@ -138,6 +140,7 @@ export const Post = ({ tweet }: Props) => {
                     if (tweet.check_share) return
                     if (refShowPopupSharePost.current) {
                         refShowPopupSharePost.current.showPopup()
+                        setShareId(tweet._id as string)
                     }
                 }
             ]
@@ -172,12 +175,12 @@ export const Post = ({ tweet }: Props) => {
                     </div>
                     <div className="text-[18px] mt-[30px] font-fontFamily text-#0F1419] leading-5">{formatMentionsAndHashtags(tweet?.content as string)}</div>
                     {
-                        tweet?.check_share ? (
+                        tweet?.check_share ?  (
                             <div className="mt-[10px]">
                                 {
-                                    tweet.medias.length > 0 && DivideImageSize({ arrayImage: tweet?.medias, heightOneImage: 'h-[150px]' ,heightTwoImage:'h-[150px]' })
+                                    tweet?.medias?.length > 0 && DivideImageSize({ arrayImage: tweet?.medias, heightOneImage: 'h-[150px]', heightTwoImage: 'h-[150px]' })
                                 }
-                                <div className="border-[1.5px] border-solid border-[#CFD9DE] rounded-lg min-h-[349px]">
+                                <div className={cn(`border-[1.5px] border-solid border-[#CFD9DE] rounded-lg  ${tweet.medias_share?.length > 0 ? 'min-h-[349]' : ''}`)}>
 
                                     <div className='p-[10px]'>
                                         <div className="mt-[8px]">
@@ -192,7 +195,7 @@ export const Post = ({ tweet }: Props) => {
 
                                     <div className="w-full mt-[10px] cursor-pointer">
                                         {
-                                            tweet.medias_share?.length > 0 && !typeVideo.includes(tweet.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet.medias_share,heightOneImage: 'min-h-[150px]' ,heightTwoImage:'min-h-[150px]' })
+                                            tweet.medias_share?.length > 0 && !typeVideo.includes(tweet.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet.medias_share, heightOneImage: 'min-h-[150px]', heightTwoImage: 'min-h-[150px]' })
                                         }
                                         {
                                             tweet.medias_share?.length > 0 && typeVideo.includes(tweet.medias_share[0].slice(-3)) && <video src={tweet.medias_share[0]} className="w-full rounded-[20px]" controls />
@@ -206,10 +209,10 @@ export const Post = ({ tweet }: Props) => {
                         ) : (
                             <div className="w-full mt-[20px] cursor-pointer">
                                 {
-                                    tweet?.medias?.length > 0 && !typeVideo.includes(tweet.medias[0].slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias })
+                                    tweet?.medias?.length > 0 && !typeVideo.includes(tweet?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias })
                                 }
                                 {
-                                    tweet?.medias?.length > 0 && typeVideo.includes(tweet.medias[0].slice(-3)) && <video src={tweet.medias[0]} className="w-full rounded-[20px]" controls />
+                                    tweet?.medias?.length > 0 && typeVideo.includes(tweet?.medias[0].slice(-3)) && <video src={tweet?.medias[0]} className="w-full rounded-[20px]" controls />
                                 }
                             </div>
                         )

@@ -46,5 +46,6 @@ export const URL_API = {
     DELETE_LIKE:'like',
     DELETE_MANY_LIKE:'many_like',
     CREATE_SHARE_POST:'share_post',
-    RESET_USER:'reset_user'
+    RESET_USER:'reset_user',
+    GET_ALL_TWEET:'list_tweet'
 } as const 

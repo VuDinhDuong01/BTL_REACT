@@ -63,15 +63,15 @@ export const TweetDetail = () => {
   const ImagesTweet = useMemo(() => {
     if(
       
-      ((tweetDetail as any )?.data[0].medias.length > 0 && !(tweetDetail as any)?.data[0].check_share)  
+      ((tweetDetail as any )?.data[0]?.medias.length > 0 && !(tweetDetail as any)?.data[0]?.check_share)  
     ){
-      return tweetDetail?.data[0].medias.map((image) => {
+      return tweetDetail?.data[0]?.medias.map((image) => {
         return {
           original: image
         }
       })
-    }else if( ((tweetDetail as any )?.data[0].medias_share.length > 0 && (tweetDetail as any)?.data[0].check_share)){
-      return tweetDetail?.data[0].medias_share.map((image) => {
+    }else if( ((tweetDetail as any )?.data[0]?.medias_share.length > 0 && (tweetDetail as any)?.data[0]?.check_share)){
+      return tweetDetail?.data[0]?.medias_share.map((image) => {
         return {
           original: image
         }
@@ -95,18 +95,18 @@ export const TweetDetail = () => {
       id: 3,
       title: 'Like',
       icon: <Icons.IoIosHeartEmpty size={21} />,
-      numberOfTurns: tweetDetail?.data[0].like_count
+      numberOfTurns: tweetDetail?.data[0]?.like_count
     },
     {
       id: 4,
       title: 'View',
       icon: <ViewIcon />,
-      numberOfTurns: tweetDetail?.data[0].user_views
+      numberOfTurns: tweetDetail?.data[0]?.user_views
     },
     {
       id: 5,
       title: 'Bookmark',
-      icon: checkBookmark(tweetDetail?.data[0].bookmarks as Like[]) ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
+      icon: checkBookmark(tweetDetail?.data[0]?.bookmarks as Like[]) ? <Icons.FaBookmark size={21} /> : <Icons.FaRegBookmark size={21} />,
     },
   ]
 
@@ -304,15 +304,15 @@ export const TweetDetail = () => {
             listIcons.map(item => {
               return <div key={item.id} onClick={() => handleIcons(item.title)} className={cn("flex items-center", {
                 "hover:text-green2 ": item.title === 'Bookmark',
-                "text-green2 ": checkBookmark(tweetDetail?.data[0].bookmarks as Like[]) && item.title === 'Bookmark',
+                "text-green2 ": checkBookmark(tweetDetail?.data[0]?.bookmarks as Like[]) && item.title === 'Bookmark',
                 "hover:text-[#F91880] ": item.title === 'Like',
-                "text-[#F91880] ": checkLike(tweetDetail?.data[0].likes as Like[]) && item.title === 'Like',
+                "text-[#F91880] ": checkLike(tweetDetail?.data[0]?.likes as Like[]) && item.title === 'Like',
                 "hover:text-[rgb(29,155,240)] ": item.title === 'View',
               })}>
                 <div key={item.id} title={item.title} className={cn("w-[35px]  h-[35px]   flex items-center justify-center rounded-[50%] cursor-pointer", {
-                  "hover:text-green2 hover:bg-[#b9daef]": checkBookmark(tweetDetail?.data[0].bookmarks as Like[]) && item.title === 'Bookmark',
+                  "hover:text-green2 hover:bg-[#b9daef]": checkBookmark(tweetDetail?.data[0]?.bookmarks as Like[]) && item.title === 'Bookmark',
                   "hover:text-[#F91880] hover:bg-[#e4a2c1]": item.title === 'Like',
-                  " text-[#F91880]": checkLike(tweetDetail?.data[0].likes as Like[]) && item.title === 'Like',
+                  " text-[#F91880]": checkLike(tweetDetail?.data[0]?.likes as Like[]) && item.title === 'Like',
                   "hover:text-[#4FA3DD] hover:bg-[#a8d0ee]": item.title === 'View',
 
                 })}>
@@ -492,7 +492,7 @@ export const TweetDetail = () => {
             className="text-[17px] font-fontFamily  w-[100%] active:outline-none focus:outline-none rounded-lg border-none  resize-none bg-[#F0F2F5] p-[8px]"
             file={file as File}
             setFile={SetFile}
-            avatar_user={tweetDetail?.data[0].users.avatar as string}
+            avatar_user={tweetDetail?.data[0]?.users?.avatar as string}
             handleCreateComment={handleCreateComment}
             content={content}
             setContent={setContent}

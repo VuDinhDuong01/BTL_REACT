@@ -8,7 +8,7 @@ import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
-import {  queryList } from "../../hooks"
+import {  contextProvider, queryList } from "../../hooks"
 import { Button } from "../../components/ui/button"
 import { Skeleton } from "../../components/ui/skeleton"
 import { getProfileToLS } from "../../helps"
@@ -35,7 +35,7 @@ export const Home = () => {
     ...queryList,
     limit: limits,
     title_tweet: titleTweet,
-    id_user: profile.user_id as string
+    id_user: profile?.user_id as string
   } as unknown as { limit: number, page: number, title_tweet: string, id_user: string })
 
   const handleOptionAction = (action: ActionTweet) => {
@@ -46,7 +46,7 @@ export const Home = () => {
       search: createSearchParams(omit({
         ...queryList,
         title_tweet: action.title_tweet,
-        id_user: profile.user_id as string
+        id_user: profile?.user_id as string
       },['order','sort_by','name','content','content_comment'])).toString()
     });
   }
@@ -114,8 +114,6 @@ export const Home = () => {
             }
           </>
       }
-
-
     </div>
   )
 }

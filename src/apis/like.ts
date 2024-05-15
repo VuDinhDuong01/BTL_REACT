@@ -15,7 +15,8 @@ export const likeAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.POST,
                 data,
             }),
-            invalidatesTags: ['getListTweet', 'getListBookmark']
+             invalidatesTags: ['getListTweet']
+           // 'getListBookmark'
         }),
         unLike: build.mutation<GenerateType<{}>, LikeProps>({
             query: (data) => ({
@@ -23,7 +24,8 @@ export const likeAPI = baseCreateApi.injectEndpoints({
                 method: METHOD_API.DELETE,
                 data
             }),
-            invalidatesTags: ['getListTweet', 'getListBookmark']
+            invalidatesTags: ['getListTweet']
+            //, 'getListBookmark'
         }),
         getAllLike: build.query<any, { limit?: number, page?: number, name?: string, sort_by?: string, order?: string }>({
             query: (params) => ({
