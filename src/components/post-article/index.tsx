@@ -204,7 +204,7 @@ export const PostArticle = () => {
         contentEditableRef.current.focus();
     };
 
-    const { user_id, avatar, username } = getProfileToLS() as { user_id: string, avatar: string, username: string }
+    const { user_id, avatar, username } = getProfileToLS() as { user_id?: string, avatar?: string, username?: string }
 
     const onSubmit = (handleSubmit(async () => {
         let uploadImage: { image: string, type: number }[] = []
@@ -229,7 +229,7 @@ export const PostArticle = () => {
             const bodyRequest = {
                 content: text,
                 medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
-                user_id,
+                user_id: user_id as string ,
                 audience,
                 hashtags,
                 mentions,
@@ -272,9 +272,9 @@ export const PostArticle = () => {
             const fileSizeInBytes = files[0].file?.size;
             const fileSizeInMegabytes = fileSizeInBytes ? fileSizeInBytes / (1024 * 1024) : 0; // Chia cho 1,048,576 để chuyển đổi từ byte sang megabyte
             
-            if (fileSizeInMegabytes > 2) {
+            if (fileSizeInMegabytes > 5) {
                 ToastMessage({
-                    message: 'Không được upload file có kích thước lớn hơn 2 MB',
+                    message: 'Không được upload file có kích thước lớn hơn 5 MB',
                     status: 'error'
                 });
                 setVideoUrl('')

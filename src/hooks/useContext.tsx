@@ -9,7 +9,7 @@ import { useCreateLikeRepliesCommentMutation, useGetCommentQuery, useLikeComment
 import { Socket } from 'socket.io-client'
 import { useGetNotificationQuery } from '../apis/notification'
 import { skipToken } from '@reduxjs/toolkit/query'
-import { useGetTweetDetailQuery } from '../apis/tweet'
+import { Tweet } from '../types/tweet'
 
 
 interface ContextProp {
@@ -36,10 +36,8 @@ interface ContextProp {
     setLimitComment:Dispatch<SetStateAction<number>>
     limitComment:number
 
-    isLoadingShare:boolean
-    tweetDetail:any
-    setShareId:Dispatch<SetStateAction<string>>
-
+    tweet:any,
+    setTweet:Dispatch<SetStateAction<Tweet>>
 }
 
 const init = {
@@ -69,11 +67,8 @@ const init = {
     setLimitComment:()=>null,
     limitComment:2,
 
-    isLoadingShare:false,
-    tweetDetail:{},
-    setShareId:()=>null
-
-
+     tweet:{},
+    setTweet:()=>null
 }
 
 export const ContextAPI = createContext<ContextProp>(init)
@@ -99,7 +94,7 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const [isHovered, setIsHovered] = useState<string>('')
     const [socket, setSocket] = useState<null | Socket>(null)
     const [tweetId, setTweetId]= useState<string >('')
-    const [shareId, setShareId]= useState<string>('')
+    const [tweet, setTweet]= useState<Tweet>()
     useEffect(() => {
         if (getNotifications && getNotifications.data) {
             setListNotification(getNotifications.data);
@@ -181,16 +176,13 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
     }
 
 
-    const [limitComment, setLimitComment] = useState<number>(2)
+    const [limitComment, setLimitComment] = useState<number>(10)
     const { data: getComment, isLoading } = useGetCommentQuery(tweetId ? {
       tweet_id: tweetId,
       limit: limitComment,
       page: 1
   } : skipToken)
 
-      const { data: tweetDetail , isLoading:isLoadingShare } = useGetTweetDetailQuery(shareId ? {
-        tweet_id: shareId,
-    } : skipToken)
     const handleSelectIconRepliesComment = async (icon: string) => {
         try {
             await likeRepliesComment({ user_id: profile?.user_id, icon, replies_comment_id: isHovered }).unwrap()
@@ -201,6 +193,6 @@ export const ProviderContext = ({ children }: { children: ReactNode }) => {
         }
     }
 
-    return <ContextAPI.Provider value={{setShareId, isLoadingShare,tweetDetail,getComment,isLoading,setLimitComment, limitComment,tweetId,setTweetId, countNotification, setCountNotification, setIsHovered, listNotification, setListNotification, socket, setSocket, auth, setAuth, reset, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment }}>{children}</ContextAPI.Provider>
+    return <ContextAPI.Provider value={{tweet: tweet as Tweet,setTweet: setTweet as Dispatch<SetStateAction<Tweet>> ,getComment,isLoading,setLimitComment, limitComment,tweetId,setTweetId, countNotification, setCountNotification, setIsHovered, listNotification, setListNotification, socket, setSocket, auth, setAuth, reset, handleLike, isHovered, isShowInputRepliesComment, handleSelectIcon, setIsShowInputRepliesComment, handleSelectIconRepliesComment }}>{children}</ContextAPI.Provider>
 }
 

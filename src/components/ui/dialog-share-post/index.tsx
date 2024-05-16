@@ -26,7 +26,7 @@ import { formatMentionsAndHashtags } from '../../../helps/check-metions-or-hasta
 import { createPortal } from 'react-dom';
 import { useCreateSharePostMutation } from '../../../apis/share-post';
 import { contextProvider } from '../../../hooks';
-import { Skeleton } from '../skeleton';
+import { Tweet } from '../../../types/tweet';
 
 export type ShowPopupSharePost = {
     showPopup: () => void
@@ -42,7 +42,7 @@ const typeVideo = ['mp4', 'webm']
 
 export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>(({ tweet_id, id_user }, ref) => {
 
-    const { socket, isLoadingShare, tweetDetail } = contextProvider()
+    const { socket ,tweet} = contextProvider()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const refSharePost = useRef<any>(null)
     const [submit, setSubmit] = useState<boolean>(false)
@@ -154,16 +154,16 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                 medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
                 user_id: user_id,
                 check_share: true,
-                medias_share: (tweetDetail as any)?.data[0]?.medias,
-                username_share: (tweetDetail as any)?.data[0]?.users?.name,
-                content_share: (tweetDetail as any)?.data[0]?.content,
-                avatar_share: (tweetDetail as any)?.data[0]?.users?.avatar,
+                medias_share: (tweet as any)?.medias,
+                username_share: (tweet as any)?.users?.name,
+                content_share: (tweet as any)?.content,
+                avatar_share: (tweet as any)?.users?.avatar,
                 audience: 0,
                 hashtags: [],
                 mentions: [],
-                postId: (tweetDetail as any)?.data[0]?._id
+                postId: (tweet as any)?._id
             }
-            const [res,] = await Promise.all([createShareTweet(bodyRequest).unwrap(), createSharePost({ postId: (tweetDetail as any)?.data[0]?._id }).unwrap()]);
+            const [res,] = await Promise.all([createShareTweet(bodyRequest).unwrap(), createSharePost({ postId: (tweet as any)?._id }).unwrap()]);
             if (res.message) {
                 ToastMessage({ message: "Bạn đã chia sẻ thành công", status: 'success' })
                 setIsShowPopup(false)
@@ -234,22 +234,23 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                 </div>
 
                                 {
-                                    isLoadingShare ? <div><Skeleton /> </div> : <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
+                                   
+                                    <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
                                         <div className='p-[10px]'>
                                             <div className="mt-[8px]">
                                                 <div className=" w-full flex items-center font-fontFamily">
-                                                    <img src={(tweetDetail as any)?.data[0]?.users?.avatar} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
-                                                    <h2 className="text-[18px] text-black">{(tweetDetail as any)?.data[0]?.users?.name}</h2>
+                                                    <img src={(tweet as Tweet)?.users?.avatar} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
+                                                    <h2 className="text-[18px] text-black">{(tweet as any)?.users?.name}</h2>
                                                 </div>
                                             </div>
-                                            <div className="text-[16px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{formatMentionsAndHashtags((tweetDetail as any)?.data[0]?.content as string)}</div>
+                                            <div className="text-[16px] mt-[5px] font-fontFamily text-[#0F1419] leading-5">{formatMentionsAndHashtags((tweet as any)?.content as string)}</div>
                                         </div>
                                         <div className="w-full mt-[20px] cursor-pointer">
                                             {
-                                                (tweetDetail as any)?.data[0].medias?.length > 0 && !typeVideo.includes((tweetDetail as any)?.data[0]?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: (tweetDetail as any)?.data[0].medias })
+                                                (tweet as any)?.medias?.length > 0 && !typeVideo.includes((tweet as any)?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: (tweet as any)?.medias })
                                             }
                                             {
-                                                (tweetDetail as any)?.data[0].medias?.length > 0 && typeVideo.includes((tweetDetail as any)?.data[0]?.medias[0].slice(-3)) && <video src={(tweetDetail as any)?.data[0].medias[0]} className="w-full rounded-[20px]" controls />
+                                                (tweet as any)?.medias?.length > 0 && typeVideo.includes((tweet as any)?.medias[0].slice(-3)) && <video src={(tweet as any)?.medias[0]} className="w-full rounded-[20px]" controls />
                                             }
                                         </div>
                                     </div>

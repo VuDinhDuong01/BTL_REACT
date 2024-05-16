@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useRef } from "react"
-import { useNavigate } from "react-router-dom"
+import { Dispatch, SetStateAction, useRef } from "react"
 
 import { Icons } from "../../helps/icons"
 import { TotalNumber } from "../../helps/sum-total-number"
@@ -21,10 +20,12 @@ import { useGetMeQuery } from "../../apis"
 import { skipToken } from "@reduxjs/toolkit/query"
 import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags"
 import { PopupSharePost, ShowPopupSharePost } from "../ui/dialog-share-post"
-// import { useGetCommentQuery } from "../../apis/comment"
+import { useNavigate } from "react-router-dom"
+
 
 interface Props {
-    tweet: Tweet,
+    setIdTweet?:Dispatch<SetStateAction<string>>
+    tweet: Tweet
 }
 export type GetCommentResponse = GenerateType<Comment[]>
 export interface NotificationType {
@@ -39,7 +40,7 @@ export interface NotificationType {
 
 export const typeVideo = ['mp4', 'mvk']
 
-export const Post = ({ tweet }: Props) => {
+export const Post = ({ tweet,setIdTweet}: Props) => {
     const refShowPopupComment = useRef<ShowPopupComment>(null)
     const refShowPopupSharePost = useRef<ShowPopupSharePost>(null)
     const { user_id } = getProfileToLS() as { user_id: string, username: string, avatar: string }
@@ -47,7 +48,8 @@ export const Post = ({ tweet }: Props) => {
     const [unLikeTweet] = useUnLikeMutation()
     const [bookmarkTweet] = useBookmarkMutation()
     const [unBookmarkTweet] = useUnBookmarkMutation()
-    const {setTweetId,socket,setShareId}=contextProvider()
+    const {setTweetId,socket,setTweet}=contextProvider()
+    const navigate= useNavigate()
     const checkBookmark = (bookmarks: Like[]) => {
         return bookmarks?.some(item => item.user_id === user_id)
     }
@@ -90,9 +92,6 @@ export const Post = ({ tweet }: Props) => {
     const checkLike = (Likes: Like[]) => {
         return Likes?.some(item => item.user_id === user_id)
     }
-
-
-    const navigate = useNavigate()
     const handleIcons = async (title: string) => {
 
         const map = new Map([
@@ -116,6 +115,7 @@ export const Post = ({ tweet }: Props) => {
                 if (checkBookmark(tweet.bookmarks as Like[])) {
                     await unBookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 } else {
+                    console.log(tweet)
                     tweet.user_id !== user_id && socket?.emit("send_notification_bookmark", {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
@@ -140,7 +140,7 @@ export const Post = ({ tweet }: Props) => {
                     if (tweet.check_share) return
                     if (refShowPopupSharePost.current) {
                         refShowPopupSharePost.current.showPopup()
-                        setShareId(tweet._id as string)
+                        setTweet(tweet)
                     }
                 }
             ]
@@ -150,13 +150,12 @@ export const Post = ({ tweet }: Props) => {
             action()
         }
     }
-
-    const handleNavigateDetail = ({ tweet_id, tweet_medias, check_share }: { tweet_id: string, tweet_medias: string[], check_share: boolean }) => {
-        if (tweet_medias.length > 0 || check_share) {
-            navigate(`/tweet/${tweet_id}`)
+    const handleNavigateDetail = ({ tweet_id, tweet_medias, check_share, tweet_medias_share }: { tweet_id: string, tweet_medias: string[], check_share: boolean, tweet_medias_share: string[] }) => {
+        if ((tweet_medias.length > 0 && !check_share) || (check_share && tweet_medias_share.length > 0)) {
+          navigate(`/tweet/${tweet_id}`)
+          setIdTweet && setIdTweet(tweet_id)
         }
-    }
-
+      }
     return (
         <div className="px-[10px] w-full flex  pt-[15px] hover:bg-white1 cursor-pointer border-solid border-b-[1px] border-b-white1 bg-transparent border-t-transparent border-r-transparent border-l-transparent">
             <PopupComment ref={refShowPopupComment} tweet_id={tweet._id} id_user={tweet.user_id} users={tweet?.users} />
@@ -165,7 +164,7 @@ export const Post = ({ tweet }: Props) => {
                 <img src={tweet?.users?.avatar ? tweet.users?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[60px] h-[60px] object-cover rounded-[50%]" alt="avatar" />
             </div>
             <div className="flex-1">
-                <div onClick={() => handleNavigateDetail({ tweet_id: tweet._id, tweet_medias: tweet.medias, check_share: tweet.check_share })}>
+                <div onClick={()=>handleNavigateDetail({ tweet_id: tweet._id, tweet_medias: tweet.medias, check_share: tweet.check_share, tweet_medias_share: tweet.medias_share}) }>
                     <div className="mt-[8px]">
                         <div className=" w-full flex items-center font-fontFamily">
                             <h2 className="text-[18px]">{tweet.users?.name}</h2>
@@ -195,29 +194,25 @@ export const Post = ({ tweet }: Props) => {
 
                                     <div className="w-full mt-[10px] cursor-pointer">
                                         {
-                                            tweet.medias_share?.length > 0 && !typeVideo.includes(tweet.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet.medias_share, heightOneImage: 'min-h-[150px]', heightTwoImage: 'min-h-[150px]' })
+                                            tweet?.medias_share?.length > 0 && !typeVideo.includes(tweet?.medias_share[0].slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias_share, heightOneImage: 'min-h-[150px]', heightTwoImage: 'min-h-[150px]' })
                                         }
                                         {
-                                            tweet.medias_share?.length > 0 && typeVideo.includes(tweet.medias_share[0].slice(-3)) && <video src={tweet.medias_share[0]} className="w-full rounded-[20px]" controls />
+                                            tweet?.medias_share?.length > 0 && typeVideo.includes(tweet?.medias_share[0].slice(-3)) && <video src={tweet?.medias_share[0]} className="w-full rounded-[20px]" controls />
                                         }
                                     </div>
-
                                 </div>
-
-
                             </div>
                         ) : (
                             <div className="w-full mt-[20px] cursor-pointer">
                                 {
-                                    tweet?.medias?.length > 0 && !typeVideo.includes(tweet?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias })
+                                    tweet?.medias?.length > 0 && !typeVideo.includes(tweet?.medias[0]?.slice(-3)) && DivideImageSize({ arrayImage: tweet?.medias })
                                 }
                                 {
-                                    tweet?.medias?.length > 0 && typeVideo.includes(tweet?.medias[0].slice(-3)) && <video src={tweet?.medias[0]} className="w-full rounded-[20px]" controls />
+                                    tweet?.medias?.length > 0 && typeVideo.includes(tweet?.medias[0]?.slice(-3)) && <video src={tweet?.medias[0]} className="w-full rounded-[20px]" controls />
                                 }
                             </div>
                         )
                     }
-
                 </div>
 
                 <div className="w-full py-[10px]  flex justify-between items-center">
@@ -248,7 +243,6 @@ export const Post = ({ tweet }: Props) => {
                                 }, {
                                     "!text-black  cursor-not-allowed ": item.title === 'Share' && tweet.check_share,
                                 })}
-
                                 >
                                     {item.icon}
                                 </div>

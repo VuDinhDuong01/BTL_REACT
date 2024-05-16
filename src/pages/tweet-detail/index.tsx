@@ -30,7 +30,7 @@ import { ViewIcon } from "../../assets/icons/eye";
 import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags";
 
 export const TweetDetail = () => {
-  const [limitComment, setLimitComment] = useState<number>(2)
+  const [limitComment, setLimitComment] = useState<number>(10)
   const [likeTweet] = useLikeMutation()
   const { socket } = useContext(ContextAPI)
   const [unLikeTweet] = useUnLikeMutation()
@@ -261,7 +261,7 @@ export const TweetDetail = () => {
         <div className="w-full  flex items-center justify-center">
           <div>
             {
-              isLoading ? <div className=" mt-[100px]" ><Skeleton2 /> </div> : ((ImagesTweet as { original: string }[])?.length > 0 && !typeVideo.includes(((ImagesTweet as {original:string}[])[0] as any)?.original.slice(-3) as string) ?
+              isLoading ? <div className=" mt-[100px]" ><Skeleton2 /> </div> : ((ImagesTweet as { original: string }[])?.length > 0 && !typeVideo.includes(((ImagesTweet as {original:string}[])[0] as any)?.original?.slice(-3) as string) ?
                 <ImageGallery
                   items={ImagesTweet as { original: string }[]}
                   showThumbnails={false}

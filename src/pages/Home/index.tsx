@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
 import { t } from "i18next";
 import omit from 'lodash/omit'
@@ -8,12 +9,13 @@ import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
 import { cn } from "../../helps/cn"
 import { useGetListTweetQuery } from "../../apis/tweet"
-import {  contextProvider, queryList } from "../../hooks"
+import { queryList } from "../../hooks"
 import { Button } from "../../components/ui/button"
 import { Skeleton } from "../../components/ui/skeleton"
 import { getProfileToLS } from "../../helps"
 import { GenerateType } from "../../types/generate";
 import { Tweet } from "../../types/tweet";
+import { Loading } from "../../assets/icons/eye";
 
 interface ActionTweet {
   id: number,
@@ -28,10 +30,11 @@ export const Home = () => {
   ]
   const [limits, setLimit] = useState<number>(Number(queryList.limit))
   const [titleTweet, setTitleTweet] = useState<string>(String(queryList.title_tweet))
+  const [idTweet, setIdTweet] = useState<string>('')
   const profile = getProfileToLS() as { user_id: string }
   const navigate = useNavigate()
   const [optionAction, setOptionAction] = useState<number>(1)
-  const { data: getListTweet, isLoading } = useGetListTweetQuery({
+  const { data: getListTweet, isLoading, refetch } = useGetListTweetQuery({
     ...queryList,
     limit: limits,
     title_tweet: titleTweet,
@@ -47,24 +50,32 @@ export const Home = () => {
         ...queryList,
         title_tweet: action.title_tweet,
         id_user: profile?.user_id as string
-      },['order','sort_by','name','content','content_comment','title'])).toString()
+      }, ['order', 'sort_by', 'name', 'content', 'content_comment', 'title'])).toString()
     });
   }
 
 
   const handleNextPage = () => {
     setLimit(prev => {
-      const nextLimit = prev + 3
+      const nextLimit = prev + 10
       navigate({
         pathname: '',
         search: createSearchParams(omit({
           ...queryList,
           limit: String(nextLimit)
-        },['order','sort_by','name','content','content_comment','title'])).toString()
+        }, ['order', 'sort_by', 'name', 'content', 'content_comment', 'title'])).toString()
       });
       return nextLimit;
     });
   }
+
+
+
+  useEffect(() => {
+    setTimeout(() => {
+      refetch()
+    }, 100)
+  }, [idTweet])
 
   return (
     <div className="w-full">
@@ -95,19 +106,21 @@ export const Home = () => {
           <>
             {
               (getListTweet as GenerateType<Tweet[]>)?.data?.length > 0 ? <>
-                  {
-                    getListTweet?.data?.map((tweet, index) => {
-                      return <div key={index}>
-                        <Post
-                          tweet={tweet}
-                        />
+                {
+                  getListTweet?.data?.map((tweet, index) => {
+                    return <div key={index}>
+                      <Post
+                        tweet={tweet}
+                        setIdTweet={setIdTweet}
+                        
+                      />
 
-                      </div>
-                    })
-                  }
+                    </div>
+                  })
+                }
                 {
                   getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
-                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{t('home.loading')}...</Button>
+                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{isLoading ? <Loading /> : t('home.loading')}</Button>
                   </div>)
                 }
               </> : <div className="w-full items-center flex justify-center font-fontFamily font-[600] text-[20px] mt-[100px]">{t('home.notPost')}</div>
