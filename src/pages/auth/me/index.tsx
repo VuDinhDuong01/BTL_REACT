@@ -52,7 +52,7 @@ export const Personal = () => {
     const showPopupUpdateMe = useRef<ShowPopupHandle>(null)
     const checkStatusFollow = () => {
         return getFollow?.data.some(item => {
-            if (item.follower_id === profile?.user_id && item.following_id === user_id) {
+            if (item?.follower_id === profile?.user_id && item?.following_id === user_id) {
                 return true
             }
             return false
@@ -84,7 +84,7 @@ export const Personal = () => {
             search: createSearchParams(omit({
                 ...queryList,
                 title: action.title
-            }, ['id_user', 'for_you', 'title_tweet'])).toString()
+            },['id_user', 'for_you', 'title_tweet','order','sort_by','name','content','content_comment'])).toString()
         })
     }
 
@@ -100,7 +100,7 @@ export const Personal = () => {
                 search: createSearchParams(omit({
                     ...queryList,
                     limit: String(nextLimit)
-                }, ['id_user', 'for_you', 'title_tweet'])).toString()
+                }, ['id_user', 'for_you', 'title_tweet','order','sort_by','name','content','content_comment'])).toString()
             });
             return nextLimit;
         });

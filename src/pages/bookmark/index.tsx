@@ -9,11 +9,12 @@ import { Skeleton } from "../../components/ui/skeleton";
 import { Button } from "../../components/ui/button";
 import { GenerateType } from "../../types/generate";
 import { Tweet } from "../../types/tweet";
+import omit from 'lodash/omit'
 
 const Bookmark = () => {
 
     const profile = getProfileToLS() as { username?: string, user_id?: string }
-    const [limits, setLimit] = useState<number>(Number(queryList.limit))
+    const [limits, setLimit] = useState<number>(Number(queryList.limit) ?? 3)
     const navigate = useNavigate()
     const { user_id } = useParams()
     const { data: getBookmark, isLoading } = useGetBookmarkQuery({
@@ -27,10 +28,10 @@ const Bookmark = () => {
             const nextLimit = prev + 3
             navigate({
                 pathname: '',
-                search: createSearchParams({
+                search: createSearchParams(omit({
                     ...queryList,
                     limit: String(nextLimit)
-                }).toString()
+                },['id_user', 'for_you', 'title_tweet','order','sort_by','name','content','content_comment','title'])).toString()
             });
             return nextLimit;
         });

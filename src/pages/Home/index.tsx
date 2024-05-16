@@ -47,7 +47,7 @@ export const Home = () => {
         ...queryList,
         title_tweet: action.title_tweet,
         id_user: profile?.user_id as string
-      },['order','sort_by','name','content','content_comment'])).toString()
+      },['order','sort_by','name','content','content_comment','title'])).toString()
     });
   }
 
@@ -57,10 +57,10 @@ export const Home = () => {
       const nextLimit = prev + 3
       navigate({
         pathname: '',
-        search: createSearchParams({
+        search: createSearchParams(omit({
           ...queryList,
           limit: String(nextLimit)
-        }).toString()
+        },['order','sort_by','name','content','content_comment','title'])).toString()
       });
       return nextLimit;
     });
