@@ -42,7 +42,7 @@ const typeVideo = ['mp4', 'webm']
 
 export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>(({ tweet_id, id_user }, ref) => {
 
-    const { socket ,tweet} = contextProvider()
+    const { socket, tweet } = contextProvider()
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const refSharePost = useRef<any>(null)
     const [submit, setSubmit] = useState<boolean>(false)
@@ -195,11 +195,11 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
         }
     }, [text])
 
-    return (<div>
+    return (<div className=''>
         {
             isShowPopup && createPortal(<Dialog open={isShowPopup}>
-                <DialogOverlay className='fixed inset-0 z-[99] bg-black/30' />
-                <DialogContent className=' w-full h-full  fixed inset-0  z-[999] cursor-pointer'  >
+                <DialogOverlay className='fixed inset-0 z-10 bg-black/50' />
+                <DialogContent className=' w-full h-full  fixed inset-0  z-[9999] cursor-pointer'  >
                     <div className='max-h-[700px]  w-[650px] bg-white rounded-[20px] flex flex-col relative' ref={refSharePost} style={{ boxShadow: "0px 4px 20px 0px rgba(0, 0, 0, 0.15)" }} >
                         <div className=' flex  ml-[10px] '><div className='mr-[15px] mt-[10px] cursor-pointer w-[30px] h-[30px] rounded-[50%] hover:bg-black3 flex items-center text-black justify-center hover:opacity-[80%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div></div>
                         <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
@@ -234,7 +234,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                 </div>
 
                                 {
-                                   
+
                                     <div className='border-[1px] border-solid border-[#CFD9DE] rounded-lg mr-[20px]'>
                                         <div className='p-[10px]'>
                                             <div className="mt-[8px]">
@@ -247,10 +247,10 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                         </div>
                                         <div className="w-full mt-[20px] cursor-pointer">
                                             {
-                                                (tweet as any)?.medias?.length > 0 && !typeVideo.includes((tweet as any)?.medias[0].slice(-3)) && DivideImageSize({ arrayImage: (tweet as any)?.medias })
+                                                (tweet as any)?.medias?.length > 0 && !typeVideo.includes((tweet as any)?.medias[0]?.slice(-3)) && DivideImageSize({ arrayImage: (tweet as any)?.medias })
                                             }
                                             {
-                                                (tweet as any)?.medias?.length > 0 && typeVideo.includes((tweet as any)?.medias[0].slice(-3)) && <video src={(tweet as any)?.medias[0]} className="w-full rounded-[20px]" controls />
+                                                (tweet as any)?.medias?.length > 0 && typeVideo.includes((tweet as any)?.medias[0]?.slice(-3)) && <video src={(tweet as any)?.medias[0]} className="w-full rounded-[20px]" controls />
                                             }
                                         </div>
                                     </div>

@@ -430,7 +430,7 @@ export const TweetDetail = () => {
                                               handleLike(replies_comment._id)
                                             }}>{renderTextLike(replies_comment?.replies_like_comments)}</p>
                                             {
-                                              isHovered === replies_comment._id && <div className='absolute top-[-60px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                              isHovered === replies_comment._id && <div className='absolute top-[-60px] right-[-70px]'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                             }
                                           </div>
                                         </div>

@@ -27,7 +27,7 @@ const AdminUser = () => {
   const query: any = queryStringSearch()
 
   const { data: dataPost, isLoading } = useGetAllUserQuery({
-    limit: isNaN(Number(query.limit)) ? 3 : Number(query.limit),
+    limit: isNaN(Number(query.limit)) ? 10 : Number(query.limit),
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,

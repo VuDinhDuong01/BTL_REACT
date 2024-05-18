@@ -14,7 +14,7 @@ import omit from 'lodash/omit'
 const Bookmark = () => {
 
     const profile = getProfileToLS() as { username?: string, user_id?: string }
-    const [limits, setLimit] = useState<number>(Number(queryList.limit) ?? 3)
+    const [limits, setLimit] = useState<number>(Number(queryList.limit) ?? 10)
     const navigate = useNavigate()
     const { user_id } = useParams()
     const { data: getBookmark, isLoading } = useGetBookmarkQuery({
@@ -25,13 +25,13 @@ const Bookmark = () => {
 
     const handleNextPage = () => {
         setLimit(prev => {
-            const nextLimit = prev + 3
+            const nextLimit = prev + 10
             navigate({
                 pathname: '',
                 search: createSearchParams(omit({
                     ...queryList,
                     limit: String(nextLimit)
-                },['id_user', 'for_you', 'title_tweet','order','sort_by','name','content','content_comment','title'])).toString()
+                }, ['id_user', 'for_you', 'title_tweet', 'order', 'sort_by', 'name', 'content', 'content_comment', 'title'])).toString()
             });
             return nextLimit;
         });

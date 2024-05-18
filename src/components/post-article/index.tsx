@@ -8,6 +8,7 @@ import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
 import { t } from "i18next";
+import { createPortal } from 'react-dom'
 
 import { Icons } from "../../helps/icons"
 import { Button } from "../ui/button"
@@ -204,7 +205,7 @@ export const PostArticle = () => {
         contentEditableRef.current.focus();
     };
 
-    const { user_id, avatar, username } = getProfileToLS() as { user_id?: string, avatar?: string, username?: string }
+    const profile = getProfileToLS() as { user_id?: string, avatar?: string, username?: string }
 
     const onSubmit = (handleSubmit(async () => {
         let uploadImage: { image: string, type: number }[] = []
@@ -229,7 +230,7 @@ export const PostArticle = () => {
             const bodyRequest = {
                 content: text,
                 medias: files.length > 0 ? medias : gif !== '' ? [gif] : [],
-                user_id: user_id as string ,
+                user_id: profile?.user_id as string,
                 audience,
                 hashtags,
                 mentions,
@@ -249,11 +250,11 @@ export const PostArticle = () => {
                     for (let i = 0; i < (res.data as any).user_ids.length; i++) {
                         socket?.emit('send_notification_mentions', {
                             status: 'mentions',
-                            from: user_id,
+                            from: profile?.user_id,
                             to: (res.data as any).user_ids[i],
                             created_at: new Date,
                             tweet_id: (res.data as any).tweet_id,
-                            username: username,
+                            username: profile?.username,
                         })
                     }
                 }
@@ -271,7 +272,7 @@ export const PostArticle = () => {
         if (files.length > 0 && typeVideo.includes(files[0].file.type)) {
             const fileSizeInBytes = files[0].file?.size;
             const fileSizeInMegabytes = fileSizeInBytes ? fileSizeInBytes / (1024 * 1024) : 0; // Chia cho 1,048,576 để chuyển đổi từ byte sang megabyte
-            
+
             if (fileSizeInMegabytes > 5) {
                 ToastMessage({
                     message: 'Không được upload file có kích thước lớn hơn 5 MB',
@@ -282,7 +283,7 @@ export const PostArticle = () => {
                 const url = URL.createObjectURL(files[0].file);
                 setVideoUrl(url);
             }
-           
+
         }
     }, [files])
 
@@ -291,10 +292,10 @@ export const PostArticle = () => {
             <ShowGIF ref={gifRef} limit={50} setGif={setGif} />
             <div className="w-full  min-h-[100px] flex border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">
                 <div className="w-[65px] ml-[10px] mt-[3px]">
-                    <img src={avatar ? avatar : DEFAULT_IMAGE_AVATAR} className="w-[40px] h-[40px] rounded-[50%] " />
+                    <img src={profile?.avatar ? profile?.avatar : DEFAULT_IMAGE_AVATAR} className="w-[40px] h-[40px] rounded-[50%] " />
                 </div>
                 <div className="flex-1">
-                    <div className='w-full relative'>
+                    <div className='w-full '>
                         <div
                             ref={contentEditableRef}
                             contentEditable="true"
@@ -310,11 +311,11 @@ export const PostArticle = () => {
                         />
                         {!text && (
                             <div
-                                className="w-full absolute text-[#667581] top-[5px] left-[7px] font-fontFamily text-[25px]"
+                                className="w-full  text-[#667581] mt-[-50px] ml-[5px]   font-fontFamily text-[25px] "
                                 onClick={handlePlaceholderClick}
                             >
                                 {
-                                    `${username} ơi, ${t('home.whatIsHappening')}`
+                                    `${profile?.username} ơi, ${t('home.whatIsHappening')}`
                                 }
 
                             </div>
@@ -335,7 +336,7 @@ export const PostArticle = () => {
                             })
                         }
                         {
-                            files.length > 0 && typeVideo.includes(files[0].file.type) && videoUrl !== ''&& 
+                            files.length > 0 && typeVideo.includes(files[0].file.type) && videoUrl !== '' &&
                             <div className='w-full relative '>
                                 <video
                                     className='w-full rounded-xl'
@@ -353,38 +354,45 @@ export const PostArticle = () => {
                             </div>
                         }
                     </div>
-                    <div className='w-full  cursor-pointer'>
-                        <div className=''>
-                            <div className=" inline-block px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
-                                <div className='flex items-center'>
-                                    {showPermissionView.icon}
-                                    <p className="ml-[5px] text-[14px] font-fontFamily font-[700] text-green2 ">{showPermissionView.title}</p>
+                    
+                       <div className='w-full  cursor-pointer'>
+                            <div className=''>
+                                <div className=" inline-block px-[8px] py-[2px]  mb-[10px] cursor-pointer items-center  text-green2 hover:bg-[#bbe3ed] rounded-[50px]" onClick={() => setPopupPermission(!showPopupPermission)}>
+                                    <div className='flex items-center mt-[10px]'>
+                                        {showPermissionView.icon}
+                                        <p className="ml-[5px] text-[14px] font-fontFamily font-[700] text-green2 ">{showPermissionView.title}</p>
+                                    </div>
                                 </div>
                             </div>
+                            {
+                                showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 fixed max-w-[300px] py-[8px] rounded-xl z-[99]" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
+                                    {
+                                        <div className=''>
+                                            <div className="mb-[20px] mt-[10px] px-[10px]">
+                                                <h3 className="text-[17px] mb-[10px] font-fontFamily">  {t('home.whoCanReply')}</h3>
+                                                <p className="text-[14px] font-fontFamily"> {t('home.chooseUserReply')}</p>
+                                            </div>
+                                            <div className="w-full">
+                                                {
+                                                    permissionViews.map((item) => {
+                                                        return <div key={item.id} className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-white1" onClick={handleShowPermissionView(item)}>
+                                                            <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
+                                                                {item.icon}
+                                                            </div>
+                                                            <h3 className="text-[17px] font-fontFamily ">{item.title}</h3>
+                                                        </div>
+                                                    })
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                   
+                                </div>
+                            }
                         </div>
-                        {
-                            showPopupPermission && <div ref={permissionRef} className=" flex items-center justify-center bg-white !px-0 fixed max-w-[300px] py-[8px] rounded-xl" style={{ boxShadow: "0 0 15px rgba(101,119,134,0.2), 0 0 3px 1px rgba(101,119,134,0.15)" }}>
-                                <div>
-                                    <div className="mb-[20px] mt-[10px] px-[10px]">
-                                        <h3 className="text-[17px] mb-[10px] font-fontFamily">  {t('home.whoCanReply')}</h3>
-                                        <p className="text-[14px] font-fontFamily"> {t('home.chooseUserReply')}</p>
-                                    </div>
-                                    <div className="w-full">
-                                        {
-                                            permissionViews.map((item) => {
-                                                return <div key={item.id} className="w-full flex items-center  py-[8px] px-[10px] cursor-pointer hover:bg-white1" onClick={handleShowPermissionView(item)}>
-                                                    <div className="text-white w-[40px] h-[40px] flex items-center justify-center rounded-[50%] bg-green2 mr-[15px]">
-                                                        {item.icon}
-                                                    </div>
-                                                    <h3 className="text-[17px] font-fontFamily ">{item.title}</h3>
-                                                </div>
-                                            })
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
+                    
+
+
                 </div>
             </div>
             <div className="w-[611px] h-[55px] flex items-center border-b-[1px] border-solid border-white1 border-r-transparent border-l-transparent border-t-transparent">

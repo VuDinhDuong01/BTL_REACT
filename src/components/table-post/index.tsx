@@ -80,16 +80,16 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                         return <tr className=" w-full  flex" key={index}>
                             <td className="2xl:w-[3%] md:w-[4%] border flex items-center justify-center ">
                                 <input type="checkbox" className="w-[15px] h-[15px] rounded-[3px] bg-white cursor-pointer"
-                                    checked={checkBox.includes(post._id)}
-                                    onChange={() => handleCheckBox(post._id)} /></td>
+                                    checked={checkBox.includes(post?._id)}
+                                    onChange={() => handleCheckBox(post?._id)} /></td>
 
                             <td className='2xl:w-[25%] md:w-[25%]  custom-class-table-td-post items-center justify-center'>{post.content}</td>
                             <td className='2xl:w-[17%] md:w-[15%]  custom-class-table-td-post items-center justify-center flex  '>{
-                                post.medias.length > 0 ? post.medias.map((image: string, index: number) => {
+                                post?.medias?.length > 0 && post?.medias[0] !== null ? post?.medias?.map((image: string, index: number) => {
                                     return <img src={image} alt='image' key={index} className='w-[40px] h-[40px] object-cover mr-[10px]' />
                                 }) : '_'
                             }</td>
-                            <td className='2xl:w-[17%] md:w-[15%] custom-class-table-td-post items-center justify-center'>{post.user_id}</td>
+                            <td className='2xl:w-[17%] md:w-[15%] custom-class-table-td-post items-center justify-center'>{post?.user[0]?.name}</td>
                             <td className='2xl:w-[12%] md:w-[20%] custom-class-table-td-post items-center justify-center'>{post.user_views}</td>
                             <td className='2xl:w-[12%] md:w-[15%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-Roboto text-[16px] font-[400] leading-[45px]'>{formatDate(post.created_at)}
                             </td>

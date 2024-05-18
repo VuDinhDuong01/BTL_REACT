@@ -84,7 +84,7 @@ export const Personal = () => {
             search: createSearchParams(omit({
                 ...queryList,
                 title: action.title
-            },['id_user', 'for_you', 'title_tweet','order','sort_by','name','content','content_comment'])).toString()
+            }, ['id_user', 'for_you', 'title_tweet', 'order', 'sort_by', 'name', 'content', 'content_comment'])).toString()
         })
     }
 
@@ -100,7 +100,7 @@ export const Personal = () => {
                 search: createSearchParams(omit({
                     ...queryList,
                     limit: String(nextLimit)
-                }, ['id_user', 'for_you', 'title_tweet','order','sort_by','name','content','content_comment'])).toString()
+                }, ['id_user', 'for_you', 'title_tweet', 'order', 'sort_by', 'name', 'content', 'content_comment'])).toString()
             });
             return nextLimit;
         });
@@ -109,64 +109,68 @@ export const Personal = () => {
         <PopupUpdateMe ref={showPopupUpdateMe} dataMe={getMe as GetUserResponse} />
         <div className="w-full">
             {
-                isLoading ? <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
-                    <div className=" w-[611px] flex items-center h-[60px] fixed top-[0px] bg-white ">
-                        <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
-                            <Icons.FaArrowLeftLong />
-                        </Link>
-                        <div className="ml-[20px] mt-[10px] ">
-                            <h2 className="text-[20px] font-fontFamily ">{getMe?.data[0].name}</h2>
-                            <p className="text-[15px] font-fontFamily text-black2">{`${getMe?.data[0].count_tweet} ${t('home.posts')}`}</p>
-                        </div>
-                    </div>
-                    <div className="w-full relative z-[-1]">
+                isLoading ?
+                    <div className="flex w-full h-full items-center justify-center m-auto">< Skeleton /></div> : <>
                         {
-                            Boolean(getMe?.data[0].cover_photo as string) ? <img src={getMe?.data[0].cover_photo} alt="cover_photo" className="w-full h-[200px] mt-[20px] object-cover" /> : <div className="w-full h-[200px] mt-[20px] bg-[#CFD9DE] z-0 " />
+                            <div className=" w-[611px] flex items-center h-[60px]  bg-white  fixed top-0 ">
+                                <Link to={PAGE.HOME} className="!text-black cursor-pointer ml-[10px]">
+                                    <Icons.FaArrowLeftLong />
+                                </Link>
+                                <div className="ml-[20px] mt-[10px] ">
+                                    <h2 className="text-[20px] font-fontFamily ">{getMe?.data[0].name}</h2>
+                                    <p className="text-[15px] font-fontFamily text-black2">{`${getMe?.data[0].count_tweet} ${t('home.posts')}`}</p>
+                                </div>
+                            </div>
                         }
-                        <img src={Boolean(getMe?.data[0].avatar as string) ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] border-[1px] border-solid border-white left-0 bottom-[-50px] ml-[20px] " />
-                    </div>
-                    <div className=" flex justify-end ">
-                        {
-                            !checkUser() && <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
+
+                        <div className="w-full relative z-[-1]">
+                            {
+                                Boolean(getMe?.data[0].cover_photo as string) ? <img src={getMe?.data[0].cover_photo} alt="cover_photo" className="w-full h-[200px] mt-[20px] object-cover" /> : <div className="w-full h-[200px] mt-[20px] bg-[#CFD9DE] z-0 " />
+                            }
+                            <img src={Boolean(getMe?.data[0].avatar as string) ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[100px] h-[100px] absolute object-cover rounded-[50%] border-[1px] border-solid border-white left-0 bottom-[-50px] ml-[20px] " />
+                        </div>
+                        <div className=" flex justify-end ">
+                            {
+                                !checkUser() && <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
+                                    'bg-black hover:opacity-70 text-white': !checkUser(),
+                                    '!text-black2 hover:bg-[#F7F9F9]': checkUser()
+                                })} onClick={() => navigate(`/message/${user_id}`)}>{t('sidebarLeft.message')}</Button>
+                            }
+                            <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
                                 'bg-black hover:opacity-70 text-white': !checkUser(),
                                 '!text-black2 hover:bg-[#F7F9F9]': checkUser()
-                            })} onClick={() => navigate(`/message/${user_id}`)}>{t('sidebarLeft.message')}</Button>
-                        }
-                        <Button className={cn("!text-[16px] mr-[10px]  !font-[700] font-fontFamily bg-transparent   !border-[2px] !border-solid !border-black1 !w-[150px] !h-[40px] !rounded-[50px] cursor-pointer mt-[10px] ", {
-                            'bg-black hover:opacity-70 text-white': !checkUser(),
-                            '!text-black2 hover:bg-[#F7F9F9]': checkUser()
-                        })} onClick={handleShowPopup}>{checkUser() ? t('home.editProfile') : checkStatusFollow() ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
-                    </div>
-                    <div className="mt-[20px] ml-[10px]">
-                        <h2 className="text-[20px] font-fontFamily ">{getMe?.data[0].name}</h2>
-                        <p className="text-[15px] font-fontFamily text-black2">@{getMe?.data[0].username}</p>
-                        <p className="text-[15px] font-fontFamily text-black2 mt-[15px]">{getMe?.data[0].bio}</p>
-                        <div className="flex items-center mt-[15px]">
-                            <div className="flex items-center">
-                                <Icons.FiMapPin size={17} />
-                                <p className="text-[16px]  text-black3 font-fontFamily ml-[5px] mr-[20px]">{Boolean(getMe?.data[0].location) ? getMe?.data[0].location : 'Việt Nam'}</p>
-                            </div>
-                            <div className="flex items-center">
-                                <Icons.CgWebsite size={17} />
-                                <p className="text-[16px] font-fontFamily ml-[5px] mr-[20px] text-black3">{getMe?.data[0].website ?? ''}</p>
-                            </div>
+                            })} onClick={handleShowPopup}>{checkUser() ? t('home.editProfile') : checkStatusFollow() ? t('sideBarRight.following') : t('sideBarRight.follow')}</Button>
                         </div>
+                        <div className="mt-[20px] ml-[10px]">
+                            <h2 className="text-[20px] font-fontFamily ">{getMe?.data[0].name}</h2>
+                            <p className="text-[15px] font-fontFamily text-black2">@{getMe?.data[0].username}</p>
+                            <p className="text-[15px] font-fontFamily text-black2 mt-[15px]">{getMe?.data[0].bio}</p>
+                            <div className="flex items-center mt-[15px]">
+                                <div className="flex items-center">
+                                    <Icons.FiMapPin size={17} />
+                                    <p className="text-[16px]  text-black3 font-fontFamily ml-[5px] mr-[20px]">{Boolean(getMe?.data[0].location) ? getMe?.data[0].location : 'Việt Nam'}</p>
+                                </div>
+                                <div className="flex items-center">
+                                    <Icons.CgWebsite size={17} />
+                                    <p className="text-[16px] font-fontFamily ml-[5px] mr-[20px] text-black3">{getMe?.data[0].website ?? ''}</p>
+                                </div>
+                            </div>
 
-                        <div className="flex items-center mt-[15px]">
-                            <div className="flex items-center">
-                                <p className="text-[15px] font-[700] font-fontFamily ml-[5px]  ">{getMe?.data[0].count_following}</p>
-                                <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3">{t('sideBarRight.following')}</p>
+                            <div className="flex items-center mt-[15px]">
+                                <div className="flex items-center">
+                                    <p className="text-[15px] font-[700] font-fontFamily ml-[5px]  ">{getMe?.data[0].count_following}</p>
+                                    <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3">{t('sideBarRight.following')}</p>
+                                </div>
+                                <div className="flex items-center">
+                                    <p className="text-[15px] font-[700] font-fontFamily ml-[5px]  ">{getMe?.data[0].count_follower}</p>
+                                    <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3" >{t('sideBarRight.follow')}</p>
+                                </div>
                             </div>
-                            <div className="flex items-center">
-                                <p className="text-[15px] font-[700] font-fontFamily ml-[5px]  ">{getMe?.data[0].count_follower}</p>
-                                <p className="text-[15px] font-fontFamily ml-[5px] mr-[20px] text-black3" >{t('sideBarRight.follow')}</p>
-                            </div>
+
                         </div>
-
-                    </div>
-                </>
+                    </>
             }
-            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px]  ">
+            <div className="w-full flex items-center justify-between h-[40px] mt-[50px] mb-[20px]">
                 {actionTweet.map((action) => (
                     <div
                         className={cn('h-full w-full relative ', {

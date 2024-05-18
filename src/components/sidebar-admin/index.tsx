@@ -39,7 +39,6 @@ export const SideBarAdmin = () => {
     } catch (error: unknown) {
       console.log(error)
     }
-
   }
 
   const toggleStorage = JSON.parse(localStorage.getItem('toggle') as string)

@@ -22,8 +22,19 @@ import { DialogContent } from '@radix-ui/react-dialog';
 import { setProfileToLS } from '../../../helps';
 
 const MAX_CHAR = 255
-const MAX_SIZE_FILE = 300 * 1024
-const TYPE_FILE = ['image/png', 'image/jpg', 'image/svg']
+const MAX_SIZE_FILE = 500 * 1024
+const TYPE_FILE = [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/bmp',
+    'image/webp',
+    'image/tiff',
+    'image/svg+xml',
+    'image/x-icon',
+    'image/heif',
+    'image/heic',
+    'image/avif']
 
 export type ShowPopupHandle = {
     showPopup: () => void;
@@ -54,7 +65,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         cover_photo: null,
         avatar: null
     })
-  
+
 
     const { register, handleSubmit, control, formState: { errors }, getValues, reset } = useForm<UpdateMeSchemaType>({
         defaultValues: {
@@ -174,7 +185,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                         <img className='w-full h-[190px]' src={Boolean(fileImage.cover_photo) ? URL.createObjectURL(fileImage.cover_photo as File) : Boolean(dataMe?.data[0].cover_photo) ? dataMe?.data[0].cover_photo : DEFAULT_IMAGE_COVER_PHOTO} />
                         <div className='w-full  items-center flex justify-center absolute inset-0'>
                             <div className='w-[50px] h-[50px] mr-[20px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto('cover_photo')}>
-                                <input type='file' style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
+                                <input type='file' accept="image/*" style={{ display: 'none' }} ref={inputRefCoverPhoto} onChange={handleImage('cover_photo')} />
                                 <Icons.IoMdCamera size={20} />
                             </div>
                             <div>{Boolean(fileImage.cover_photo) && <div onClick={() => setFileImage(prev => ({ ...prev, cover_photo: null }))} className='w-[50px] h-[50px] text-white rounded-[50%]  bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]'><Icons.IoMdClose size={20} /></div>}</div>
@@ -211,7 +222,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         />
                                         <div className='absolute top-1/2 left-1/2' style={{ margin: '-67px 10px 0 0px' }} >
                                             <div className='w-[40px] h-[40px] text-white rounded-[50%] bg-[rgba(0,0,0,0.6)] items-center flex justify-center cursor-pointer hover:opacity-[80%]' onClick={handleShowFolderImageCoverPhoto('avatar')}>
-                                                <input type='file' style={{ display: 'none' }} ref={inputRefAvatar} onChange={handleImage('avatar')} />
+                                                <input type='file' accept="image/*" style={{ display: 'none' }} ref={inputRefAvatar} onChange={handleImage('avatar')} />
                                                 <Icons.IoMdCamera size={15} />
                                             </div>
                                         </div>

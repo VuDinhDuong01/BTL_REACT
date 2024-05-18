@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
 import { t } from "i18next";
 import omit from 'lodash/omit'
+import { createPortal } from 'react-dom'
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -79,24 +80,28 @@ export const Home = () => {
 
   return (
     <div className="w-full">
-      <div className="min-w-[611px] z-10 flex items-center  bg-white border-b-[1px] h-[55px]  justify-between fixed  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
-        {actionArray.map((action) => (
-          <div
-            className={cn('h-full w-full relative  ', {
-              'before:content-[""] before:absolute before:-bottom-[2px] before:w-full   before:left-0 before:h-[2px]  before:rounded-[2px] before:bg-green2':
-                action.id === optionAction,
-            })}
-            key={action.id}
-          >
+      {
+        
+          <div className="min-w-[611px] flex items-center   bg-white border-b-[1px] h-[55px] justify-between fixed  top-0 border-solid border-white1 border-t-transparent border-l-transparent border-r-transparent">
+          {actionArray.map((action) => (
             <div
-              onClick={() => handleOptionAction(action)}
-              className="h-full text-[18px] flex items-center justify-center cursor-pointer font-[700] font-fontFamily hover:bg-white1  "
+              className={cn('h-full w-full relative  ', {
+                'before:content-[""] before:absolute before:-bottom-[2px] before:w-full before:left-0 before:h-[2px] before:rounded-[2px] before:bg-green2':
+                  action.id === optionAction,
+              })}
+              key={action.id}
             >
-              {action.title}
+              <div
+                onClick={() => handleOptionAction(action)}
+                className="h-full text-[18px] flex items-center justify-center cursor-pointer font-[700] font-fontFamily hover:bg-white1  "
+              >
+                {action.title}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      }
+
       <div className="mt-[55px]">
         <PostArticle />
       </div>
@@ -112,7 +117,7 @@ export const Home = () => {
                       <Post
                         tweet={tweet}
                         setIdTweet={setIdTweet}
-                        
+
                       />
 
                     </div>

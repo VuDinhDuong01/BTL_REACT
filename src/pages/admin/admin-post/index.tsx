@@ -25,7 +25,7 @@ export const AdminPost = () => {
   const query: any = queryStringSearch()
 
   const { data: dataPost, isLoading } = useGetAllTweetQuery({
-    limit: isNaN(Number(query.limit)) ? 3 : Number(query.limit),
+    limit: isNaN(Number(query.limit)) ? 10 : Number(query.limit),
     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
     order: query.order === '' ? 'desc' : query.order,
     sort_by: query.sort_by,
@@ -86,13 +86,13 @@ export const AdminPost = () => {
             <Pagination
               total_page={dataPost?.total_page as number}
               currentPage={isNaN(Number(query.page)) ? 1 : Number(query.page)}
-              path={PAGE.USER}
+              path={PAGE.POST}
               checkBox={checkBox}
               deleteAll={deleteAll}
 
             />
           ) : (
-            <NotItem path={PAGE.USER} />
+            <NotItem path={PAGE.POST} />
           )}
         </>
       )}

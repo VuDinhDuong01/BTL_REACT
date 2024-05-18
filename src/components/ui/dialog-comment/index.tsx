@@ -291,7 +291,7 @@ export const PopupComment = forwardRef<ShowPopupComment, PropsDialogComment>(({ 
                                                                                                     handleLike(replies_comment._id)
                                                                                                 }}>{renderTextLike(replies_comment?.replies_like_comments)}</p>
                                                                                                 {
-                                                                                                    isHovered === replies_comment._id && <div className=''><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
+                                                                                                    isHovered === replies_comment._id && <div className=' top-[-50px] absolute'><ListIcons handleSelectIcon={handleSelectIconRepliesComment} /></div>
                                                                                                 }
                                                                                             </div>
                                                                                         </div>

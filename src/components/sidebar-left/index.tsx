@@ -6,7 +6,7 @@ import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { useTranslation } from "react-i18next";
 
-import { BookMarkIcon, HomeIcon, Logo, MessageIcon, MoreIcon } from "../../assets/icons/eye"
+import { BookMarkIcon, HomeIcon, MessageIcon, MoreIcon } from "../../assets/icons/eye"
 import { BellIcon, UserIcon } from "lucide-react"
 import { Button } from "../ui/button"
 import { PAGE } from "../../constants"
@@ -17,7 +17,7 @@ import { ChangePassword, ChangePasswordResponse } from "../ui/dialog-change-pass
 import { useClickOutSide } from "../../hooks/useClickOutSide";
 import { ContextAPI } from "../../hooks";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { DEFAULT_IMAGE_COVER_PHOTO } from "../../helps/image-user-default";
+import { DEFAULT_IMAGE_AVATAR } from "../../helps/image-user-default";
 
 export const SidebarLeft = () => {
 
@@ -67,7 +67,8 @@ export const SidebarLeft = () => {
     <div className="w-full  min-h-[100vh]" >
       <ChangePassword ref={showChangePasswordRef} refFormChangePassword={refFormChangePassword} />
       <div className="w-[50px] cursor-pointer h-[50px] p-[10px] hover:bg-white1 rounded-[50%] flex items-center justify-center" onClick={() => navigate(PAGE.HOME)}>
-        <Logo />
+
+        <img alt='logo' src='https://logos-world.net/wp-content/uploads/2020/05/Tampa-Bay-Lightning-Logo.png' className="w-[70px] h-[70px] object-contain" />
       </div>
       <div>
         <NavLink to={PAGE.HOME} className={({ isActive }) => isActive ? "flex items-center no-underline hover:bg-white1 hover:w-[80%] hover:rounded-[50px] py-[10px] mt-[10px] text-black font-[700]" : "flex hover:w-[80%] items-center no-underline hover:bg-white1 hover:rounded-[50px] py-[10px] mt-[10px] !text-black1"}  >
@@ -157,7 +158,7 @@ export const SidebarLeft = () => {
         )}
       >
         <div className="flex items-center cursor-pointer fixed bottom-[10px] w-[250px] py-[10px] hover:bg-white1 hover:rounded-[50px]" onClick={() => setToggleLogout(true)} >
-          <img src={Boolean(getMe?.data[0].avatar) ? getMe?.data[0].avatar : DEFAULT_IMAGE_COVER_PHOTO} alt="avatar" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
+          <img src={Boolean(getMe?.data[0].avatar) ? getMe?.data[0].avatar : DEFAULT_IMAGE_AVATAR} alt="avatar" className="w-[40px] ml-[10px] h-[40px] object-cover rounded-[50%]" />
           <div className="ml-[10px] ">
             <h3 className="text-[14px] font-fontFamily">{getMe?.data[0].name}</h3>
             <p className="font-fontFamily text-[12px] mt-[5px]">{getMe?.data[0].username}</p>
