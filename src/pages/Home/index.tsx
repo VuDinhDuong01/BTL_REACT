@@ -41,7 +41,6 @@ export const Home = () => {
     title_tweet: titleTweet,
     id_user: profile?.user_id as string
   } as unknown as { limit: number, page: number, title_tweet: string, id_user: string })
-
   const handleOptionAction = (action: ActionTweet) => {
     setOptionAction(action.id)
     setTitleTweet(action.title_tweet)
@@ -125,7 +124,7 @@ export const Home = () => {
                 }
                 {
                   getListTweet !== undefined && Number(limits) < Number(getListTweet?.total_records) && (<div className="w-full justify-center flex items-center my-[50px]">
-                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{isLoading ? <Loading /> : t('home.loading')}</Button>
+                    <Button onClick={handleNextPage} className="w-[200px] font-fontFamily font-[600] !text-[20px] bg-[#1B90DF] text-white cursor-pointer hover:opacity-80">{ t('home.loading')}</Button>
                   </div>)
                 }
               </> : <div className="w-full items-center flex justify-center font-fontFamily font-[600] text-[20px] mt-[100px]">{t('home.notPost')}</div>

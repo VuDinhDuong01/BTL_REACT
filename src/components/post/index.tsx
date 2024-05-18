@@ -115,7 +115,6 @@ export const Post = ({ tweet,setIdTweet}: Props) => {
                 if (checkBookmark(tweet.bookmarks as Like[])) {
                     await unBookmarkTweet({ tweet_id: tweet._id, user_id }).unwrap()
                 } else {
-                    console.log(tweet)
                     tweet.user_id !== user_id && socket?.emit("send_notification_bookmark", {
                         tweet_id: tweet._id,
                         to: tweet.user_id,
@@ -184,7 +183,7 @@ export const Post = ({ tweet,setIdTweet}: Props) => {
                                     <div className='p-[10px]'>
                                         <div className="mt-[8px]">
                                             <div className=" w-full flex items-center font-fontFamily">
-                                                <img src={tweet.avatar_share} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
+                                                <img src={tweet.avatar_share ?tweet.avatar_share :DEFAULT_IMAGE_AVATAR} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
                                                 <h2 className="text-[15px] text-black">{tweet.username_share}</h2>
                                             </div>
                                         </div>

@@ -55,6 +55,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     const updateMeRef = useRef<HTMLFormElement>(null)
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
     const inputRefAvatar = useRef<HTMLInputElement>(null)
+    const [submit, setSubmit]= useState<boolean>(false)
 
     const [isShowPopup, setIsShowPopup] = useState<boolean>(false)
     const [countCharName, setCountCharName] = useState<number>(0)
@@ -107,6 +108,8 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
     }, [dataMe, reset])
 
     const onSubmit = (handleSubmit(async () => {
+        if(submit) return 
+        setSubmit(true)
         try {
             const { username, name, bio, website, location } = getValues();
             let typeCheckImage: string = ''
@@ -145,6 +148,9 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
             setProfileToLS({ user_id: getMe.data[0]._id, avatar: getMe.data[0].avatar, username: getMe.data[0].name })
         } catch (error: unknown) {
             console.log(error)
+        }
+        finally{
+            setSubmit(false)
         }
     }))
     const handleShowFolderImageCoverPhoto = (type: 'cover_photo' | 'avatar') => () => {
@@ -207,7 +213,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                 <div className='mr-[15px] w-[30px] h-[30px] rounded-[50%] bg-black3 flex items-center justify-center hover:opacity-[50%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div>
                                 <h2 className='text-[20px] font-fontFamily'>Edit Profile</h2>
                             </div>
-                            <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{isLoading ? <Loading /> : 'Save'}</Button>
+                            <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{submit ? <Loading /> : 'Save'}</Button>
                         </div>
                         <div className='w-full   flex-1 max-h-[650px] overflow-y-scroll overflow-hidden' >
                             <div className='w-full  '>
@@ -295,6 +301,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         className=" flex flex-col justify-center  !h-[50px]"
                                         label={t('updateMe.username')}
                                         maxLength={255}
+                                        required
                                     />
                                 </div>
                             </div>

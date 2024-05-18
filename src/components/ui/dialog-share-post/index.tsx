@@ -239,7 +239,7 @@ export const PopupSharePost = forwardRef<ShowPopupSharePost, PropsDialogComment>
                                         <div className='p-[10px]'>
                                             <div className="mt-[8px]">
                                                 <div className=" w-full flex items-center font-fontFamily">
-                                                    <img src={(tweet as Tweet)?.users?.avatar} alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
+                                                    <img src={(tweet as Tweet)?.users?.avatar ? (tweet as Tweet)?.users?.avatar : DEFAULT_IMAGE_AVATAR } alt='' className='w-[20px] h-[20px] rounded-[50%] object-cover mr-[10px]' />
                                                     <h2 className="text-[18px] text-black">{(tweet as any)?.users?.name}</h2>
                                                 </div>
                                             </div>
