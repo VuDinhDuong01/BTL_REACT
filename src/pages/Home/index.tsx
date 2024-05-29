@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { createSearchParams, useNavigate } from "react-router-dom"
 import { t } from "i18next";
 import omit from 'lodash/omit'
-import { createPortal } from 'react-dom'
 
 import { Post } from "../../components/post"
 import { PostArticle } from "../../components/post-article"
@@ -16,7 +15,7 @@ import { Skeleton } from "../../components/ui/skeleton"
 import { getProfileToLS } from "../../helps"
 import { GenerateType } from "../../types/generate";
 import { Tweet } from "../../types/tweet";
-import { Loading } from "../../assets/icons/eye";
+
 
 interface ActionTweet {
   id: number,

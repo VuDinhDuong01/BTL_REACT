@@ -1,6 +1,6 @@
 /* eslint-disable no-extra-boolean-cast */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef, FormEvent } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, useEffect, useRef } from "react"
 import { FaCamera } from "react-icons/fa6";
 import { MdGifBox } from "react-icons/md";
 import { FaRegSmileBeam } from "react-icons/fa";
@@ -12,14 +12,15 @@ import { ShowGIF, handleShowPopup } from "../../show-gif";
 import { EmojiPickers, ShowEmoji } from "../emoji-picker";
 import { cn } from "../../../helps/cn";
 import { Button } from "../../ui/button";
-import { Images } from "../../../assets/images";
+import { DEFAULT_IMAGE_AVATAR } from "../../../helps/image-user-default";
+import { getProfileToLS } from "../../../helps";
 
 interface InputPost {
     content: string,
     setContent: Dispatch<SetStateAction<string>>,
     file: File, avatar_user: string,
     setFile: Dispatch<SetStateAction<string | File>>,
-    handleCreateComment: (e: FormEvent<HTMLFormElement>) => Promise<void>
+    handleCreateComment: () => Promise<void>
     className?: string
 }
 
@@ -42,7 +43,7 @@ const listIcon = [
     }
 ]
 
-export const InputPost = ({ content, setContent, file, setFile, avatar_user, handleCreateComment, className }: InputPost) => {
+export const InputPost = ({ content, setContent, file, setFile, handleCreateComment, className }: InputPost) => {
     const inputRef = useRef<HTMLInputElement>(null)
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const emojiRef = useRef<ShowEmoji>(null)
@@ -86,8 +87,9 @@ export const InputPost = ({ content, setContent, file, setFile, avatar_user, han
         }
     }, [content])
 
+    const profile= getProfileToLS() as {avatar ?: string }
     return <div className=' min-h-[100px] flex w-full'>
-        <img src={Boolean(avatar_user) ? avatar_user : Images.background} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
+        <img src={Boolean(profile?.avatar) ? profile.avatar : DEFAULT_IMAGE_AVATAR} alt='avatar' className='w-[40px] h-[40px] object-cover rounded-[50%] mr-[10px]' />
         <div className='flex-1 relative w-full'>
             <textarea className={className + ' min-h-[100px]'} placeholder={t('home.comment')} value={content} onChange={E=>handleChange(E)}  ref={textAreaRef} />
 

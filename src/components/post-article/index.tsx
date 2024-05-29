@@ -8,7 +8,7 @@ import { EmojiClickData } from 'emoji-picker-react';
 import omit from 'lodash/omit'
 import { useForm } from 'react-hook-form'
 import { t } from "i18next";
-import { createPortal } from 'react-dom'
+
 
 import { Icons } from "../../helps/icons"
 import { Button } from "../ui/button"

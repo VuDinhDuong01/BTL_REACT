@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-extra-boolean-cast */
 import { useImperativeHandle, forwardRef, useState, useRef, ChangeEvent, useEffect } from 'react'
@@ -50,7 +51,7 @@ interface FileImageProps {
 
 export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ dataMe }, ref) => {
     const { t } = useTranslation()
-    const [updateMe, { isLoading }] = useUpdateMeMutation()
+    const [updateMe] = useUpdateMeMutation()
     const [uploadImage] = useUploadImageMutation()
     const updateMeRef = useRef<HTMLFormElement>(null)
     const inputRefCoverPhoto = useRef<HTMLInputElement>(null)
@@ -112,15 +113,15 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
         setSubmit(true)
         try {
             const { username, name, bio, website, location } = getValues();
-            let typeCheckImage: string = ''
+            // let typeCheckImage = ''
             const formData = new FormData();
             if (fileImage.avatar) {
                 formData.append('image', fileImage.avatar)
-                typeCheckImage = 'avatar'
+                // typeCheckImage = 'avatar'
             }
             if (fileImage.cover_photo) {
                 formData.append('image', fileImage.cover_photo)
-                typeCheckImage = 'cover_photo'
+                // typeCheckImage = 'cover_photo'
             }
             let res: UploadImageResponse[] = [];
             if (fileImage.avatar !== null || fileImage.cover_photo !== null) {
@@ -145,7 +146,8 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                 cover_photo: null,
                 avatar: null
             })
-            setProfileToLS({ user_id: getMe.data[0]._id, avatar: getMe.data[0].avatar, username: getMe.data[0].name })
+            setProfileToLS({ user_id: (getMe.data as any)?._id, avatar: (getMe.data as any)?.avatar, username: (getMe.data as any)?.name })
+            console.log(getMe)
         } catch (error: unknown) {
             console.log(error)
         }

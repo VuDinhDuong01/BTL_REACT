@@ -47,9 +47,9 @@ const init = {
     handleLike: (_id_comment: string) => null,
     isHovered: '',
     isShowInputRepliesComment: '',
-    handleSelectIcon: async (icon: string) => { },
+    handleSelectIcon: async () => { },
     setIsShowInputRepliesComment: () => null,
-    handleSelectIconRepliesComment: async (icon: string) => { },
+    handleSelectIconRepliesComment: async () => { },
 
     socket: null,
     setSocket: () => null,
@@ -79,8 +79,8 @@ export const contextProvider=()=>{
 
 export const ProviderContext = ({ children }: { children: ReactNode }) => {
     const profile = getProfileToLS() as { user_id: string }
-    const [limit, setLimit] = useState<number>(10)
-    const { data: getNotifications, isLoading:isLoadingNotifiction } = useGetNotificationQuery(profile?.user_id ? {
+    const [limit] = useState<number>(10)
+    const { data: getNotifications } = useGetNotificationQuery(profile?.user_id ? {
         user_id: profile?.user_id as string,
         limit: limit,
         page: 1

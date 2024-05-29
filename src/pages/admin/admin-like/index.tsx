@@ -9,7 +9,6 @@ import { PAGE } from '../../../constants'
 import { customHandle } from '../../../hooks/handleFn'
 import { Button } from '../../../components/ui/button'
 import { NotItem } from '../../../components/NotItem/NotItem'
-import { TippySort } from '../../../components/TippySort/TippySort'
 import { Input } from '../../../components/Input'
 import { LoadingSkeleton } from '../../../components/LoadingSkeleton'
 import { Images } from '../../../assets/images'
@@ -37,17 +36,17 @@ export const AdminLike = () => {
     const customSearch = customHandle({ name: nameSearch, page: 1, navigate, pathname: PAGE.USER })
     customSearch()
   }
-  const handleSort = ({ order }: { order: string }) => {
-    const customSort = customHandle({
-      order,
-      sort_by: 'name',
-      page: isNaN(Number(query.page)) ? 1 : Number(query.page),
+  // const handleSort = ({ order }: { order: string }) => {
+  //   const customSort = customHandle({
+  //     order,
+  //     sort_by: 'name',
+  //     page: isNaN(Number(query.page)) ? 1 : Number(query.page),
 
-      navigate,
-      pathname: PAGE.LIKE
-    })
-    customSort()
-  }
+  //     navigate,
+  //     pathname: PAGE.LIKE
+  //   })
+  //   customSort()
+  // }
   const [deleteAll] = useDeleteManyLikeMutation()
 
 

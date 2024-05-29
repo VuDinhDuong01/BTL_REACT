@@ -41,7 +41,6 @@ export const SideBarAdmin = () => {
     }
   }
 
-  const toggleStorage = JSON.parse(localStorage.getItem('toggle') as string)
   return (
     <div className='2xl:w-[260px] md:w-[180px]  bg-[#2A3444] fixed top-0 lef-0 bottom-0'>
       <div>
@@ -54,7 +53,7 @@ export const SideBarAdmin = () => {
         </div>
         <div className='px-[25px]'>
 
-          {toggleStorage && (
+          { (
             <ul className='text-[white] list-none  font-fontFamily text-[18px] mb-[20px] animate-slideBottom '>
               <li
                 className={clsx({
@@ -62,7 +61,7 @@ export const SideBarAdmin = () => {
                   ['bg-[#3F4D63]']: location.pathname === PAGE.ADMIN || location.pathname === PAGE.ADMIN
                 })}
               >
-                <Link to={PAGE.ADMIN} className='pl-[30px] text-white no-underline'>
+                <Link to={PAGE.ADMIN} className='pl-[30px]  no-underline  text-white'>
                  <IoMdHome /> DASHBOARD
                 </Link>
               </li>
