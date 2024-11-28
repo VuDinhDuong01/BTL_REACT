@@ -15,7 +15,7 @@ const getRefreshToken = getRefreshTokenToLS()
 
 const handleRefreshToken = async () => {
     try {
-        const res = await axios.post(`http://localhost:3000/api/v1/refresh_token`, {
+        const res = await axios.post(`http://localhost:4000/api/v1/refresh_token`, {
             refresh_token: getRefreshToken
         })
 
@@ -30,7 +30,7 @@ const handleRefreshToken = async () => {
 }
 
 const instance = axios.create({
-    baseURL: `http://localhost:3000/api/v1/`,
+    baseURL: `http://localhost:4000/api/v1/`,
     withCredentials: true
 });
 
@@ -87,9 +87,9 @@ instance.interceptors.response.use(function (response) {
         }
     } else {
         console.log(error)
-        // accessToken = ''
-        //     refreshToken = ''
-        //     removeLS()
+        accessToken = ''
+            refreshToken = ''
+            removeLS()
         // ToastMessage({ message: "Lỗi", status: 'error' })
     }
     return Promise.reject(error);

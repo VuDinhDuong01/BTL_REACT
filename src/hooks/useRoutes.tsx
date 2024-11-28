@@ -5,7 +5,7 @@ import { PAGE } from '../constants/path'
 import { Register } from '../pages/auth/register'
 
 import { Login } from '../pages/auth/login'
-import { Home } from '../pages/home'
+
 import { MainLayout } from '../layouts/MainLayout'
 import { RequestRole } from "../helps/request-role";
 import { ROLE } from "../helps/roles";
@@ -28,6 +28,7 @@ import AdminUser from "../pages/admin/admin-user";
 import { AdminPost } from "../pages/admin/admin-post";
 import { AdminComment } from "../pages/admin/admin-comment";
 import { AdminLike } from "../pages/admin/admin-like";
+import { Home } from "../pages/Home";
 
 
 export const route = () => {

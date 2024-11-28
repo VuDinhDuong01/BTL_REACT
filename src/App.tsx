@@ -21,7 +21,7 @@ function App() {
   }, [reset])
   useEffect(() => {
     if (accessToken && checkToken(accessToken as string)) {
-      setSocket(io("http://localhost:3000", {
+      setSocket(io("http://localhost:4000", {
         auth: {
           _id: profile.user_id
         }
