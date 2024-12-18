@@ -59,7 +59,7 @@ export const AdminComment = () => {
       </div>
       <div className='flex  items-center justify-between '>
         <div className='flex items-center'>
-          <form className='flex items-center mr-[10px] cursor-pointer' onSubmit={handleSearch}>
+          {/* <form className='flex items-center mr-[10px] cursor-pointer' onSubmit={handleSearch}>
             <Input
               type='text'
               className='border-2 b border-[#9D9D9D] w-[300px] h-[32px]  px-[10px] outline-none font-Roboto text-[15px] '
@@ -69,7 +69,7 @@ export const AdminComment = () => {
             <Button className='w-[32px] h-[32px] rounded-[3px] border border-[#9D9D9D] bg-white flex items-center justify-center cursor-pointer'>
               <img src={Images.Search} alt='' className='w-[18px] h-[18px] object-cover' />
             </Button>
-          </form>
+          </form> */}
         </div>
         <TippySort handleSort={handleSort} sort_by='content_comment' title='bình luận' />
       </div>

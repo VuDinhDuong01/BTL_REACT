@@ -90,7 +90,11 @@ export const TableComment = ({ dataPost, setCheckBox, checkBox }: TablePostType)
                                 
                             }</td>
                             <td className='2xl:w-[17%] md:w-[15%] custom-class-table-td-post items-center justify-center'>{post?.user[0]?.name}</td>
-                            <td className='2xl:w-[17%] md:w-[20%] custom-class-table-td-post items-center justify-center'>{post.tweet_id}</td>
+                            <td className='2xl:w-[17%] md:w-[20%] custom-class-table-td-post items-center justify-center'>{`${post.tweet_id?.substring(0,10)}-`} {
+                                 post?.tweet[0]?.medias.length > 0 &&  <img src={ post?.tweet[0]?.medias[0]} alt='image'  className='w-[40px] h-[40px] object-cover' />
+                                }
+                               
+                            </td>
                             <td className='2xl:w-[15%] md:w-[15%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-Roboto text-[16px] font-[400] leading-[45px]'>{formatDate(post.created_at)}
                             </td>
                             <td className='flex-1 custom-class-table-td-post pl-0 items-center justify-center'>

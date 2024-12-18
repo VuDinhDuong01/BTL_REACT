@@ -213,9 +213,9 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                         <div className='w-full px-[10px] flex  rounded-t-[20px] items-center cursor-pointer justify-between !h-[50px] '>
                             <div className='flex items-center'>
                                 <div className='mr-[15px] w-[30px] h-[30px] rounded-[50%] bg-black3 flex items-center justify-center hover:opacity-[50%]' onClick={hiddenPopup}><Icons.IoMdClose size={20} /></div>
-                                <h2 className='text-[20px] font-fontFamily'>Edit Profile</h2>
+                                <h2 className='text-[20px] font-fontFamily'>cập nhật hồ sơ</h2>
                             </div>
-                            <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{submit ? <Loading /> : 'Save'}</Button>
+                            <Button className='bg-black text-white font-fontFamily !font-[700] text[15px] !rounded-[50px] cursor-pointer hover:opacity-[80%]'>{submit ? <Loading /> : 'Cập nhật'}</Button>
                         </div>
                         <div className='w-full   flex-1 max-h-[650px] overflow-y-scroll overflow-hidden' >
                             <div className='w-full  '>
@@ -253,7 +253,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                     <CountChar error={t(errors?.name?.message as string)} maxChar={MAX_CHAR} countChar={countCharName} />
                                 </div>
                                 <div className="mb-[20px]   w-[90%]  flex-col  flex  justify-center  m-auto  ">
-                                    <Label className='text-[15px] font-fontFamily'>Bio</Label>
+                                    <Label className='text-[15px] font-fontFamily'>Tiểu sử</Label>
                                     <textarea
                                         {...register('bio', {
                                             onChange: (e) => setCountCharBio(e.target.value.length)
@@ -274,7 +274,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         }
                                         name="location"
                                         required
-                                        label='Location'
+                                        label='Vị trí'
                                         control={control as unknown as Control<FieldValues>}
                                         className="flex flex-col justify-center  !h-[50px]"
                                         placeholder='location'
@@ -287,7 +287,7 @@ export const PopupUpdateMe = forwardRef<ShowPopupHandle, PopupUpdateMeProps>(({ 
                                         {...register('website', { onChange: (e) => setCountCharWebsite(e.target.value.length) })}
                                         name="website"
                                         required
-                                        label='website'
+                                        label='Trang website'
                                         control={control as unknown as Control<FieldValues>}
                                         className=" flex flex-col justify-center  !h-[50px]"
                                         placeholder='website'

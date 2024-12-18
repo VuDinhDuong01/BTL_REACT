@@ -15,7 +15,7 @@ import { getProfileToLS } from "../../helps"
 import { Comment } from "../../types/comment"
 import { GenerateType } from "../../types/generate"
 import {  contextProvider } from "../../hooks"
-import { ViewIcon } from "../../assets/icons/eye"
+// import { ViewIcon } from "../../assets/icons/eye"
 import { useGetMeQuery } from "../../apis"
 import { skipToken } from "@reduxjs/toolkit/query"
 import { formatMentionsAndHashtags } from "../../helps/check-metions-or-hastags"
@@ -76,12 +76,12 @@ export const Post = ({ tweet,setIdTweet}: Props) => {
             icon: <Icons.IoIosHeartEmpty size={21} />,
             numberOfTurns: tweet.like_count
         },
-        {
-            id: 4,
-            title: 'View',
-            icon: <ViewIcon />,
-            numberOfTurns: tweet.user_views
-        },
+        // {
+        //     id: 4,
+        //     title: 'View',
+        //     icon: <ViewIcon />,
+        //     numberOfTurns: tweet.user_views
+        // },
         {
             id: 5,
             title: 'Bookmark',

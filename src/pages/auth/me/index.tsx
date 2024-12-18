@@ -26,9 +26,9 @@ import { useFollowMutation, useGetFollowQuery } from "../../../apis/follow"
 export const Personal = () => {
 
     const actionTweet = [
-        { id: 1, title: 'Posts' },
-        { id: 2, title: 'Comments' },
-        { id: 3, title: 'Like' },
+        { id: 1, title: 'Bài đăng' },
+        { id: 2, title: 'Bình luận' },
+        { id: 3, title: 'Yêu thích' },
     ]
     const navigate = useNavigate()
     const [follow] = useFollowMutation()

@@ -83,7 +83,9 @@ export const TableLike = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                   checked={checkBox.includes(post._id)}
                   onChange={() => handleCheckBox(post._id)} /></td>
               <td className='2xl:w-[15%]   md:w-[8%] border  2xl:flex items-center justify-center text-[#393939] font-fontFamily 2xl:text-[16px] md:text-[14px] font-[400] leading-[45px]'>{post._id}</td>
-              <td className='2xl:w-[25%] md:w-[25%]  custom-class-table-td-post items-center justify-center'>{post.tweet_id}</td>
+              <td className='2xl:w-[25%] md:w-[25%]  custom-class-table-td-post items-center justify-center'>{`${post.tweet_id?.substring(0,10)}-`} {
+                                 post?.tweet[0]?.medias.length > 0 &&  <img src={ post?.tweet[0]?.medias[0]} alt='image'  className='w-[40px] h-[40px] object-cover' />
+                                }</td>
               <td className='2xl:w-[20%] md:w-[15%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[45px]'>{post?.user[0]?.name}</td>
               <td className='2xl:w-[20%] md:w-[15%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[45px]'>{formatDate(post.created_at)}</td>
               <td className='flex-1 custom-class-table-td-post pl-0 items-center justify-center'>
