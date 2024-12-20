@@ -64,7 +64,7 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                     <th className="2xl:w-[3%] md:w-[4%]  flex items-center justify-center" >
                         <input type="checkbox" checked={dataPost?.length === checkBox?.length && checkBox?.length !== 0} onChange={handleCheckAll} className="w-[15px] h-[15px] rounded-[3px] bg-[#fff] flex items-center justify-center" />
                     </th>
-                    <th className='2xl:w-[25%] md:w-[15%] custom-class-table-th-post'>Content</th>
+                    <th className='2xl:w-[25%] md:w-[15%] custom-class-table-th-post'>Nội dung</th>
                     <th className='2xl:w-[17%] md:w-[15%] custom-class-table-th-post'>Ảnh đăng</th>
                     <th className='2xl:w-[17%] md:w-[15%] custom-class-table-th-post'>Người đăng</th>
                     <th className='2xl:w-[12%] md:w-[15%] custom-class-table-th-post'>Số lượt xem</th>
@@ -83,7 +83,7 @@ export const TablePost = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                                     checked={checkBox.includes(post?._id)}
                                     onChange={() => handleCheckBox(post?._id)} /></td>
 
-                            <td className='2xl:w-[25%] md:w-[25%]  custom-class-table-td-post items-center justify-center'>{post.content}</td>
+                            <td className='2xl:w-[25%] md:w-[15%]  custom-class-table-td-post items-center justify-center'>{post.content}</td>
                             <td className='2xl:w-[17%] md:w-[15%]  custom-class-table-td-post items-center justify-center flex  '>{
                                 post?.medias?.length > 0 && post?.medias[0] !== null ? post?.medias?.map((image: string, index: number) => {
                                     return <img src={image} alt='image' key={index} className='w-[40px] h-[40px] object-cover mr-[10px]' />

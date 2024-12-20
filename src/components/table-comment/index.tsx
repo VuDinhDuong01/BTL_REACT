@@ -64,7 +64,7 @@ export const TableComment = ({ dataPost, setCheckBox, checkBox }: TablePostType)
                     <th className="2xl:w-[3%] md:w-[4%]  flex items-center justify-center" >
                         <input type="checkbox" checked={dataPost?.length === checkBox?.length && checkBox?.length !== 0} onChange={handleCheckAll} className="w-[15px] h-[15px] rounded-[3px] bg-[#fff] flex items-center justify-center" />
                     </th>
-                    <th className='2xl:w-[20%] md:w-[15%] custom-class-table-th-post'>Content</th>
+                    <th className='2xl:w-[20%] md:w-[15%] custom-class-table-th-post'>Bình luận</th>
                     <th className='2xl:w-[15%] md:w-[15%] custom-class-table-th-post'>Ảnh bình luận</th>
                     <th className='2xl:w-[17%] md:w-[15%] custom-class-table-th-post'>Người bình luân</th>
                     <th className='2xl:w-[17%] md:w-[15%] custom-class-table-th-post'>Bài viết được bình luận</th>
@@ -83,7 +83,7 @@ export const TableComment = ({ dataPost, setCheckBox, checkBox }: TablePostType)
                                     checked={checkBox.includes(post._id)}
                                     onChange={() => handleCheckBox(post._id)} /></td>
 
-                            <td className='2xl:w-[20%] md:w-[25%]  custom-class-table-td-post items-center justify-center'>{post.content_comment}</td>
+                            <td className='2xl:w-[20%] md:w-[15%]  custom-class-table-td-post items-center justify-center'>{post.content_comment}</td>
                             <td className='2xl:w-[15%] md:w-[15%]  custom-class-table-td-post items-center justify-center flex  '>{
                                 
                                 post.image_comment !== '' ?    <img src={post.image_comment} alt='image'  className='w-[40px] h-[40px] object-cover' /> : '_'

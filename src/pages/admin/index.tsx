@@ -36,45 +36,45 @@ export function Admin() {
     {
       color: "gray",
       icon: FaUserFriends,
-      title: "Totals Users",
+      title: "Tổng số người",
       value: dataUser?.data.length,
       footer: {
         color: "text-green-500",
         value: "+55%",
-        label: "than last week",
+        label: "so với tuần trước",
       },
     },
     {
       color: "gray",
       icon: SiPostman,
-      title: "Totals Posts",
+      title: "Tổng số bài đăng",
       value: dataPost?.data.length,
       footer: {
         color: "text-green-500",
         value: "+3%",
-        label: "than last month",
+        label: "so với tháng trước",
       },
     },
     {
       color: "gray",
       icon: FaRegCommentDots,
-      title: "Totals Comments",
+      title: "Tổng lượt bình luận",
       value: dataComment?.data.length,
       footer: {
         color: "text-red-500",
         value: "-2%",
-        label: "than yesterday",
+        label: "so với tuần trước",
       },
     },
     {
       color: "gray",
       icon: BiSolidLike,
-      title: "Totals Likes",
+      title: "Tổng lượt yêu thích",
       value: dataLike?.data.length,
       footer: {
         color: "text-green-500",
         value: "+5%",
-        label: "than yesterday",
+        label: "so với tuần trước",
       },
     },
   ];

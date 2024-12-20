@@ -90,7 +90,7 @@ export const TableUser = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                 <input type="checkbox" className="w-[15px] h-[15px] rounded-[3px] bg-white cursor-pointer"
                   checked={checkBox.includes(post._id)}
                   onChange={() => handleCheckBox(post._id)} /></td>
-              <td className='2xl:w-[15%]   md:w-[8%] border  2xl:flex items-center justify-center text-[#393939] font-fontFamily 2xl:text-[16px] md:text-[14px] font-[400] leading-[45px]'>{post._id}</td>
+              <td className='2xl:w-[15%]   md:w-[8%] border  2xl:flex items-center justify-center text-[#393939] font-fontFamily 2xl:text-[16px] md:text-[14px] font-[400] leading-[45px]'>{post._id?.substring(0,10)}</td>
               <td className='2xl:w-[15%] md:w-[15%]  custom-class-table-td-post items-center justify-center'>{post.name}</td>
               <td className='2xl:w-[17%] md:w-[15%]  custom-class-table-td-post items-center justify-center'>{post.email}</td>
               <td className='2xl:w-[15%] md:w-[15%] custom-class-table-td-post items-center justify-center'>{post.bio === '' ? '_' : post.bio}</td>

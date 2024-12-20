@@ -65,9 +65,9 @@ export const TableLike = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
             <input type="checkbox" checked={dataPost?.length === checkBox?.length && checkBox?.length !== 0} onChange={handleCheckAll} className="w-[15px] h-[15px] rounded-[3px] bg-[#fff] flex items-center justify-center" />
           </th>
           <th className='2xl:w-[15%] md:w-[8%] custom-class-table-th-post'>ID</th>
-          <th className='2xl:w-[25%] md:w-[15%] custom-class-table-th-post'>Bài đăng được yêu thích</th>
-          <th className='2xl:w-[20%] md:w-[15%] custom-class-table-th-post'>Người yêu thích</th>
-          <th className='2xl:w-[20%] md:w-[15%] custom-class-table-th-post'>Ngày yêu thích</th>
+          <th className='2xl:w-[25%] md:w-[30%] custom-class-table-th-post'>Bài đăng được yêu thích</th>
+          <th className='2xl:w-[25%] md:w-[20%] custom-class-table-th-post'>Người yêu thích</th>
+          <th className='2xl:w-[20%] md:w-[20%] custom-class-table-th-post'>Ngày yêu thích</th>
 
           <th className='flex-1 custom-class-table-th-post'>Thao tác</th>
         </tr>
@@ -82,12 +82,12 @@ export const TableLike = ({ dataPost, setCheckBox, checkBox }: TablePostType) =>
                 <input type="checkbox" className="w-[15px] h-[15px] rounded-[3px] bg-white cursor-pointer"
                   checked={checkBox.includes(post._id)}
                   onChange={() => handleCheckBox(post._id)} /></td>
-              <td className='2xl:w-[15%]   md:w-[8%] border  2xl:flex items-center justify-center text-[#393939] font-fontFamily 2xl:text-[16px] md:text-[14px] font-[400] leading-[45px]'>{post._id}</td>
-              <td className='2xl:w-[25%] md:w-[25%]  custom-class-table-td-post items-center justify-center'>{`${post.tweet_id?.substring(0,10)}-`} {
+              <td className='2xl:w-[15%]   md:w-[8%] border  2xl:flex items-center justify-center text-[#393939] font-fontFamily 2xl:text-[16px] md:text-[14px] font-[400] leading-[45px]'>{post._id?.substring(0,10)}</td>
+              <td className='2xl:w-[25%] md:w-[30%]  custom-class-table-td-post items-center justify-center'>{`${post.tweet_id?.substring(0,10)}-`} {
                                  post?.tweet[0]?.medias.length > 0 &&  <img src={ post?.tweet[0]?.medias[0]} alt='image'  className='w-[40px] h-[40px] object-cover' />
                                 }</td>
-              <td className='2xl:w-[20%] md:w-[15%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[45px]'>{post?.user[0]?.name}</td>
-              <td className='2xl:w-[20%] md:w-[15%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[45px]'>{formatDate(post.created_at)}</td>
+              <td className='2xl:w-[20%] md:w-[20%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[45px]'>{post?.user[0]?.name}</td>
+              <td className='2xl:w-[20%] md:w-[20%] border justify-center flex items-center 2xl:pl-[12px] flex-wrap whitespace-normal break-words md:pl-[5px] text-[#393939] font-fontFamily text-[16px] font-[400] leading-[45px]'>{formatDate(post.created_at)}</td>
               <td className='flex-1 custom-class-table-td-post pl-0 items-center justify-center'>
                 <img src={Images.deleteImage} alt="" className="w-[20px]  h-[20px] cursor-pointer" onClick={() => handleDeleteUser(post._id)} />
               </td>

@@ -42,7 +42,7 @@ export const SideBarAdmin = () => {
   }
 
   return (
-    <div className='2xl:w-[260px] md:w-[180px]  bg-[#2A3444] fixed top-0 lef-0 bottom-0'>
+    <div className='2xl:w-[270px] md:w-[190px]  bg-[#2A3444] fixed top-0 lef-0 bottom-0'>
       <div>
         <div className='2xl:w-full md:w-full h-[124px] shrink-0 bg-green1 flex items-center justify-center mb-[33px]'>
           <img
@@ -54,14 +54,14 @@ export const SideBarAdmin = () => {
         <div className='px-[25px]'>
 
           { (
-            <ul className='text-[white] list-none  font-fontFamily text-[18px] mb-[20px] animate-slideBottom '>
+            <ul className='text-[white] list-none  font-fontFamily text-[15px] mb-[20px] animate-slideBottom '>
               <li
                 className={clsx({
                   ['py-[15px]  rounded-[5px] ']: true,
                   ['bg-[#3F4D63]']: location.pathname === PAGE.ADMIN || location.pathname === PAGE.ADMIN
                 })}
               >
-                <Link to={PAGE.ADMIN} className='pl-[30px]  no-underline  text-white'>
+                <Link to={PAGE.ADMIN} className='pl-[10px]  no-underline  text-white'>
                  <IoMdHome /> DASHBOARD
                 </Link>
               </li>
